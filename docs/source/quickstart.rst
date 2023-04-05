@@ -1,0 +1,58 @@
+Quick Start
+==================
+
+*This is a quick setup guide for running standalone on your local machine*
+
+Install the Module
+--------------------
+
+*One of these should be what you're looking for:*
+
+* Install the latest module snapshot
+
+.. code-block::
+
+    python3 -m venv my-venv-directory
+    . my-venv-directory/bin/activate
+
+    pip install --pre --extra-index-url https://artifactory.software.geant.org/artifactory/api/pypi/geant-swd-pypi/simple goat-ansible-api
+
+* Install the source code
+
+.. code-block::
+
+    python3 -m venv my-venv-directory
+    . my-venv-directory/bin/activate
+
+    git clone https://gitlab.geant.org/goat/gap/ansible-api.git
+    cd ansible-api
+    pip install -e .
+
+    # for a full dev environment
+    pip install -r requirements.txt
+
+Running the App
+-------------------
+
+* Create a settings file, see `config.json.example` for an example.
+* Run the app like this (`app.py` starts the server on port 44444):
+
+  .. code-block:: bash
+
+     SETTINGS_FILENAME=/absolute/path/to/config.json python -m ansible_api.app
+
+Examples
+
+* Get the version
+
+  .. code-block:: bash
+
+     curl http://localhost:44444/api/version
+
+* List all available playbooks
+
+  .. code-block:: bash
+
+     curl http://localhost:44444/api/playbook
+
+* View the docs by loading `http://localhost:44444/docs` in your browser

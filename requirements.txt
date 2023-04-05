@@ -1,0 +1,12 @@
+jsonschema
+requests
+
+httpx
+fastapi
+pydantic
+uvicorn[standard]
+
+pytest
+responses
+sphinx
+sphinx-rtd-theme

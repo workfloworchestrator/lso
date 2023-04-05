@@ -1,0 +1,11 @@
+__pycache__
+.coverage
+.idea
+.tox
+coverage.xml
+*.egg-info
+docs/build
+
+.vscode
+
+config.json
