@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from ansible_api import environment
 from ansible_api import config
 
-from ansible_api.routes import default
+from ansible_api.routes import default, playbook
 
 
 def create_app():
@@ -34,18 +34,18 @@ def create_app():
     app.include_router(
         default.router,
         prefix='/api',
-        # tags="default"],
+        # tags=["default"],
         # dependencies=[Depends(get_token_header)],
         # responses={418: {"description": "I'm a teapot"}},
     )
 
-    # app.include_router(
-    #     interfaces.router,
-    #     prefix='/api/interfaces',
-    #     # tags=["trunk"],
-    #     # dependencies=[Depends(get_token_header)],
-    #     # responses={418: {"description": "I'm a teapot"}},
-    # )
+    app.include_router(
+        playbook.router,
+        prefix='/api/playbook',
+        # tags=["playbook"],
+        # dependencies=[Depends(get_token_header)],
+        # responses={418: {"description": "I'm a teapot"}},
+    )
 
     # test that config params are available and can be loaded
     config.load()
