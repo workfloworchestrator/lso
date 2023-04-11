@@ -1,3 +1,3 @@
 {
-  "playbook-dir": "/absolute/path/to/playbooks"
+  "collection-uri": "organisation.collection"
 }
