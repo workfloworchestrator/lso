@@ -1,5 +1,7 @@
 jsonschema
 requests
+ansible
+ansible-runner
 
 httpx
 fastapi
