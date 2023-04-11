@@ -1,14 +1,14 @@
 """
 default app creation
 """
-import ansible_api
+import larp
 
-app = ansible_api.create_app()
+app = larp.create_app()
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(
-        'ansible_api.app:app',
+        'larp.app:app',
         host='0.0.0.0',
         port=44444,
         log_level='debug')

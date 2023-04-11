@@ -1,6 +1,6 @@
-# Ansible API
+# Lightweight Ansible Runner Provisioner
 
-And API that allows for remotely executing Ansible playbooks
+LARP: an API that allows for remotely executing Ansible playbooks
 
 ## Running locally
 

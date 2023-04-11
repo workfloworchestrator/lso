@@ -6,10 +6,10 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from ansible_api import environment
-from ansible_api import config
+from larp import environment
+from larp import config
 
-from ansible_api.routes import default, playbook
+from larp.routes import default, playbook
 
 
 def create_app():

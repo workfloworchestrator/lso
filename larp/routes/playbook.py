@@ -9,7 +9,7 @@ import ansible_runner
 import venv
 import tempfile
 
-from ansible_api import config
+from larp import config
 
 router = APIRouter()
 
