@@ -1,7 +1,7 @@
 GOAT Ansible API
 ==========================
 
-Documentation for the GOAT Ansible API
+Documentation for LARP: a Lightweight Ansible Runner Provisioner
 
 .. toctree::
    :maxdepth: 1
