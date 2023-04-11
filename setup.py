@@ -11,5 +11,7 @@ setup(
     install_requires=[
         'jsonschema',
         'requests',
+        'fastapi',
+        'pydantic'
     ]
 )

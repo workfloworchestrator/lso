@@ -5,10 +5,6 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-import ansible_runner
-import venv
-import tempfile
-
 from larp import config
 
 router = APIRouter()
@@ -48,7 +44,7 @@ async def add_playbook(new_playbook: Playbook) -> Playbook:
 
 
 @router.get('/run/{playbook_name}')
-async def run_playbook(playbook_name: str) -> JSONResponse | PlaybookRun:
+async def run_playbook(playbook_name: str) -> PlaybookRun:
     # TODO: implement
     params = config.load()
     playbook_list = os.listdir(params['playbook-dir'])
@@ -57,16 +53,6 @@ async def run_playbook(playbook_name: str) -> JSONResponse | PlaybookRun:
     except ValueError:
         return JSONResponse(status_code=404, content=f'Playbook with name {playbook_name} not found.')
 
-    # Build a temp venv
-    venv_path = tempfile.mkdtemp(prefix='workflow-', suffix='-venv')
-    builder = venv.EnvBuilder(with_pip=True, system_site_packages=True)
-    builder.create(venv_path)
-
-
-    # Get collection from Ansible Galaxy
-    # ansible_collections
-
-    # Run playbook asynchronously
-    ansible_runner.run_async()
+    # Run playbook asynchronously with run_playbook.sh
 
     return PlaybookRun(result_code=1)

@@ -1,0 +1,4 @@
+- name: test-playbook
+  hosts: all
+  roles:
+    - kvklink.echo.echo_uptime

@@ -1,9 +1,6 @@
 jsonschema
 requests
-ansible
-ansible-runner
 
-httpx
 fastapi
 pydantic
 uvicorn[standard]
