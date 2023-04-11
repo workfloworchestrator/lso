@@ -1,3 +1,3 @@
 library 'SWDPipeline'
 
-SimplePythonBuild('goat-ansible-api');
+SimplePythonBuild('goat-larp');

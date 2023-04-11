@@ -2,7 +2,7 @@ import json
 import os
 
 from fastapi.testclient import TestClient
-import ansible_api
+import larp
 
 config_filename = os.path.join(
     os.path.dirname(__file__),
@@ -13,7 +13,7 @@ output_filename = os.path.join(
     'source', '_static', 'openapi.json')
 
 os.environ['SETTINGS_FILENAME'] = config_filename
-app = ansible_api.create_app()
+app = larp.create_app()
 client = TestClient(app)
 rsp = client.get('/openapi.json')
 openapi_doc = json.dumps(rsp.json(), indent=2)
