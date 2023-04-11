@@ -9,9 +9,9 @@ CONFIG_SCHEMA = {
 
     'type': 'object',
     'properties': {
-        'playbook-dir': {'type': 'string'},
+        'collection-uri': {'type': 'string'},
     },
-    'required': ['playbook-dir'],
+    'required': ['collection-uri'],
     'additionalProperties': False
 }
 
