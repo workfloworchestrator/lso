@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
 usage() {
-  echo "Usage: $0 <larp_collection_uri> <playbook-name> <remote-host> (<extra-vars> ...)" 1>&2;
+  echo "Usage: $0 <larp_collection_name> <playbook-name> <remote-host> (<extra-vars> ...)" 1>&2;
   exit 2
 }
 
@@ -33,5 +33,5 @@ pip install -r ../requirements.txt  # FIXME
 pip install ansible ansible_runner
 
 ansible-galaxy collection install "$1"
-ansible-playbook "$2" -i "$3", --connection=local  # TODO: Add support for extra vars
-# FIXME: remove --conection=local from command above
+EXTRA_OPTIONS=${*:4}
+ansible-playbook "$2" -i "$3", --connection=local "$EXTRA_OPTIONS"  # FIXME: remove --connection=local
