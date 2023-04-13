@@ -6,7 +6,7 @@ import lso
 
 config_filename = os.path.join(
     os.path.dirname(__file__),
-    '..', 'config-example.json')
+    '..', 'config.json.example')
 
 output_filename = os.path.join(
     os.path.dirname(__file__),

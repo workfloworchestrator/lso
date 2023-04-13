@@ -67,7 +67,7 @@ exclude_patterns = []
 # -- Options for HTML output -------------------------------------------------
 
 html_theme = 'sphinx_rtd_theme'
-html_static_path = ['static']
+html_static_path = ['_static']
 
 # Both the class' and the __init__ method's docstring
 # are concatenated and inserted.

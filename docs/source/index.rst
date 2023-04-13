@@ -1,5 +1,5 @@
 GOAT Lightweight Service Orchestrator
-==========================
+=====================================
 
 Documentation for LSO: a Lightweight Service Orchestrator
 
