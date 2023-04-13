@@ -11,7 +11,7 @@ import larp
 @pytest.fixture
 def good_config_data():
     return {
-        'collection-uri': 'organisation.collection'
+        'collection-name': 'organisation.collection'
     }
 
 

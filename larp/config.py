@@ -9,9 +9,9 @@ CONFIG_SCHEMA = {
 
     'type': 'object',
     'properties': {
-        'collection-uri': {'type': 'string'},
+        'collection-name': {'type': 'string'},
     },
-    'required': ['collection-uri'],
+    'required': ['collection-name'],
     'additionalProperties': False
 }
 
