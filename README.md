@@ -1,6 +1,6 @@
-# Lightweight Ansible Runner Provisioner
+# Lightweight Service Orchestrator
 
-LARP: an API that allows for remotely executing Ansible playbooks
+LSO: an API that allows for remotely executing Ansible playbooks
 
 ## Running locally
 

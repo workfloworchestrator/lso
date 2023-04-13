@@ -5,7 +5,7 @@ import tempfile
 import pytest
 from fastapi.testclient import TestClient
 
-import larp
+import lso
 
 
 @pytest.fixture
@@ -42,5 +42,5 @@ def invalid_config_file(bad_config_data):
 
 @pytest.fixture
 def client(config_file):
-    app = larp.create_app()
+    app = lso.create_app()
     yield TestClient(app)  # wait here until calling context ends

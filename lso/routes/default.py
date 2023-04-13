@@ -18,5 +18,5 @@ def version() -> Version:
     return {
         'api': API_VERSION,
         'module':
-            pkg_resources.get_distribution('goat-larp').version
+            pkg_resources.get_distribution('goat-lso').version
     }

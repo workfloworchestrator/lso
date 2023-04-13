@@ -2,9 +2,7 @@ import io
 import json
 import pytest
 
-from pydantic.error_wrappers import ValidationError
-
-from larp import config
+from lso import config
 
 
 def test_config_with_file(config_file):

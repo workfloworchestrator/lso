@@ -6,10 +6,10 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from larp import environment
-from larp import config
+from lso import environment
+from lso import config
 
-from larp.routes import default
+from lso.routes import default
 
 
 def create_app():
