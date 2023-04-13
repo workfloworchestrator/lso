@@ -22,5 +22,5 @@ def test_config_correct(good_config_data):
 def test_config_incorrect(bad_config_data):
     with io.StringIO(json.dumps(bad_config_data)) as f:
         f.seek(0)
-        with pytest.raises(ValidationError):
+        with pytest.raises(Exception, match="'collection-uri' is a required property"):
             config.load_from_file(f)
