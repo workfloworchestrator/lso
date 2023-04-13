@@ -1,7 +1,6 @@
 jsonschema
 requests
 
-httpx
 fastapi
 pydantic
 uvicorn[standard]
