@@ -15,7 +15,7 @@ Install the Module
     python3 -m venv my-venv-directory
     . my-venv-directory/bin/activate
 
-    pip install --pre --extra-index-url https://artifactory.software.geant.org/artifactory/api/pypi/geant-swd-pypi/simple goat-larp
+    pip install --pre --extra-index-url https://artifactory.software.geant.org/artifactory/api/pypi/geant-swd-pypi/simple goat-lso
 
 * Install the source code
 
@@ -24,8 +24,8 @@ Install the Module
     python3 -m venv my-venv-directory
     . my-venv-directory/bin/activate
 
-    git clone https://gitlab.geant.org/goat/gap/larp.git
-    cd larp
+    git clone https://gitlab.geant.org/goat/gap/lso.git
+    cd lso
     pip install -e .
 
     # for a full dev environment
@@ -39,7 +39,7 @@ Running the App
 
   .. code-block:: bash
 
-     SETTINGS_FILENAME=/absolute/path/to/config.json python -m goat_larp.app
+     SETTINGS_FILENAME=/absolute/path/to/config.json python -m goat_lso.app
 
 Examples
 

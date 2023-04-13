@@ -1,3 +1,3 @@
 library 'SWDPipeline'
 
-SimplePythonBuild('goat-larp');
+SimplePythonBuild('goat-lso');

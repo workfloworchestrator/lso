@@ -2,7 +2,7 @@ import json
 import os
 
 from fastapi.testclient import TestClient
-import larp
+import lso
 
 config_filename = os.path.join(
     os.path.dirname(__file__),
@@ -13,7 +13,7 @@ output_filename = os.path.join(
     'source', '_static', 'openapi.json')
 
 os.environ['SETTINGS_FILENAME'] = config_filename
-app = larp.create_app()
+app = lso.create_app()
 client = TestClient(app)
 rsp = client.get('/openapi.json')
 openapi_doc = json.dumps(rsp.json(), indent=2)

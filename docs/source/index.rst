@@ -1,7 +1,7 @@
-GOAT Ansible API
+GOAT Lightweight Service Orchestrator
 ==========================
 
-Documentation for LARP: a Lightweight Ansible Runner Provisioner
+Documentation for LSO: a Lightweight Service Orchestrator
 
 .. toctree::
    :maxdepth: 1

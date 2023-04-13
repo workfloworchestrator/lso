@@ -1,14 +1,14 @@
 """
 default app creation
 """
-import larp
+import lso
 
-app = larp.create_app()
+app = lso.create_app()
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(
-        'larp.app:app',
+        'lso.app:app',
         host='0.0.0.0',
         port=44444,
         log_level='debug')
