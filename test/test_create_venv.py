@@ -12,23 +12,18 @@ def test_create_venv_and_run_playbook():
     venv_path = tempfile.mkdtemp(prefix='lso-venv-')
     subprocess.check_call(['python3', '-m', 'venv', venv_path])
 
-    #  Install pip requirements and ansible
+    #  Install Ansible using pip
     pip_path = os.path.join(venv_path, 'bin', 'pip')
-    requirements = '../requirements.txt'  # TODO: this should be changed when moving to codebase
-    subprocess.check_call([pip_path, 'install', '-r', requirements])
-    subprocess.check_call([pip_path, 'install', '-e', '..'])  # TODO: change path
+    subprocess.check_call([pip_path, 'install', 'ansible', 'ansible_runner'])
 
     #  Add Ansible Galaxy collection
-    subprocess.check_call(
-        f"source {venv_path}/bin/activate; ansible-galaxy collection install {TEST_CONFIG['collection-name']}",
-        shell=True
-    )
+    galaxy_path = os.path.join(venv_path, 'bin', 'ansible-galaxy')
+    subprocess.check_call([galaxy_path, 'collection', 'install', TEST_CONFIG['collection-name']])
 
     #  Run Ansible dummy playbook
+    ansible_playbook_path = os.path.join(venv_path, 'bin', 'ansible-playbook')
     playbook_run = subprocess.check_output(
-        f'source {venv_path}/bin/activate; ansible-playbook -i localhost, playbook.yml --connection=local',
-        shell=True
-    ).decode()
+        [ansible_playbook_path, '-i', 'localhost,', 'playbook.yml', '--connection=local']).decode()
 
     #  Clean up the used venv
     subprocess.check_call(['rm', '-fr', venv_path])
