@@ -12,6 +12,7 @@ setup(
         'jsonschema',
         'requests',
         'fastapi',
-        'pydantic'
+        'pydantic',
+        'ansible_runner'
     ]
 )

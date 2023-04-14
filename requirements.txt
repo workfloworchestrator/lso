@@ -1,5 +1,6 @@
 jsonschema
 requests
+ansible_runner
 
 fastapi
 pydantic
