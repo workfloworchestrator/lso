@@ -31,9 +31,8 @@ def test_create_venv_and_run_playbook():
     ).decode()
 
     #  Clean up the used venv
-    subprocess.check_call(['rm', '-r', venv_path])
+    subprocess.check_call(['rm', '-fr', venv_path])
 
-    print(playbook_run)
-    assert playbook_run.endswith("""localhost                  : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
-
-""")
+    assert ' '.join(playbook_run.split()).endswith(
+        'localhost : ok=3 changed=1 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0'
+    )
