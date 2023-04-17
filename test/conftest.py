@@ -10,7 +10,8 @@ from fastapi.testclient import TestClient
 import lso
 
 TEST_CONFIG = {
-    'collection-name': 'kvklink.echo'
+    'collection-name': 'kvklink.echo',
+    'test-role': 'kvklink.echo.echo_uptime'
 }
 
 
@@ -21,7 +22,7 @@ def temp_ansible_playbook():
             'name': 'test-playbook',
             'hosts': 'all',
             'roles': [
-                'kvklink.echo.echo_uptime'
+                TEST_CONFIG['test-role']
             ]
         }], temp_playbook.file, sort_keys=False)
 
@@ -42,6 +43,7 @@ def temp_venv():
         # Add Ansible Galaxy collection
         galaxy_path = os.path.join(venv_dir, 'bin', 'ansible-galaxy')
         subprocess.check_call([galaxy_path, 'collection', 'install', TEST_CONFIG['collection-name']])
+        #  FIXME: Ansible collections need to be downloaded to a path inside the venv
 
         yield venv_dir
 
