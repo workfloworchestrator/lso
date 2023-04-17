@@ -2,11 +2,10 @@ import os
 import subprocess
 
 
-def test_create_venv_and_run_playbook(temp_venv, temp_ansible_playbook):
+def test_create_venv_and_run_playbook(temp_ansible_env, temp_ansible_playbook):
     #  Run Ansible dummy playbook
-    ansible_playbook_path = os.path.join(temp_venv, 'bin', 'ansible-playbook')
     playbook_run = subprocess.run(
-        [ansible_playbook_path, '-i', 'localhost,', temp_ansible_playbook, '--connection=local'],
+        [temp_ansible_env, '-i', 'localhost,', temp_ansible_playbook, '--connection=local'],
         capture_output=True
     )
 

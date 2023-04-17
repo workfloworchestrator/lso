@@ -31,7 +31,7 @@ def temp_ansible_playbook():
 
 
 @pytest.fixture
-def temp_venv():
+def temp_ansible_env():
     with tempfile.TemporaryDirectory(prefix='lso_venv') as venv_dir:
         # Instantiate a new venv
         subprocess.check_call(['python3', '-m', 'venv', venv_dir])
@@ -45,7 +45,7 @@ def temp_venv():
         subprocess.check_call([galaxy_path, 'collection', 'install', TEST_CONFIG['collection-name']])
         #  FIXME: Ansible collections need to be downloaded to a path inside the venv
 
-        yield venv_dir
+        yield os.path.join(venv_dir, 'bin', 'ansible-playbook')
 
 
 @pytest.fixture
