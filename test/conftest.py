@@ -1,11 +1,49 @@
 import json
 import os
+import subprocess
 import tempfile
 
 import pytest
+import yaml
 from fastapi.testclient import TestClient
 
 import lso
+
+TEST_CONFIG = {
+    'collection-name': 'kvklink.echo'
+}
+
+
+@pytest.fixture
+def temp_ansible_playbook():
+    with tempfile.NamedTemporaryFile(prefix='lso_playbook_', suffix='.yml', mode='w') as temp_playbook:
+        yaml.dump([{
+            'name': 'test-playbook',
+            'hosts': 'all',
+            'roles': [
+                'kvklink.echo.echo_uptime'
+            ]
+        }], temp_playbook.file, sort_keys=False)
+
+        temp_playbook.flush()
+        yield temp_playbook.name
+
+
+@pytest.fixture
+def temp_venv():
+    with tempfile.TemporaryDirectory(prefix='lso_venv') as venv_dir:
+        # Instantiate a new venv
+        subprocess.check_call(['python3', '-m', 'venv', venv_dir])
+
+        # Install pip dependencies
+        pip_path = os.path.join(venv_dir, 'bin', 'pip')
+        subprocess.check_call([pip_path, 'install', 'ansible', 'ansible_runner'])
+
+        # Add Ansible Galaxy collection
+        galaxy_path = os.path.join(venv_dir, 'bin', 'ansible-galaxy')
+        subprocess.check_call([galaxy_path, 'collection', 'install', TEST_CONFIG['collection-name']])
+
+        yield venv_dir
 
 
 @pytest.fixture

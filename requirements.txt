@@ -10,3 +10,4 @@ pytest
 responses
 sphinx
 sphinx-rtd-theme
+pyyaml
