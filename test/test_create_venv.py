@@ -1,36 +1,26 @@
 import os
 import subprocess
-import tempfile
+
+from tempfile import TemporaryDirectory
 
 TEST_CONFIG = {
     'collection-name': 'kvklink.echo'
 }
 
 
-class VenvContextManager:
-    path: str
-
-    def __enter__(self):
-        self.path = tempfile.mkdtemp(prefix='lso-venv-')
-        subprocess.check_call(['python3', '-m', 'venv', self.path])
+def test_create_venv_and_run_playbook():
+    with TemporaryDirectory() as venv_path:
+        # Instantiate a new venv
+        subprocess.check_call(['python3', '-m', 'venv', venv_path])
 
         # Install pip dependencies
-        pip_path = os.path.join(self.path, 'bin', 'pip')
+        pip_path = os.path.join(venv_path, 'bin', 'pip')
         subprocess.check_call([pip_path, 'install', 'ansible', 'ansible_runner'])
 
         # Add Ansible Galaxy collection
-        galaxy_path = os.path.join(self.path, 'bin', 'ansible-galaxy')
+        galaxy_path = os.path.join(venv_path, 'bin', 'ansible-galaxy')
         subprocess.check_call([galaxy_path, 'collection', 'install', TEST_CONFIG['collection-name']])
 
-        return self.path
-
-    def __exit__(self, exc_type, exc_value, exc_tb):
-        subprocess.check_call(['rm', '-fr', self.path])
-        print(exc_type, exc_value, exc_tb, sep='\n')  # Print raised Exception, if present
-
-
-def test_create_venv_and_run_playbook():
-    with VenvContextManager() as venv_path:
         #  Run Ansible dummy playbook
         ansible_playbook_path = os.path.join(venv_path, 'bin', 'ansible-playbook')
         playbook_run = subprocess.check_output(
