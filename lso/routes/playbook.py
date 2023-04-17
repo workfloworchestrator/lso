@@ -27,22 +27,6 @@ class PlaybookRun(BaseModel):
     result_code: int
 
 
-@router.get('/')
-async def get_playbooks() -> PlaybookList:
-    params = config.load()
-    playbook_list = os.listdir(params['playbook-dir'])
-    # TODO: implement
-    return PlaybookList(
-        playbooks=[Playbook(name=item, path='.', target='localhost', extra_vars={}) for item in playbook_list])
-
-
-@router.post('/')
-async def add_playbook(new_playbook: Playbook) -> Playbook:
-    # TODO: implement
-    # Add a new playbook available for deployment. The playbook must be available on Ansible Galaxy
-    return new_playbook
-
-
 @router.get('/run/{playbook_name}')
 async def run_playbook(playbook_name: str) -> PlaybookRun:
     # TODO: implement
