@@ -1,3 +1,6 @@
+"""Environment module for setting up logging.
+"""
+
 import json
 import logging.config
 import os
@@ -47,7 +50,7 @@ def setup_logging():
     logging_config = LOGGING_DEFAULT_CONFIG
     if 'LOGGING_CONFIG' in os.environ:
         filename = os.environ['LOGGING_CONFIG']
-        with open(filename) as f:
-            logging_config = json.loads(f.read())
+        with open(filename, encoding='utf-8') as file:
+            logging_config = json.loads(file.read())
 
     logging.config.dictConfig(logging_config)
