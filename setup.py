@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='goat-lso',
-    version='0.0.1',
+    version="0.1",
     author='GÉANT Orchestration & Automation Team',
     author_email='TBD',
     description='Lightweight Ansible Runner Provioner',
