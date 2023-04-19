@@ -5,6 +5,7 @@ ansible_runner
 fastapi
 pydantic
 uvicorn[standard]
+httpx
 
 pytest
 responses

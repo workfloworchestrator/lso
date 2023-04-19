@@ -4,8 +4,6 @@ Default route located at the root URL /
 For now only includes a single endpoint that responds with the current version
 of the API and LSO.
 """
-import dataclasses
-
 import pkg_resources
 from fastapi import APIRouter
 from pydantic import BaseModel, constr
@@ -16,7 +14,6 @@ VERSION_STRING = constr(regex=r'\d+\.\d+')
 router = APIRouter()
 
 
-@dataclasses.dataclass
 class Version(BaseModel):
     """
     Simple model for returning a version number of both the API and the
@@ -26,13 +23,6 @@ class Version(BaseModel):
     api: VERSION_STRING
     module: VERSION_STRING
 
-    def __init__(self, api, module):
-        """Constructor method
-        """
-        super(self)
-        self.api = api
-        self.module = module
-
 
 @router.get('/version')
 def version() -> Version:
@@ -41,5 +31,5 @@ def version() -> Version:
 
     :return: Version object with both API and `goat-lso` versions numbers.
     """
-    return Version(API_VERSION,
-                   pkg_resources.get_distribution('goat-lso').version)
+    return Version(api=API_VERSION,
+                   module=pkg_resources.get_distribution('goat-lso').version)

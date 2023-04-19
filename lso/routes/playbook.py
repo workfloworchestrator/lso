@@ -1,6 +1,5 @@
 """Routes that relate to playbooks. Contains some constructs as well.
 """
-import dataclasses
 import os
 from typing import List, Dict
 
@@ -13,7 +12,6 @@ from lso import config
 router = APIRouter()
 
 
-@dataclasses.dataclass
 class Playbook(BaseModel):
     """Model for a Playbook.
 
@@ -28,7 +26,6 @@ class Playbook(BaseModel):
     extra_vars: Dict[str, str]
 
 
-@dataclasses.dataclass
 class PlaybookList(BaseModel):
     """Model for a list of Playbooks.
 
@@ -37,7 +34,6 @@ class PlaybookList(BaseModel):
     playbooks: List[Playbook]
 
 
-@dataclasses.dataclass
 class PlaybookRun(BaseModel):
     """Model of a Playbook run. Used to keep track of output and successful
     execution.
