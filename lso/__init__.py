@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from lso import environment
 from lso import config
 
-from lso.routes import default
+from lso.routes import default, playbook
 
 
 def create_app():
@@ -34,18 +34,18 @@ def create_app():
     app.include_router(
         default.router,
         prefix='/api',
-        # tags="default"],
+        # tags=["default"],
         # dependencies=[Depends(get_token_header)],
         # responses={418: {"description": "I'm a teapot"}},
     )
 
-    # app.include_router(
-    #     interfaces.router,
-    #     prefix='/api/interfaces',
-    #     # tags=["trunk"],
-    #     # dependencies=[Depends(get_token_header)],
-    #     # responses={418: {"description": "I'm a teapot"}},
-    # )
+    app.include_router(
+        playbook.router,
+        prefix='/api/playbook',
+        # tags=["playbook"],
+        # dependencies=[Depends(get_token_header)],
+        # responses={418: {"description": "I'm a teapot"}},
+    )
 
     # test that config params are available and can be loaded
     config.load()

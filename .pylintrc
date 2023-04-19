@@ -1,0 +1,2 @@
+[MAIN]
+extension-pkg-whitelist=pydantic
