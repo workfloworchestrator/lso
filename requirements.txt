@@ -1,14 +1,13 @@
 --extra-index-url https://artifactory.software.geant.org/artifactory/api/pypi/geant-swd-pypi/simple
 
 jsonschema
-requests
-ansible-runner
 fastapi
 pydantic
+ansible-runner
+geant-service-orchestrator==0.1.dev253
+
 uvicorn[standard]
 httpx
-orchestrator-core==1.0.0
-geant-service-orchestrator==0.1.dev235
 
 pytest
 responses
