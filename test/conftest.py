@@ -70,7 +70,10 @@ def good_config_data():
     """Example of correct data used for testing
     """
     return {
-        'collection-name': 'organisation.collection'
+        'collection': {
+            'name': 'organisation.collection',
+            'version': '1.2.3.4.5'
+        }
     }
 
 
