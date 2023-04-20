@@ -5,12 +5,13 @@ import io
 import json
 import os
 
+import jsonschema
 import pytest
 
 from lso import config
 
 
-def test_config_with_file(config_file):
+def test_validate_testenv_config(config_file):
     """Load a configuration from a file.
 
     :param config_file: Configuration file pytest fixture
@@ -20,25 +21,13 @@ def test_config_with_file(config_file):
     assert params
 
 
-def test_config_correct(good_config_data):
-    """Verify that correct configuration is loaded and accepted.
-
-    :param good_config_data: Correct configuration pytest fixture
-    """
-    with io.StringIO(json.dumps(good_config_data)) as file:
+@pytest.mark.parametrize('bad_config', [
+    {'name': 'bad version', 'version': 123},
+    {'name': 'missing version'},
+    {'version': 'missing name'}
+])
+def test_bad_config(bad_config):
+    with io.StringIO(json.dumps(bad_config)) as file:
         file.seek(0)  # rewind file position to the beginning
-        params = config.load_from_file(file)
-        assert params
-
-
-def test_config_incorrect(bad_config_data):
-    """Verify that incorrect configuration raises an exception when trying to
-    load.
-
-    :param bad_config_data: Incorrect configuration pytest fixture
-    """
-    with io.StringIO(json.dumps(bad_config_data)) as file:
-        file.seek(0)
-        with pytest.raises(Exception,
-                           match="'collection-name' is a required property"):
+        with pytest.raises(jsonschema.ValidationError):
             config.load_from_file(file)

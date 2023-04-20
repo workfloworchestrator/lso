@@ -1,9 +1,10 @@
-jsonschema
-requests
-ansible_runner
+--extra-index-url https://artifactory.software.geant.org/artifactory/api/pypi/geant-swd-pypi/simple
 
+jsonschema
 fastapi
 pydantic
+ansible-runner
+
 uvicorn[standard]
 httpx
 

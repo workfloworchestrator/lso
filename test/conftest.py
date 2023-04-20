@@ -1,7 +1,3 @@
-#  pytest-ignore: redefined-outer-name
-"""Pytest for testing valid and invalid configuration files
-"""
-
 import json
 import os
 import subprocess
@@ -20,11 +16,12 @@ TEST_CONFIG = {
 
 
 @pytest.fixture
-def temp_ansible_playbook():
-    """Write a sample Ansible playbook to a temporary file, and return the
+def playbook_filename():
+    """
+    Write a sample Ansible playbook to a temporary file, and return the
     path to the new file.
 
-    :return: Name of the temporary Playbook
+    :return: full filename of the temporary Playbook
     """
     with tempfile.NamedTemporaryFile(prefix='lso_playbook_', suffix='.yml',
                                      mode='w') as temp_playbook:
@@ -41,11 +38,12 @@ def temp_ansible_playbook():
 
 
 @pytest.fixture
-def temp_ansible_env():
-    """Fixture that yields a temporary folder with a venv that has Ansible
-    installed
+def ansible_playbook_bin():
+    """
+    Creates a virtual environment, installs ansible & a galaxy collection,
+    and returns a path to the ansible-playbook executable
 
-    :return: Path to venv with Ansible installed
+    :return: full path to ansible-playbook executable
     """
     with tempfile.TemporaryDirectory(prefix='lso_venv') as venv_dir:
         # Instantiate a new venv
@@ -66,53 +64,36 @@ def temp_ansible_env():
 
 
 @pytest.fixture
-def good_config_data():
-    """Example of correct data used for testing
+def config_data():
+    """
+    valid config data used to start the server
     """
     return {
-        'collection-name': 'organisation.collection'
+        'collection': {
+            'name': 'organisation.collection',
+            'version': '1.2.3.4.5'
+        }
     }
 
 
 @pytest.fixture
-def bad_config_data():
-    """Example of incorrect data used for testing
+def config_file(config_data):
     """
-    return {
-        'bogus-key': 'nothing useful'
-    }
-
-
-@pytest.fixture
-def config_file(good_config_data):
-    """Fixture that yields a filename that contains a valid configuration
+    Fixture that yields a filename that contains a valid configuration
 
     :return: Path to valid configuration file
     """
     with tempfile.NamedTemporaryFile(mode='w') as file:
-        file.write(json.dumps(good_config_data))
+        file.write(json.dumps(config_data))
         file.flush()
-        os.environ['SETTINGS_FILENAME'] = file.name
-        yield file.name
-
-
-@pytest.fixture
-def invalid_config_file(bad_config_data):
-    """Fixture that yields a filename that contains invalid configuration
-
-    :return: Path to invalid configuration file
-    """
-    with tempfile.NamedTemporaryFile(mode='w') as file:
-        file.write(json.dumps(bad_config_data))
-        file.flush()
-        os.environ['SETTINGS_FILENAME'] = file.name
         yield file.name
 
 
 @pytest.fixture
 def client(config_file):
-    """Fixture that yields an instance of LSO
     """
-    os.environ['SETTINGS_FILE'] = config_file
+    returns a client that can be used to test the server
+    """
+    os.environ['SETTINGS_FILENAME'] = config_file
     app = lso.create_app()
     yield TestClient(app)  # wait here until calling context ends

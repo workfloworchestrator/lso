@@ -13,13 +13,23 @@ import jsonschema
 CONFIG_SCHEMA = {
     '$schema': 'http://json-schema.org/draft-07/schema#',
 
-    'definitions': {},
+    'definitions': {
+        'galaxy-collection-details': {
+            'type': 'object',
+            'properties': {
+                'name': {'type': 'string'},
+                'version': {'type': 'string'}
+            },
+            'required': ['name', 'version'],
+            'additionalProperties': False
+        }
+    },
 
     'type': 'object',
     'properties': {
-        'collection-name': {'type': 'string'},
+        'collection': {'$ref': '#/definitions/galaxy-collection-details'},
     },
-    'required': ['collection-name'],
+    'required': ['collection'],
     'additionalProperties': False
 }
 

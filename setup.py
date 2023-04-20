@@ -10,8 +10,8 @@ setup(
     packages=find_packages(),
     install_requires=[
         'jsonschema',
-        'requests',
         'fastapi',
-        'pydantic'
+        'pydantic',
+        'ansible-runner'
     ]
 )
