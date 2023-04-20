@@ -12,7 +12,6 @@ setup(
         'jsonschema',
         'fastapi',
         'pydantic',
-        'ansible-runner',
-        'geant-service-orchestrator==0.1.dev253'
+        'ansible-runner'
     ]
 )

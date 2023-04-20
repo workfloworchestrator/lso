@@ -7,8 +7,8 @@ from pydantic import BaseModel
 
 class PlaybookLaunchResponse(BaseModel):
     status: str  # always 'OK' or 'ERROR'
-    job_id: Optional[str] = None  # only if 'OK'
-    info: Optional[str] = None  # only if 'ERROR'
+    job_id: str = ''
+    info: str = ''
 
 
 def playbook_launch_success(job_id: str) -> PlaybookLaunchResponse:
