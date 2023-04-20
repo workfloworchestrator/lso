@@ -30,4 +30,4 @@ def test_nominal_node_provisioning(client):
         _run.assert_called()
 
     jsonschema.validate(response, PlaybookLaunchResponse.schema())
-    assert response['status'] == 'OK'
+    assert response['status'] == 'ok'

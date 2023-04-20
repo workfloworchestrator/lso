@@ -1,22 +1,27 @@
+import enum
 import threading
-from typing import Optional
+# from typing import Optional
 
 import ansible_runner
 from pydantic import BaseModel
 
 
+class PlaybookJobStatus(enum.StrEnum):
+    OK = enum.auto()
+    ERROR = enum.auto()
+
 class PlaybookLaunchResponse(BaseModel):
-    status: str  # always 'OK' or 'ERROR'
+    status: PlaybookJobStatus
     job_id: str = ''
     info: str = ''
 
 
 def playbook_launch_success(job_id: str) -> PlaybookLaunchResponse:
-    return PlaybookLaunchResponse(status='OK', job_id=job_id)
+    return PlaybookLaunchResponse(status=PlaybookJobStatus.OK, job_id=job_id)
 
 
 def playbook_launch_error(reason: str) -> PlaybookLaunchResponse:
-    return PlaybookLaunchResponse(status='ERROR', info=reason)
+    return PlaybookLaunchResponse(status=PlaybookJobStatus.ERROR, info=reason)
 
 
 def _run_playbook_proc(
@@ -52,4 +57,4 @@ def run_playbook(
         })
     t.start()
 
-    return PlaybookLaunchResponse(status='OK', job_id='1234')  # TODO: handle real id's
+    return playbook_launch_success(job_id='1234')  # TODO: handle real id's
