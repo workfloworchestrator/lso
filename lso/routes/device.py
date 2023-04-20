@@ -33,8 +33,7 @@ class DeviceParams(pydantic.BaseModel):
 
 
 class NodeProvisioningParams(pydantic.BaseModel):
-    # TODO: define and document callback spec
-    callback: pydantic.HttpUrl
+    callback: pydantic.HttpUrl  # TODO: NAT-151
     device: DeviceParams
 
 
