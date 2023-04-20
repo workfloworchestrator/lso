@@ -1,7 +1,3 @@
-#  pytest-ignore: redefined-outer-name
-"""Pytest for testing valid and invalid configuration files
-"""
-
 import json
 import os
 import subprocess
@@ -20,11 +16,12 @@ TEST_CONFIG = {
 
 
 @pytest.fixture
-def temp_ansible_playbook():
-    """Write a sample Ansible playbook to a temporary file, and return the
+def playbook_filename():
+    """
+    Write a sample Ansible playbook to a temporary file, and return the
     path to the new file.
 
-    :return: Name of the temporary Playbook
+    :return: full filename of the temporary Playbook
     """
     with tempfile.NamedTemporaryFile(prefix='lso_playbook_', suffix='.yml',
                                      mode='w') as temp_playbook:
@@ -41,11 +38,12 @@ def temp_ansible_playbook():
 
 
 @pytest.fixture
-def temp_ansible_env():
-    """Fixture that yields a temporary folder with a venv that has Ansible
-    installed
+def ansible_playbook_bin():
+    """
+    Creates a virtual environment, installs ansible & a galaxy collection,
+    and returns a path to the ansible-playbook executable
 
-    :return: Path to venv with Ansible installed
+    :return: full path to ansible-playbook executable
     """
     with tempfile.TemporaryDirectory(prefix='lso_venv') as venv_dir:
         # Instantiate a new venv

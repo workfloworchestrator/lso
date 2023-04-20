@@ -5,10 +5,12 @@ Test creating a temporary venv and running a dummy Ansible playbook.
 import subprocess
 
 
-def test_create_venv_and_run_playbook(temp_ansible_env, temp_ansible_playbook):
+def test_run_playbook(ansible_playbook_bin, playbook_filename):
     """
-    Test method that takes an Ansible venv and a playbook as inputs, both are
-    fixtures provided by pytest.
+    Run an ansible playbook in a temporary venv
+
+    TODO: figure out how to use this venv with ansible_runner
+    TODO: call the ansible_runner.run thread proc
 
     :param temp_ansible_env: Fixture that points to a temporary venv with
     Ansible installed.
@@ -16,8 +18,12 @@ def test_create_venv_and_run_playbook(temp_ansible_env, temp_ansible_playbook):
     playbook in a temporary location.
     """
     playbook_run = subprocess.run(
-        [temp_ansible_env, '-i', 'localhost,', temp_ansible_playbook,
-         '--connection=local'],
+        [
+            ansible_playbook_bin,
+            '-i', 'localhost,',
+            playbook_filename,
+            '--connection=local'
+        ],
         capture_output=True,
         check=False
     )
