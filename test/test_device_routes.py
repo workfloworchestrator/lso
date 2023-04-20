@@ -29,7 +29,7 @@ def test_nominal_node_provisioning(client):
     }
 
     with patch('lso.routes.common.ansible_runner.run') as _run:
-        rv = client.post(f'/api/device', json=params)
+        rv = client.post('/api/device', json=params)
         assert rv.status_code == 200
         response = rv.json()
         # wait a second for the run thread to finish

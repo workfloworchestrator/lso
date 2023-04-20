@@ -11,9 +11,11 @@ import requests
 
 logger = logging.getLogger(__name__)
 
+
 class PlaybookJobStatus(enum.StrEnum):
     OK = enum.auto()
     ERROR = enum.auto()
+
 
 class PlaybookLaunchResponse(BaseModel):
     status: PlaybookJobStatus
