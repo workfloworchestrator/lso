@@ -19,12 +19,12 @@ def playbook_launch_error(reason: str) -> PlaybookLaunchResponse:
     return PlaybookLaunchResponse(status='ERROR', info=reason)
 
 
-# TODO: add callback logic
 def _run_playbook_proc(
         playbook: str,
         extra_vars: dict,
         inventory: str,
-        private_data_dir: str = '/opt/geant-gap-ansible',  # TODO
+        callback: str,
+        private_data_dir: str = '/opt/geant-gap-ansible',  # TODO???
 ):
     r = ansible_runner.run(
         private_data_dir=private_data_dir,
@@ -32,19 +32,23 @@ def _run_playbook_proc(
         inventory=inventory,
         extravars=extra_vars)
 
-    return {"dry_run_output": r.stdout.read().splitlines(), "return_code": r.rc}
+    # TODO: add callback logic
+    output = r.stdout.read().splitlines()
+    return_code = r.rc
 
 
 def run_playbook(
         playbook: str,
         extra_vars: dict,
-        inventory: str) -> PlaybookLaunchResponse:
+        inventory: str,
+        callback: str) -> PlaybookLaunchResponse:
     t = threading.Thread(
         target=_run_playbook_proc,
         kwargs={
             'playbook': playbook,
             'inventory': inventory,
-            'extra_vars': extra_vars
+            'extra_vars': extra_vars,
+            'callback': callback
         })
     t.start()
 

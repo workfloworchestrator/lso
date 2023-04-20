@@ -66,8 +66,9 @@ def temp_ansible_env():
 
 
 @pytest.fixture
-def good_config_data():
-    """Example of correct data used for testing
+def config_data():
+    """
+    valid config data used to start the server
     """
     return {
         'collection': {
@@ -78,44 +79,23 @@ def good_config_data():
 
 
 @pytest.fixture
-def bad_config_data():
-    """Example of incorrect data used for testing
+def config_file(config_data):
     """
-    return {
-        'bogus-key': 'nothing useful'
-    }
-
-
-@pytest.fixture
-def config_file(good_config_data):
-    """Fixture that yields a filename that contains a valid configuration
+    Fixture that yields a filename that contains a valid configuration
 
     :return: Path to valid configuration file
     """
     with tempfile.NamedTemporaryFile(mode='w') as file:
-        file.write(json.dumps(good_config_data))
+        file.write(json.dumps(config_data))
         file.flush()
-        os.environ['SETTINGS_FILENAME'] = file.name
-        yield file.name
-
-
-@pytest.fixture
-def invalid_config_file(bad_config_data):
-    """Fixture that yields a filename that contains invalid configuration
-
-    :return: Path to invalid configuration file
-    """
-    with tempfile.NamedTemporaryFile(mode='w') as file:
-        file.write(json.dumps(bad_config_data))
-        file.flush()
-        os.environ['SETTINGS_FILENAME'] = file.name
         yield file.name
 
 
 @pytest.fixture
 def client(config_file):
-    """Fixture that yields an instance of LSO
     """
-    os.environ['SETTINGS_FILE'] = config_file
+    returns a client that can be used to test the server
+    """
+    os.environ['SETTINGS_FILENAME'] = config_file
     app = lso.create_app()
     yield TestClient(app)  # wait here until calling context ends
