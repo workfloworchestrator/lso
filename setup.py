@@ -13,5 +13,16 @@ setup(
         'fastapi',
         'pydantic',
         'ansible-runner'
-    ]
+    ],
+    license='MIT',
+    license_files=('LICENSE.txt',),
+    classifiers=[
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent',
+        'Development Status :: 2 - Pre-Alpha'
+    ],
+    python_requires='>=3.10'
 )
