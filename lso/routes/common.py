@@ -12,9 +12,10 @@ import requests
 logger = logging.getLogger(__name__)
 
 
-class PlaybookJobStatus(enum.StrEnum):
-    OK = enum.auto()
-    ERROR = enum.auto()
+# enum.StrEnum is only available in python 3.11
+class PlaybookJobStatus(str, enum.Enum):
+    OK = 'ok'
+    ERROR = 'error'
 
 
 class PlaybookLaunchResponse(BaseModel):
