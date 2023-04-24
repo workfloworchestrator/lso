@@ -6,6 +6,8 @@ coverage.xml
 *.egg-info
 docs/build
 docs/source/_static/openapi.json
+docs/vale/styles/*
+!docs/vale/styles/Vocab/
 
 .vscode
 
