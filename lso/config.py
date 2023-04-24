@@ -40,7 +40,7 @@ def load_from_file(file):
 
     Input is validated against this jsonschema:
 
-    .. asjson:: resource_management.config.CONFIG_SCHEMA
+    .. asjson:: lso.config.CONFIG_SCHEMA
 
     :param file: file-like object that produces the config file
     :return: a dict containing the parsed configuration parameters
