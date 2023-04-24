@@ -1,0 +1,3 @@
+lso
+LSO
+[Ss]ubpackages
