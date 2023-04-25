@@ -1,9 +1,9 @@
-Quick Start
+Quick start
 ==================
 
 *This is a quick setup guide for running standalone on your local machine*
 
-Install the Module
+Install the module
 --------------------
 
 *One of these should be what you're looking for:*
@@ -31,7 +31,7 @@ Install the Module
     # for a full dev environment
     pip install -r requirements.txt
 
-Running the App
+Running the app
 -------------------
 
 * Create a settings file, see `config.json.example` for an example.

@@ -1,3 +1,2 @@
-lso
-LSO
+[LSO|lso]
 [Ss]ubpackages

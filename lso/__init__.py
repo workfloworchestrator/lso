@@ -15,7 +15,7 @@ from lso.routes import default, device
 def create_app():
     """
     overrides default settings with those found
-    in the file read from env var SETTINGS_FILENAME
+    in the file read from environment variable `SETTINGS_FILENAME`
 
     :return: a new flask app instance
     """
