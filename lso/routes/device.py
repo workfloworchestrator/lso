@@ -62,6 +62,6 @@ async def provision_node(params: NodeProvisioningParams) \
 
     return common.run_playbook(
         playbook='base_config.yaml',
-        inventory=params.device.fqdn,
+        inventory=f'{params.ansible_host}:{params.ansible_port}',
         extra_vars=extra_vars,
         callback=params.callback)
