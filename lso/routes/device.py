@@ -30,6 +30,8 @@ class DeviceParams(pydantic.BaseModel):
     ias_lt_network: InterfaceNetwork
     site_country_code: str
     site_city: str
+    site_latitude: str
+    site_longitude: str
     snmp_location: str
     device_type: str
     device_vendor: str
