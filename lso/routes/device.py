@@ -29,7 +29,10 @@ class DeviceParams(pydantic.BaseModel):
     si_ipv4_network: ipaddress.IPv4Network
     ias_lt_network: InterfaceNetwork
     site_country_code: str
+    site_city: str
     snmp_location: str
+    device_type: str
+    device_vendor: str
 
 
 class NodeProvisioningParams(pydantic.BaseModel):
@@ -54,13 +57,18 @@ async def provision_node(params: NodeProvisioningParams) \
         'lo_ipv4_address': str(params.device.lo_address.v4),
         'lo_ipv6_address': str(params.device.lo_address.v6),
         'lo_iso_address': params.device.lo_iso_address,
-        'snmp_location': params.device.snmp_location,
         'si_ipv4_network': str(params.device.si_ipv4_network),
-        'lt_ipv4_network': str(params.device.ias_lt_network.v4),
-        'lt_ipv6_network': str(params.device.ias_lt_network.v6),
+        'ias_lt_ipv4_network': str(params.device.ias_lt_network.v4),
+        'ias_lt_ipv6_network': str(params.device.ias_lt_network.v6),
         'site_country_code': params.device.site_country_code,
-        'verb': 'deploy',
-        'dry_run': str(params.dry_run)
+        'snmp_location': params.device.snmp_location,
+        'site_city': params.device.site_city,
+        'site_latitude': params.device.site_latitude,
+        'site_longitude': params.device.site_longitude,
+        'device_type': params.device.device_type,
+        'device_vendor': params.device.device_vendor,
+        'dry_run': str(params.dry_run),
+        'verb': 'deploy'
     }
 
     return common.run_playbook(
