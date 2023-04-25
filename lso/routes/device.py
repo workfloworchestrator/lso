@@ -4,8 +4,8 @@ Routes for handling device/base_config-related requests
 import ipaddress
 from typing import Optional
 
-from fastapi import APIRouter
 import pydantic
+from fastapi import APIRouter
 
 from lso.routes import common
 
@@ -24,17 +24,19 @@ class InterfaceNetwork(pydantic.BaseModel):
 
 class DeviceParams(pydantic.BaseModel):
     fqdn: str  # TODO: add some validation
-    lo_address: Optional[InterfaceAddress] = None
-    lo_iso_address: Optional[str] = None
-    si_ipv4_network: Optional[ipaddress.IPv4Network] = None
-    ias_lt_network: Optional[InterfaceNetwork] = None
-    site_country_code: Optional[str] = None
-    snmp_location: Optional[str] = None
+    lo_address: InterfaceAddress
+    lo_iso_address: str
+    si_ipv4_network: ipaddress.IPv4Network
+    ias_lt_network: InterfaceNetwork
+    site_country_code: str
+    snmp_location: str
 
 
 class NodeProvisioningParams(pydantic.BaseModel):
     callback: pydantic.HttpUrl  # TODO: NAT-151
     device: DeviceParams
+    ansible_host: ipaddress.IPv4Address | ipaddress.IPv6Address
+    ansible_port: int
 
 
 @router.post('/')
@@ -44,7 +46,7 @@ async def provision_node(params: NodeProvisioningParams) \
     Launches a playbook to provision a new node.
     The response will contain either a job id or error information.
 
-    :param device: NodeProvisioningParams
+    :param params: NodeProvisioningParams
     :return: PlaybookLaunchResponse
     """
     extra_vars = {
