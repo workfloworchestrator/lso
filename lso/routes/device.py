@@ -37,6 +37,7 @@ class NodeProvisioningParams(pydantic.BaseModel):
     device: DeviceParams
     ansible_host: ipaddress.IPv4Address | ipaddress.IPv6Address
     ansible_port: int
+    dry_run: Optional[bool] = True
 
 
 @router.post('/')
@@ -58,7 +59,9 @@ async def provision_node(params: NodeProvisioningParams) \
         'lt_ipv4_network': str(params.device.ias_lt_network.v4),
         'lt_ipv6_network': str(params.device.ias_lt_network.v6),
         'site_country_code': params.device.site_country_code,
-        'verb': 'deploy'}
+        'verb': 'deploy',
+        'dry_run': str(params.dry_run)
+    }
 
     return common.run_playbook(
         playbook='base_config.yaml',
