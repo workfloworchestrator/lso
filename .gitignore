@@ -6,6 +6,7 @@ coverage.xml
 *.egg-info
 docs/build
 docs/source/_static/openapi.json
+my-venv-directory
 
 .vscode
 
