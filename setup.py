@@ -12,7 +12,9 @@ setup(
         'jsonschema',
         'fastapi',
         'pydantic',
-        'ansible-runner'
+        'ansible-runner',
+        'requests',
+        'uvicorn'
     ],
     license='MIT',
     license_files=('LICENSE.txt',),
