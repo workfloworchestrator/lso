@@ -9,7 +9,6 @@ RUN apk add --no-cache bash curl vim
 WORKDIR /opt/lso
 COPY . .
 RUN pip install -e .
-RUN pip install -r requirements.txt
 
 # Generate documentation
 RUN ./build-docs.sh
