@@ -39,7 +39,7 @@ Running the app
 
   .. code-block:: bash
 
-     SETTINGS_FILENAME=/absolute/path/to/config.json python -m goat_lso.app
+     SETTINGS_FILENAME=/absolute/path/to/config.json python -m lso.app
 
 Examples
 
@@ -49,7 +49,7 @@ Examples
 
      curl http://localhost:44444/api/version
 
-* List all available playbooks
+* (Not available yet) List all available playbooks
 
   .. code-block:: bash
 
