@@ -54,15 +54,13 @@ def ansible_playbook_bin():
         subprocess.check_call([pip_path, 'install', 'ansible',
                                'ansible_runner'])
 
+        # Set environment variable for a custom Ansible home
+        os.environ['ANSIBLE_HOME'] = venv_dir
+
         # Add Ansible Galaxy collection
         galaxy_path = os.path.join(venv_dir, 'bin', 'ansible-galaxy')
         subprocess.check_call([galaxy_path, 'collection', 'install',
-                               TEST_CONFIG['collection-name'], '-p',
-                               os.path.join(venv_dir, 'collections')])
-
-        # Set the environment variable for the custom collections path
-        os.environ['ANSIBLE_COLLECTIONS_PATH'] = \
-            os.path.join(venv_dir, 'collections')
+                               TEST_CONFIG['collection-name']])
 
         yield os.path.join(venv_dir, 'bin', 'ansible-playbook')
 

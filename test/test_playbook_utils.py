@@ -22,7 +22,8 @@ def test_run_playbook(ansible_playbook_bin, playbook_filename):
             ansible_playbook_bin,
             '-i', 'localhost,',
             playbook_filename,
-            '--connection=local'
+            '--connection=local',
+            '-e', 'ansible_remote_tmp=/tmp'
         ],
         capture_output=True,
         check=False
