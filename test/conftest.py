@@ -57,8 +57,12 @@ def ansible_playbook_bin():
         # Add Ansible Galaxy collection
         galaxy_path = os.path.join(venv_dir, 'bin', 'ansible-galaxy')
         subprocess.check_call([galaxy_path, 'collection', 'install',
-                               TEST_CONFIG['collection-name']])
-        # FIXME: download Ansible collections to a path inside the venv
+                               TEST_CONFIG['collection-name'], '-p',
+                               os.path.join(venv_dir, 'collections')])
+
+        # Set the environment variable for the custom collections path
+        os.environ['ANSIBLE_COLLECTIONS_PATH'] = \
+            os.path.join(venv_dir, 'collections')
 
         yield os.path.join(venv_dir, 'bin', 'ansible-playbook')
 

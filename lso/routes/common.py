@@ -30,8 +30,7 @@ class PlaybookLaunchResponse(BaseModel):
     """
     Running a playbook gives this response.
 
-    :param status:
-    :type status: PlaybookJobStatus
+    :param PlaybookJobStatus status:
     :param job_id:
     :type job_id: str, optional
     :param info:
@@ -77,14 +76,10 @@ def _run_playbook_proc(
     """
     Internal function for running a playbook.
 
-    :param job_id: Identifier of the job that is executed.
-    :type job_id: str
-    :param playbook: Name of a playbook.
-    :type playbook: str
-    :param extra_vars: Extra variables passed to the Ansible playbook
-    :type extra_vars: dict
-    :param callback: Callback URL to POST to when execution is completed.
-    :type callback: str
+    :param str job_id: Identifier of the job that is executed.
+    :param str playbook: Name of a playbook.
+    :param dict extra_vars: Extra variables passed to the Ansible playbook
+    :param str callback: Callback URL to POST to when execution is completed.
     """
 
     ansible_playbook_run = ansible_runner.run(
@@ -111,16 +106,12 @@ def run_playbook(
     """
     Run an Ansible playbook against a specified inventory.
 
-    :param playbook: name of the playbook that is executed.
-    :type playbook: str
-    :param extra_vars: Any extra vars needed for the playbook to run.
-    :type extra_vars: dict
-    :param inventory: The inventory that the playbook is executed against.
-    :type inventory: str
-    :param callback: Callback URL where the playbook should send a status
+    :param str playbook: name of the playbook that is executed.
+    :param dict extra_vars: Any extra vars needed for the playbook to run.
+    :param str inventory: The inventory that the playbook is executed against.
+    :param str callback: Callback URL where the playbook should send a status
         update when execution is completed. This is used for WFO to continue
         with the next step in a workflow.
-    :type callback: str
     :return: Result of playbook launch, this could either be successful or
         unsuccessful.
     :rtype: :class:`PlaybookLaunchResponse`
