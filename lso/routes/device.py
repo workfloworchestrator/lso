@@ -48,28 +48,19 @@ class DeviceParams(pydantic.BaseModel):
     This device can either be a router or a switch, from the different vendors
     that are supported.
 
-    :param fqdn:
-    :type fqdn: str
-    :param lo_address:
-    :type lo_address: :class:`InterfaceAddress`
-    :param lo_iso_address:
-    :type lo_iso_address: str
-    :param si_ipv4_network:
-    :type si_ipv4_network: ipaddress.IPv4Network
-    :param ias_lt_network:
-    :type ias_lt_network: :class:`InterfaceNetwork`
-    :param site_country_code:
-    :type site_country_code: str
-    :param site_city:
-    :type site_city: str
-    :param site_latitude:
-    :type site_latitude: str
-    :type site_longitude:
-    :type site_longitude: str
-    :param device_type:
-    :type device_type: str
-    :param device_vendor:
-    :type device_vendor: str
+    :param str fqdn:
+    :param InterfaceAddress lo_address:
+    :param str lo_iso_address:
+    :param IPv4Network si_ipv4_network:
+    :param InterfaceNetwork ias_lt_network:
+    :param str site_country_code:
+    :param str site_city:
+    :param str site_latitude:
+    :param str site_longitude:
+    :param str device_type:
+    :param str device_vendor:
+    :param str ts_address:
+    :param int ts_port:
     """
     #: FQDN of a device, TODO: add some validation
     fqdn: str
@@ -90,10 +81,17 @@ class DeviceParams(pydantic.BaseModel):
     site_latitude: str
     #: Longitude of the device site.
     site_longitude: str
+    #: SNMP location of a device
+    snmp_location: str
     #: Type of device, either ``router`` or ``switch``.
     device_type: str
     #: The device vendor, for specific configuration.
     device_vendor: str
+    #: Host address that ansible should point to, most likely a terminal
+    #: server.
+    ts_address: str
+    #: Similar to the ``ansible_host``, but for a port number.
+    ts_port: int
 
 
 class NodeProvisioningParams(pydantic.BaseModel):
@@ -116,11 +114,6 @@ class NodeProvisioningParams(pydantic.BaseModel):
     callback: pydantic.HttpUrl  # TODO: NAT-151
     #: Parameters for the new device.
     device: DeviceParams
-    #: Host address that ansible should point to, most likely a terminal
-    #: server.
-    ansible_host: ipaddress.IPv4Address | ipaddress.IPv6Address
-    #: Similar to the ``ansible_host``, but for a port number.
-    ansible_port: int
     #: Whether this playbook execution should be a dry run, or run for real.
     #: defaults to ``True`` for obvious reasons, also making it an optional
     #: parameter.
@@ -147,10 +140,7 @@ async def provision_node(params: NodeProvisioningParams) \
         'ias_lt_ipv4_network': str(params.device.ias_lt_network.v4),
         'ias_lt_ipv6_network': str(params.device.ias_lt_network.v6),
         'site_country_code': params.device.site_country_code,
-        'snmp_location': f'{params.device.site_city},'
-                         f'{params.device.site_country_code}'
-                         f'[{params.device.site_latitude},'
-                         f'{params.device.site_longitude}]',
+        'snmp_location': params.device.snmp_location,
         'site_city': params.device.site_city,
         'site_latitude': params.device.site_latitude,
         'site_longitude': params.device.site_longitude,
@@ -162,6 +152,6 @@ async def provision_node(params: NodeProvisioningParams) \
 
     return common.run_playbook(
         playbook='base_config.yaml',
-        inventory=f'{params.ansible_host}:{params.ansible_port}',
+        inventory=f'{params.device.ts_address}:{params.device.ts_port}',
         extra_vars=extra_vars,
         callback=params.callback)
