@@ -12,9 +12,9 @@ def test_run_playbook(ansible_playbook_bin, playbook_filename):
     TODO: figure out how to use this venv with ansible_runner
     TODO: call the ansible_runner.run thread proc
 
-    :param temp_ansible_env: Fixture that points to a temporary venv with
+    :param ansible_playbook_bin: Fixture that points to a temporary venv with
     Ansible installed.
-    :param temp_ansible_playbook: Fixture that points to a dummy Ansible
+    :param playbook_filename: Fixture that points to a dummy Ansible
     playbook in a temporary location.
     """
     playbook_run = subprocess.run(
