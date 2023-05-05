@@ -95,7 +95,7 @@ def _run_playbook_proc(
         'output': str(ansible_playbook_run.stdout.read()),
         'return_code': int(ansible_playbook_run.rc)
     }
-    requests.post(callback, json=payload, timeout=10000)
+    requests.put(callback, json=payload, timeout=10000)
 
 
 def run_playbook(
