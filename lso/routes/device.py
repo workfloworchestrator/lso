@@ -9,13 +9,13 @@ from fastapi import APIRouter
 
 from lso import playbook
 
-PROVISION_DEVICE_PLAYBOOK = {  # TODO: Update with actual playbook
+PROVISION_DEVICE_PLAYBOOK = [{  # TODO: Update with actual playbook
     'name': 'test-playbook',
     'hosts': 'all',
     'roles': [
         'kvklink.echo.echo_uptime'
     ]
-}
+}]
 
 router = APIRouter()
 

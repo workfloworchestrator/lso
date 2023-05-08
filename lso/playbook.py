@@ -6,6 +6,7 @@ import logging
 import tempfile
 import threading
 import uuid
+from typing import List
 
 import ansible_runner
 import requests
@@ -68,7 +69,7 @@ def playbook_launch_error(reason: str) -> PlaybookLaunchResponse:
 
 def _run_playbook_proc(
         job_id: str,
-        playbook_data: dict,
+        playbook_data: List[dict],
         extra_vars: dict,
         inventory: str,
         callback: str
@@ -79,13 +80,13 @@ def _run_playbook_proc(
     of the Ansible playbook.
 
     :param str job_id: Identifier of the job that is executed.
-    :param dict playbook_data: Ansible playbook data to be executed.
+    :param [dict] playbook_data: Ansible playbook data to be executed.
     :param dict extra_vars: Extra variables passed to the Ansible playbook
     :param str callback: Callback URL to POST to when execution is completed.
     """
     with tempfile.NamedTemporaryFile(prefix='lso_playbook_', suffix='.yml',
                                      mode='w') as temp_playbook:
-        yaml.dump([playbook_data], temp_playbook.file, sort_keys=False)
+        yaml.dump(playbook_data, temp_playbook.file, sort_keys=False)
         temp_playbook.flush()
 
         ansible_playbook_run = ansible_runner.run(
@@ -105,14 +106,14 @@ def _run_playbook_proc(
 
 
 def run_playbook(
-        playbook_data: dict,
+        playbook_data: List[dict],
         extra_vars: dict,
         inventory: str,
         callback: str) -> PlaybookLaunchResponse:
     """
     Run an Ansible playbook against a specified inventory.
 
-    :param dict playbook_data: playbook to be executed, as python dict.
+    :param [dict] playbook_data: playbook to be executed, as python dict.
     :param dict extra_vars: Any extra vars needed for the playbook to run.
     :param str inventory: The inventory that the playbook is executed against.
     :param str callback: Callback URL where the playbook should send a status
