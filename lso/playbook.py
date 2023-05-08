@@ -117,8 +117,8 @@ def run_playbook(
     :param dict extra_vars: Any extra vars needed for the playbook to run.
     :param str inventory: The inventory that the playbook is executed against.
     :param str callback: Callback URL where the playbook should send a status
-        update when execution is completed. This is used for WFO to continue
-        with the next step in a workflow.
+        update when execution is completed. This is used for
+        workflow-orchestrator to continue with the next step in a workflow.
     :return: Result of playbook launch, this could either be successful or
         unsuccessful.
     :rtype: :class:`PlaybookLaunchResponse`

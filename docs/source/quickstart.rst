@@ -35,6 +35,7 @@ Running the app
 -------------------
 
 * Create a settings file, see `config.json.example` for an example.
+* If necessary, set the environment vairable `ANSIBLE_HOME` to a custom path.
 * Run the app like this (`app.py` starts the server on port 44444):
 
   .. code-block:: bash

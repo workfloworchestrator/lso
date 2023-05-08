@@ -34,7 +34,7 @@ def create_app():
     app.include_router(default.router, prefix='/api')
     app.include_router(device.router, prefix='/api/device')
 
-    # test that config params are available and can be loaded
+    # test that config params are loaded and available
     config.load()
 
     logging.info('FastAPI app initialized')
