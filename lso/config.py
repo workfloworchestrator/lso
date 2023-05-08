@@ -28,10 +28,8 @@ CONFIG_SCHEMA = {
     'type': 'object',
     'properties': {
         'collection': {'$ref': '#/definitions/galaxy-collection-details'},
-        'ansible_private_data_dir': {'type': 'string'}
     },
     'required': ['collection'],
-    'optional': ['ansible_private_data_dir'],
     'additionalProperties': False
 }
 
