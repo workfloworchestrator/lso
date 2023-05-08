@@ -10,8 +10,6 @@ import ansible_runner
 import requests
 from pydantic import BaseModel
 
-from lso import config
-
 logger = logging.getLogger(__name__)
 
 
@@ -83,10 +81,10 @@ def _run_playbook_proc(
     """
 
     ansible_playbook_run = ansible_runner.run(
-        private_data_dir=config.load().get('ansible_private_data_dir', None),
         playbook=playbook,
         inventory=inventory,
-        extravars=extra_vars)
+        extravars=extra_vars
+    )
 
     # TODO: add callback logic, this is just a placeholder
     # TODO: NAT-151
