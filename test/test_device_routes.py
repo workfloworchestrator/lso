@@ -1,15 +1,14 @@
 import time
 from unittest.mock import patch
 
-import responses
 import jsonschema
+import responses
 
 from lso.routes.common import PlaybookLaunchResponse
 
 
 @responses.activate
 def test_nominal_node_provisioning(client):
-
     callback_url = 'http://fqdn.xyz.abc:12345/'
     responses.add(
         method=responses.POST,
@@ -17,9 +16,10 @@ def test_nominal_node_provisioning(client):
 
     params = {
         'callback': callback_url,
-        'ansible_host': '127.0.0.1',
-        'ansible_port': 22,
+        'dry_run': True,
         'device': {
+            'ts_address': '127.0.0.1',
+            'ts_port': '1234',
             'fqdn': 'bogus.fqdn.org',
             'lo_address': {'v4': '1.2.3.4', 'v6': '2001:db8::1'},
             'lo_iso_address': '1.2.3.4.5.6',
@@ -31,8 +31,7 @@ def test_nominal_node_provisioning(client):
             'site_latitude': '0.000',
             'site_longitude': '0.000',
             'device_type': 'router',
-            'device_vendor': 'vendor',
-            'dry_run': 'True'
+            'device_vendor': 'vendor'
         }
     }
 
