@@ -70,7 +70,7 @@ class DeviceParams(pydantic.BaseModel):
     :param str ts_address:
     :param int ts_port:
     """
-    #: FQDN of a device, TODO: add some validation
+    #: FQDN of a device, string is not validated yet.
     fqdn: str
     #: Loopback interface address of a device, should be an
     #: :class:`InterfaceAddress` object.

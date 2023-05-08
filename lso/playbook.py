@@ -19,11 +19,11 @@ logger = logging.getLogger(__name__)
 # enum.StrEnum is only available in python 3.11
 class PlaybookJobStatus(str, enum.Enum):
     """
-    Enumerator for status codes of a playbook job that is running.
+    Enumerator for status codes of a playbook job that's running.
     """
     #: All is well.
     OK = 'ok'
-    #: We're not OK.
+    #: An error has occurred.
     ERROR = 'error'
 
 
@@ -50,7 +50,7 @@ def playbook_launch_success(job_id: str) -> PlaybookLaunchResponse:
     Return a :class:`PlaybookLaunchResponse` for the successful start of a
     playbook execution.
 
-    :return PlaybookLaunchResponse: A playbook launch response that is
+    :return PlaybookLaunchResponse: A playbook launch response that's
         successful.
     """
     return PlaybookLaunchResponse(status=PlaybookJobStatus.OK, job_id=job_id)
@@ -61,7 +61,7 @@ def playbook_launch_error(reason: str) -> PlaybookLaunchResponse:
     Return a :class:`PlaybookLaunchResponse` for the erroneous start of a
     playbook execution.
 
-    :return PlaybookLaunchResponse: A playbook launch response that is
+    :return PlaybookLaunchResponse: A playbook launch response that's
         unsuccessful.
     """
     return PlaybookLaunchResponse(status=PlaybookJobStatus.ERROR, info=reason)
@@ -79,7 +79,7 @@ def _run_playbook_proc(
     YAML file in a temporary location. This file is then used for the execution
     of the Ansible playbook.
 
-    :param str job_id: Identifier of the job that is executed.
+    :param str job_id: Identifier of the job that's executed.
     :param [dict] playbook_data: Ansible playbook data to be executed.
     :param dict extra_vars: Extra variables passed to the Ansible playbook
     :param str callback: Callback URL to POST to when execution is completed.
