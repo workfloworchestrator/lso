@@ -95,14 +95,20 @@ def _run_playbook_proc(
             extravars=extra_vars
         )
 
-        # TODO: add callback logic, this is just a placeholder
-        # TODO: NAT-151
-        payload = {
-            'job_id': job_id,
-            'output': str(ansible_playbook_run.stdout.read()),
-            'return_code': int(ansible_playbook_run.rc)
-        }
-        requests.put(callback, json=payload, timeout=10000)
+        payload = [
+            {
+                'pp_run_results': {
+                    'status': ansible_playbook_run.status,
+                    'job_id': job_id,
+                    'output': str(ansible_playbook_run.stdout.read()),
+                    'return_code': int(ansible_playbook_run.rc)
+                },
+                'confirm': 'ACCEPTED'
+            }
+        ]
+
+        request_result = requests.put(callback, json=payload, timeout=10000)
+        assert request_result.status_code == 204
 
 
 def run_playbook(
