@@ -1,7 +1,7 @@
-GOAT Lightweight Service Orchestrator
-=====================================
+Lightweight service orchestrator
+================================
 
-Documentation for LSO: a Lightweight Service Orchestrator
+Documentation for LSO (Lightweight Service Orchestrator).
 
 .. toctree::
    :maxdepth: 1

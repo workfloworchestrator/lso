@@ -7,7 +7,15 @@ from typing import Optional
 import pydantic
 from fastapi import APIRouter
 
-from lso.routes import common
+from lso import playbook
+
+PROVISION_DEVICE_PLAYBOOK = [{  # TODO: Update with actual playbook
+    'name': 'test-playbook',
+    'hosts': 'all',
+    'roles': [
+        'kvklink.echo.echo_uptime'
+    ]
+}]
 
 router = APIRouter()
 
@@ -62,7 +70,7 @@ class DeviceParams(pydantic.BaseModel):
     :param str ts_address:
     :param int ts_port:
     """
-    #: FQDN of a device, TODO: add some validation
+    #: FQDN of a device, string is not validated yet.
     fqdn: str
     #: Loopback interface address of a device, should be an
     #: :class:`InterfaceAddress` object.
@@ -102,10 +110,6 @@ class NodeProvisioningParams(pydantic.BaseModel):
     :type callback: pydantic.HttpUrl
     :param device:
     :type device: :class:`DeviceParams`
-    :param ansible_host:
-    :type ansible_host: ipaddress.IPv4Address or ipaddress.IPv6Address
-    :param ansible_port:
-    :type ansible_port: int
     :param dry_run:
     :type dry_run: bool, optional
     """
@@ -122,7 +126,7 @@ class NodeProvisioningParams(pydantic.BaseModel):
 
 @router.post('/')
 async def provision_node(params: NodeProvisioningParams) \
-        -> common.PlaybookLaunchResponse:
+        -> playbook.PlaybookLaunchResponse:
     """
     Launches a playbook to provision a new node.
     The response will contain either a job id or error information.
@@ -150,8 +154,8 @@ async def provision_node(params: NodeProvisioningParams) \
         'verb': 'deploy'
     }
 
-    return common.run_playbook(
-        playbook='base_config.yaml',
+    return playbook.run_playbook(
+        playbook_data=PROVISION_DEVICE_PLAYBOOK,
         inventory=f'{params.device.ts_address}:{params.device.ts_port}',
         extra_vars=extra_vars,
         callback=params.callback)
