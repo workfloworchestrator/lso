@@ -148,7 +148,7 @@ async def provision_node(params: NodeProvisioningParams) \
         'verb': 'deploy'
     }
 
-    if 'device_type' == 'Router':
+    if params.device.device_type == 'Router':
         playbook_path = \
             os.path.join(config_params.ansible_playbooks_root_dir,
                          'playbooks/ROUTERS_PLAYBOOKS/deploy_base_config.yaml')

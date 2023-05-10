@@ -10,7 +10,7 @@ import json
 import os
 
 import jsonschema
-from pydantic import BaseModel
+from pydantic import BaseModel, DirectoryPath
 
 CONFIG_SCHEMA = {
     '$schema': 'http://json-schema.org/draft-07/schema#',
@@ -30,7 +30,7 @@ CONFIG_SCHEMA = {
     'type': 'object',
     'properties': {
         'collection': {'$ref': '#/definitions/galaxy-collection-details'},
-        'ansible_playbooks_root_dir': 'str'
+        'ansible_playbooks_root_dir': {'type': 'string'}
     },
     'required': ['collection', 'ansible_playbooks_root_dir'],
     'additionalProperties': False
@@ -44,7 +44,7 @@ class AnsibleCollectionDetails(BaseModel):
 
 class Config(BaseModel):
     collection: AnsibleCollectionDetails
-    ansible_playbooks_root_dir: os.PathLike[str]
+    ansible_playbooks_root_dir: DirectoryPath
 
 
 def load_from_file(file) -> Config:
