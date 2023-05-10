@@ -2,22 +2,16 @@
 Routes for handling device/base_config-related requests
 """
 import ipaddress
+import os
 from typing import Optional
 
 import pydantic
 from fastapi import APIRouter
 
-from lso import playbook
-
-PROVISION_DEVICE_PLAYBOOK = [{  # TODO: Update with actual playbook
-    'name': 'test-playbook',
-    'hosts': 'all',
-    'roles': [
-        'kvklink.echo.echo_uptime'
-    ]
-}]
+from lso import playbook, config
 
 router = APIRouter()
+config_params = config.load()
 
 
 class InterfaceAddress(pydantic.BaseModel):
@@ -115,7 +109,7 @@ class NodeProvisioningParams(pydantic.BaseModel):
     """
     #: Callback URL that is reported back to WFO, this will allow for the
     #: workflow to continue once the playbook has been executed.
-    callback: pydantic.HttpUrl  # TODO: NAT-151
+    callback: pydantic.HttpUrl
     #: Parameters for the new device.
     device: DeviceParams
     #: Whether this playbook execution should be a dry run, or run for real.
@@ -154,8 +148,16 @@ async def provision_node(params: NodeProvisioningParams) \
         'verb': 'deploy'
     }
 
+    if 'device_type' == 'Router':
+        playbook_path = \
+            os.path.join(config_params.ansible_playbooks_root_dir,
+                         'playbooks/ROUTERS_PLAYBOOKS/deploy_base_config.yaml')
+    else:
+        raise ValueError(f'Cannot find playbook path for device type '
+                         f'{params.device.device_type}!!')
+
     return playbook.run_playbook(
-        playbook_data=PROVISION_DEVICE_PLAYBOOK,
+        playbook_path=playbook_path,
         inventory=f'{params.device.ts_address}:{params.device.ts_port}',
         extra_vars=extra_vars,
         callback=params.callback)

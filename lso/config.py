@@ -6,9 +6,11 @@ also be loaded from environment variable `SETTINGS_FILENAME`, which is default
 behaviour in :func:`load`.
 """
 
-import os
 import json
+import os
+
 import jsonschema
+from pydantic import BaseModel
 
 CONFIG_SCHEMA = {
     '$schema': 'http://json-schema.org/draft-07/schema#',
@@ -35,7 +37,17 @@ CONFIG_SCHEMA = {
 }
 
 
-def load_from_file(file):
+class AnsibleCollectionDetails(BaseModel):
+    name: str
+    version: str
+
+
+class Config(BaseModel):
+    collection: AnsibleCollectionDetails
+    ansible_playbooks_root_dir: os.PathLike[str]
+
+
+def load_from_file(file) -> Config:
     """
     Loads, validates and returns configuration parameters.
 
@@ -48,10 +60,10 @@ def load_from_file(file):
     """
     config = json.loads(file.read())
     jsonschema.validate(config, CONFIG_SCHEMA)
-    return config
+    return Config(**config)
 
 
-def load():
+def load() -> Config:
     """
     Loads a config file, located at the path specified in the environment
     variable $SETTINGS_FILENAME. Loading and validating the file is performed
