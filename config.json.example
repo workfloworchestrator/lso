@@ -2,5 +2,6 @@
   "collection": {
     "name": "organisation.collection",
     "version": "1.2.3.4.5.6"
-  }
+  },
+  "ansible_playbooks_root_dir": "/some/absolute/path"
 }

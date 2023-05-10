@@ -28,8 +28,9 @@ CONFIG_SCHEMA = {
     'type': 'object',
     'properties': {
         'collection': {'$ref': '#/definitions/galaxy-collection-details'},
+        'ansible_playbooks_root_dir': 'str'
     },
-    'required': ['collection'],
+    'required': ['collection', 'ansible_playbooks_root_dir'],
     'additionalProperties': False
 }
 
