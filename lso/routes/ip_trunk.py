@@ -51,8 +51,10 @@ def provision_ip_trunk(params: IPTrunkProvisioningParams) \
     return run_playbook(
         playbook_path=path.join(config_params.ansible_playbooks_root_dir,
                                 'playbooks/trunk.yaml'),
-        inventory=[params.subscription['something']['a_side'],
-                   params.subscription['somewhere']['b_side']],
+        inventory=[params.subscription['iptrunk']['iptrunk_sideA_node'][
+                       'device_fqdn'],
+                   params.subscription['iptrunk']['iptrunk_sideB_node'][
+                       'device_fqdn']],
         extra_vars=extra_vars,
         callback=params.callback
     )
@@ -73,8 +75,10 @@ def modify_ip_trunk(params: IPTrunkModifyParams) -> PlaybookLaunchResponse:
     return run_playbook(
         playbook_path=path.join(config_params.ansible_playbooks_root_dir,
                                 f'playbooks/update_trunk.yaml'),
-        inventory=[params.subscription['something']['a_side'],
-                   params.subscription['somewhere']['b_side']],
+        inventory=[params.subscription['iptrunk']['iptrunk_sideA_node'][
+                       'device_fqdn'],
+                   params.subscription['iptrunk']['iptrunk_sideB_node'][
+                       'device_fqdn']],
         extra_vars=extra_vars,
         callback=params.callback
     )
@@ -93,8 +97,10 @@ def check_ip_trunk(params: IPTrunkCheckParams) -> PlaybookLaunchResponse:
     return run_playbook(
         playbook_path=path.join(config_params.ansible_playbooks_root_dir,
                                 f'playbooks/{params.check_name}.yaml'),
-        inventory=[params.subscription['something']['a_side'],
-                   params.subscription['somewhere']['b_side']],
+        inventory=[params.subscription['iptrunk']['iptrunk_sideA_node'][
+                       'device_fqdn'],
+                   params.subscription['iptrunk']['iptrunk_sideB_node'][
+                       'device_fqdn']],
         extra_vars=extra_vars,
         callback=params.callback
     )
