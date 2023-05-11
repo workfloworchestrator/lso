@@ -1,47 +1,16 @@
 """
 Routes for handling device/base_config-related requests
 """
-import ipaddress
 import os
 from typing import Optional
 
-from pydantic import BaseModel, HttpUrl
 from fastapi import APIRouter
+from pydantic import BaseModel, HttpUrl
 
 from lso import playbook, config
 
 router = APIRouter()
 config_params = config.load()
-
-
-class InterfaceAddress(BaseModel):
-    """
-    Set of one IPv4 and one IPv6 address.
-
-    :param v4: IPv4 address
-    :type v4: ipaddress.IPv4Address, optional
-    :param v6: IPv6 address
-    :type v6: ipaddress.IPv6Address, optional
-    """
-    #: IPv4 address.
-    v4: Optional[ipaddress.IPv4Address] = None
-    #: IPv6 address.
-    v6: Optional[ipaddress.IPv6Address] = None
-
-
-class InterfaceNetwork(BaseModel):
-    """
-    Set of one IPv4 and one IPv6 subnet, should be given in CIDR notation.
-
-    :param v4: IPv4 subnet
-    :type v4: ipaddress.IPv4Network, optional
-    :param v6: IPv6 subnet
-    :type v6: ipaddress.IPv6Network, optional
-    """
-    #: IPv4 subnet.
-    v4: Optional[ipaddress.IPv4Network] = None
-    #: IPv6 subnet.
-    v6: Optional[ipaddress.IPv6Network] = None
 
 
 class NodeProvisioningParams(BaseModel):

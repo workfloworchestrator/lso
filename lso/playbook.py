@@ -68,7 +68,7 @@ def _run_playbook_proc(
         job_id: str,
         playbook_path: str,
         extra_vars: dict,
-        inventory: str,
+        inventory: [str],
         callback: str
 ):
     """
@@ -76,8 +76,9 @@ def _run_playbook_proc(
 
     :param str job_id: Identifier of the job that's executed.
     :param str playbook_path: Ansible playbook to be executed.
-    :param dict extra_vars: Extra variables passed to the Ansible playbook
+    :param dict extra_vars: Extra variables passed to the Ansible playbook.
     :param str callback: Callback URL to PUT to when execution is completed.
+    :param [str] inventory: Ansible inventory to run the playbook against.
     """
     ansible_playbook_run = ansible_runner.run(
         playbook=playbook_path,
@@ -104,14 +105,15 @@ def _run_playbook_proc(
 def run_playbook(
         playbook_path: str,
         extra_vars: dict,
-        inventory: str,
+        inventory: [str],
         callback: str) -> PlaybookLaunchResponse:
     """
     Run an Ansible playbook against a specified inventory.
 
     :param str playbook_path: playbook to be executed.
     :param dict extra_vars: Any extra vars needed for the playbook to run.
-    :param str inventory: The inventory that the playbook is executed against.
+    :param [str] inventory: The inventory that the playbook is executed
+                            against.
     :param str callback: Callback URL where the playbook should send a status
         update when execution is completed. This is used for
         workflow-orchestrator to continue with the next step in a workflow.
