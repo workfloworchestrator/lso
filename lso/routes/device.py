@@ -19,8 +19,8 @@ class NodeProvisioningParams(BaseModel):
 
     :param callback:
     :type callback: pydantic.HttpUrl
-    :param device:
-    :type device: :class:`DeviceParams`
+    :param subscription:
+    :type subscription: :class:`DeviceParams`
     :param dry_run:
     :type dry_run: bool, optional
     """
@@ -28,7 +28,7 @@ class NodeProvisioningParams(BaseModel):
     #: workflow to continue once the playbook has been executed.
     callback: HttpUrl
     #: Parameters for the new device.
-    device: dict
+    subscription: dict
     #: Whether this playbook execution should be a dry run, or run for real.
     #: defaults to ``True`` for obvious reasons, also making it an optional
     #: parameter.
@@ -48,22 +48,22 @@ async def provision_node(params: NodeProvisioningParams) \
     :rtype: :class:`PlaybookLaunchResponse`
     """
     extra_vars = {
-        'wfo_device_json': params.device,
+        'wfo_device_json': params.subscription,
         'dry_run': str(params.dry_run),
         'verb': 'deploy',
         'commit_comment': 'Deployed with LSO & Ansible B)'
     }
 
-    if params.device['device_type'] == 'router':
+    if params.subscription['device_type'] == 'router':
         playbook_path = \
             os.path.join(config_params.ansible_playbooks_root_dir,
                          'playbooks/ROUTERS_PLAYBOOKS/deploy_base_config.yaml')
     else:
         raise ValueError(f'Cannot find playbook path for device type '
-                         f"{params.device['device_type']}!!")
+                         f"{params.subscription['device_type']}!!")
 
     return playbook.run_playbook(
         playbook_path=playbook_path,
-        inventory=f"{params.device['device']['device_fqdn']}",
+        inventory=f"{params.subscription['device']['device_fqdn']}",
         extra_vars=extra_vars,
         callback=params.callback)
