@@ -14,36 +14,16 @@ from pydantic import BaseModel, DirectoryPath
 
 CONFIG_SCHEMA = {
     '$schema': 'http://json-schema.org/draft-07/schema#',
-
-    'definitions': {
-        'galaxy-collection-details': {
-            'type': 'object',
-            'properties': {
-                'name': {'type': 'string'},
-                'version': {'type': 'string'}
-            },
-            'required': ['name', 'version'],
-            'additionalProperties': False
-        }
-    },
-
     'type': 'object',
     'properties': {
-        'collection': {'$ref': '#/definitions/galaxy-collection-details'},
         'ansible_playbooks_root_dir': {'type': 'string'}
     },
-    'required': ['collection', 'ansible_playbooks_root_dir'],
+    'required': ['ansible_playbooks_root_dir'],
     'additionalProperties': False
 }
 
 
-class AnsibleCollectionDetails(BaseModel):
-    name: str
-    version: str
-
-
 class Config(BaseModel):
-    collection: AnsibleCollectionDetails
     ansible_playbooks_root_dir: DirectoryPath
 
 
