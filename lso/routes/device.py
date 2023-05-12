@@ -65,6 +65,6 @@ async def provision_node(params: NodeProvisioningParams) \
     return playbook.run_playbook(
         playbook_path=playbook_path,
         inventory=f"{params.device['device']['device_fqdn']}",
-        private_data_dir=config_params.ansible_playbooks_root_dir,
+        #private_data_dir=config_params.ansible_playbooks_root_dir,
         extra_vars=extra_vars,
         callback=params.callback)
