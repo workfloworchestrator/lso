@@ -17,7 +17,6 @@ config_params = config.load()
 class IPTrunkParams(BaseModel):
     callback: HttpUrl
     subscription: dict
-    verb: str
 
 
 class IPTrunkProvisioningParams(IPTrunkParams):
@@ -44,13 +43,13 @@ def provision_ip_trunk(params: IPTrunkProvisioningParams) \
     extra_vars = {
         'wfo_device_json': params.subscription,
         'dry_run': str(params.dry_run),
-        'verb': params.verb,
+        'verb': 'deploy',
         'object': params.object
     }
 
     return run_playbook(
         playbook_path=path.join(config_params.ansible_playbooks_root_dir,
-                                'playbooks/trunk.yaml'),
+                                'iptrunks.yaml'),
         inventory=[params.subscription['iptrunk']['iptrunk_sideA_node'][
                        'device_fqdn'],
                    params.subscription['iptrunk']['iptrunk_sideB_node'][
@@ -69,12 +68,12 @@ def modify_ip_trunk(params: IPTrunkModifyParams) -> PlaybookLaunchResponse:
         'wfo_ip_trunk_json': params.subscription,
         'wfo_old_ip_trunk_json': params.old_subscription,
         'dry_run': str(params.dry_run),
-        'verb': params.verb,
+        'verb': params.verb
     }
 
     return run_playbook(
         playbook_path=path.join(config_params.ansible_playbooks_root_dir,
-                                f'playbooks/update_trunk.yaml'),
+                                'iptrunks.yaml'),
         inventory=[params.subscription['iptrunk']['iptrunk_sideA_node'][
                        'device_fqdn'],
                    params.subscription['iptrunk']['iptrunk_sideB_node'][
@@ -91,12 +90,11 @@ def check_ip_trunk(params: IPTrunkCheckParams) -> PlaybookLaunchResponse:
     """
     extra_vars = {
         'wfo_ip_trunk_json': params.subscription,
-        'verb': params.verb
-    }
+    }  # FIXME: needs to be updated when checks become available
 
     return run_playbook(
         playbook_path=path.join(config_params.ansible_playbooks_root_dir,
-                                f'playbooks/{params.check_name}.yaml'),
+                                f'{params.check_name}.yaml'),
         inventory=[params.subscription['iptrunk']['iptrunk_sideA_node'][
                        'device_fqdn'],
                    params.subscription['iptrunk']['iptrunk_sideB_node'][
