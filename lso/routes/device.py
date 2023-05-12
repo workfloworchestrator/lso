@@ -57,13 +57,14 @@ async def provision_node(params: NodeProvisioningParams) \
     if params.subscription['device_type'] == 'router':
         playbook_path = \
             os.path.join(config_params.ansible_playbooks_root_dir,
-                         'playbooks/ROUTERS_PLAYBOOKS/deploy_base_config.yaml')
+                         'base_config.yaml')
     else:
         raise ValueError(f'Cannot find playbook path for device type '
                          f"{params.subscription['device_type']}!!")
 
     return playbook.run_playbook(
         playbook_path=playbook_path,
-        inventory=f"{params.subscription['device']['device_fqdn']}",
+        inventory=f"{params.device['device']['device_fqdn']}",
+        private_data_dir=config_params.ansible_playbooks_root_dir,
         extra_vars=extra_vars,
         callback=params.callback)
