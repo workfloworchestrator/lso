@@ -14,7 +14,7 @@ RUN pip install httpx sphinx sphinx_rtd_theme vale ansible
 # Generate documentation
 RUN ./build-docs.sh
 
-# Generate sample configuration file, and remove any existing one if present
+# Generate sample configuration file, and remove an existing one if present
 RUN rm config.json >/dev/null 2>&1
 RUN ln -s config.json.example config.json
 
