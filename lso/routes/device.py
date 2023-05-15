@@ -51,7 +51,7 @@ async def provision_node(params: NodeProvisioningParams) \
         'wfo_device_json': params.subscription,
         'dry_run': str(params.dry_run),
         'verb': 'deploy',
-        'commit_comment': 'Deployed with LSO & Ansible B)'
+        'commit_comment': 'Base config deployed with WFO/LSO & Ansible'
     }
 
     if params.subscription['device_type'] == 'router':

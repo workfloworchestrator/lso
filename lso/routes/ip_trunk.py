@@ -48,7 +48,8 @@ def provision_ip_trunk(params: IPTrunkProvisioningParams) \
         'wfo_trunk_json': params.subscription,
         'dry_run': str(params.dry_run),
         'verb': 'deploy',
-        'object': params.object
+        'object': params.object,
+        'commit_comment': f"Iprunk {params.subscription['iptrunk']['geant_s_sid']} ({params.subscription['id']}) - deployment of {params.object}"  
     }
 
     return run_playbook(
@@ -93,7 +94,8 @@ def delete_ip_trunk(params: IPTrunkDeleteParams) -> PlaybookLaunchResponse:
         'wfo_trunk_json': params.subscription,
         'dry_run': str(params.dry_run),
         'verb': params.verb,
-        'config_object': "trunk_deprovision"
+        'config_object': "trunk_deprovision",
+        'commit_comment': f"Iprunk {params.subscription['iptrunk']['geant_s_sid']} ({params.subscription['subscription_id']}) - termination"  
     }
 
     return run_playbook(
