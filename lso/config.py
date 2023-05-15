@@ -24,6 +24,10 @@ CONFIG_SCHEMA = {
 
 
 class Config(BaseModel):
+    """
+    Simple Config class that only contains the path to the used Ansible
+    playbooks.
+    """
     ansible_playbooks_root_dir: DirectoryPath
 
 
