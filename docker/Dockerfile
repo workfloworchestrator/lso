@@ -9,6 +9,7 @@ RUN apk add --no-cache bash curl vim
 WORKDIR /opt/lso
 COPY . .
 RUN pip install -e .
+RUN pip install httpx sphinx sphinx_rtd_theme vale
 
 # Generate documentation
 RUN ./build-docs.sh
