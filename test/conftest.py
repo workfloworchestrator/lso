@@ -1,10 +1,8 @@
 import json
 import os
-import subprocess
 import tempfile
 
 import pytest
-import yaml
 from fastapi.testclient import TestClient
 
 import lso
@@ -16,66 +14,12 @@ TEST_CONFIG = {
 
 
 @pytest.fixture
-def playbook_filename():
-    """
-    Write a sample Ansible playbook to a temporary file, and return the
-    path to the new file.
-
-    :return: full filename of the temporary Playbook
-    """
-    with tempfile.NamedTemporaryFile(prefix='lso_playbook_', suffix='.yml',
-                                     mode='w') as temp_playbook:
-        yaml.dump([{
-            'name': 'test-playbook',
-            'hosts': 'all',
-            'roles': [
-                TEST_CONFIG['test-role']
-            ]
-        }], temp_playbook.file, sort_keys=False)
-
-        temp_playbook.flush()
-        yield temp_playbook.name
-
-
-@pytest.fixture
-def ansible_playbook_bin():
-    """
-    Creates a virtual environment, installs ansible & a galaxy collection,
-    and returns a path to the ansible-playbook executable
-
-    :return: full path to ansible-playbook executable
-    """
-    with tempfile.TemporaryDirectory(prefix='lso_venv') as venv_dir:
-        # Instantiate a new venv
-        subprocess.check_call(['python3', '-m', 'venv', venv_dir])
-
-        # Install pip dependencies
-        pip_path = os.path.join(venv_dir, 'bin', 'pip')
-        subprocess.check_call([pip_path, 'install', 'ansible',
-                               'ansible_runner'])
-
-        # Set environment variable for a custom Ansible home
-        os.environ['ANSIBLE_HOME'] = venv_dir
-
-        # Add Ansible Galaxy collection
-        galaxy_path = os.path.join(venv_dir, 'bin', 'ansible-galaxy')
-        subprocess.check_call([galaxy_path, 'collection', 'install',
-                               TEST_CONFIG['collection-name']])
-
-        yield os.path.join(venv_dir, 'bin', 'ansible-playbook')
-
-
-@pytest.fixture
 def config_data():
     """
     valid config data used to start the server
     """
     return {
-        'collection': {
-            'name': 'organisation.collection',
-            'version': '1.2.3.4.5'
-        },
-        'ansible_playbooks_root_dir': '/some/random/path'
+        'ansible_playbooks_root_dir': '/'
     }
 
 
