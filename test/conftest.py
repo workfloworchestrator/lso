@@ -74,7 +74,8 @@ def config_data():
         'collection': {
             'name': 'organisation.collection',
             'version': '1.2.3.4.5'
-        }
+        },
+        'ansible_playbooks_root_dir': '/some/random/path'
     }
 
 

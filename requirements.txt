@@ -12,4 +12,15 @@ pytest
 responses
 sphinx
 sphinx-rtd-theme
-pyyaml
+requests
+docutils
+
+ansible-core==2.14.0
+ansible_merge_vars
+GitPython
+jinja2==3.1.1
+junos-eznc
+jxmlease
+ncclient
+ruamel.yaml
+xmltodict

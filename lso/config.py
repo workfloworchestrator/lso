@@ -6,35 +6,32 @@ also be loaded from environment variable `SETTINGS_FILENAME`, which is default
 behaviour in :func:`load`.
 """
 
-import os
 import json
+import os
+
 import jsonschema
+from pydantic import BaseModel, DirectoryPath
 
 CONFIG_SCHEMA = {
     '$schema': 'http://json-schema.org/draft-07/schema#',
-
-    'definitions': {
-        'galaxy-collection-details': {
-            'type': 'object',
-            'properties': {
-                'name': {'type': 'string'},
-                'version': {'type': 'string'}
-            },
-            'required': ['name', 'version'],
-            'additionalProperties': False
-        }
-    },
-
     'type': 'object',
     'properties': {
-        'collection': {'$ref': '#/definitions/galaxy-collection-details'},
+        'ansible_playbooks_root_dir': {'type': 'string'}
     },
-    'required': ['collection'],
+    'required': ['ansible_playbooks_root_dir'],
     'additionalProperties': False
 }
 
 
-def load_from_file(file):
+class Config(BaseModel):
+    """
+    Simple Config class that only contains the path to the used Ansible
+    playbooks.
+    """
+    ansible_playbooks_root_dir: DirectoryPath
+
+
+def load_from_file(file) -> Config:
     """
     Loads, validates and returns configuration parameters.
 
@@ -47,10 +44,10 @@ def load_from_file(file):
     """
     config = json.loads(file.read())
     jsonschema.validate(config, CONFIG_SCHEMA)
-    return config
+    return Config(**config)
 
 
-def load():
+def load() -> Config:
     """
     Loads a config file, located at the path specified in the environment
     variable $SETTINGS_FILENAME. Loading and validating the file is performed
