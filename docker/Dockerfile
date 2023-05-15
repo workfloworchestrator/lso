@@ -3,17 +3,19 @@ FROM python:alpine3.17
 LABEL version="1.0" 
 LABEL maintainer="Geant LSO Team <@geant.org>"
 
-RUN apk add --no-cache bash curl vim
+RUN apk add --no-cache bash curl vim gcc libc-dev libffi-dev
 # RUN pip install --pre --extra-index-url https://artifactory.software.geant.org/artifactory/api/pypi/geant-swd-pypi/simple goat-lso
 
 WORKDIR /opt/lso
 COPY . .
 RUN pip install -e .
-RUN pip install httpx sphinx sphinx_rtd_theme vale
+RUN pip install httpx sphinx sphinx_rtd_theme vale ansible
 
 # Generate documentation
 RUN ./build-docs.sh
-# Generate sample configuration file
+
+# Generate sample configuration file, and remove any existing one if present
+RUN rm config.json >/dev/null 2>&1
 RUN ln -s config.json.example config.json
 
 # ENTRYPOINT ["sleep", "inf"]
