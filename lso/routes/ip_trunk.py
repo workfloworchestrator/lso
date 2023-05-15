@@ -33,6 +33,10 @@ class IPTrunkCheckParams(IPTrunkParams):
     check_name: str
 
 
+class IPTrunkDeleteParams(IPTrunkParams):
+    dry_run: Optional[bool] = True
+    verb: str
+
 @router.post('/')
 def provision_ip_trunk(params: IPTrunkProvisioningParams) \
         -> PlaybookLaunchResponse:
@@ -41,7 +45,7 @@ def provision_ip_trunk(params: IPTrunkProvisioningParams) \
     The response will contain either a job ID, or error information.
     """
     extra_vars = {
-        'wfo_device_json': params.subscription,
+        'wfo_trunk_json': params.subscription,
         'dry_run': str(params.dry_run),
         'verb': 'deploy',
         'object': params.object
@@ -50,10 +54,8 @@ def provision_ip_trunk(params: IPTrunkProvisioningParams) \
     return run_playbook(
         playbook_path=path.join(config_params.ansible_playbooks_root_dir,
                                 'iptrunks.yaml'),
-        inventory=[params.subscription['iptrunk']['iptrunk_sideA_node'][
-                       'device_fqdn'],
-                   params.subscription['iptrunk']['iptrunk_sideB_node'][
-                       'device_fqdn']],
+        inventory=str(params.subscription['iptrunk']['iptrunk_sideA_node']['device_fqdn']+"\n"+
+                   params.subscription['iptrunk']['iptrunk_sideB_node']['device_fqdn']+"\n"),
         extra_vars=extra_vars,
         callback=params.callback
     )
@@ -82,6 +84,26 @@ def modify_ip_trunk(params: IPTrunkModifyParams) -> PlaybookLaunchResponse:
         callback=params.callback
     )
 
+@router.delete('/')
+def delete_ip_trunk(params: IPTrunkDeleteParams) -> PlaybookLaunchResponse:
+    """
+    Launch a playbook that deletes an existing IP trunk service.
+    """
+    extra_vars = {
+        'wfo_trunk_json': params.subscription,
+        'dry_run': str(params.dry_run),
+        'verb': params.verb,
+        'config_object': "trunk_deprovision"
+    }
+
+    return run_playbook(
+        playbook_path=path.join(config_params.ansible_playbooks_root_dir,
+                                'iptrunks.yaml'),
+        inventory=str(params.subscription['iptrunk']['iptrunk_sideA_node']['device_fqdn']+"\n"+
+                   params.subscription['iptrunk']['iptrunk_sideB_node']['device_fqdn']+"\n"),
+        extra_vars=extra_vars,
+        callback=params.callback
+    )
 
 @router.post('/perform_check')
 def check_ip_trunk(params: IPTrunkCheckParams) -> PlaybookLaunchResponse:
@@ -95,10 +117,8 @@ def check_ip_trunk(params: IPTrunkCheckParams) -> PlaybookLaunchResponse:
     return run_playbook(
         playbook_path=path.join(config_params.ansible_playbooks_root_dir,
                                 f'{params.check_name}.yaml'),
-        inventory=[params.subscription['iptrunk']['iptrunk_sideA_node'][
+        inventory=params.subscription['iptrunk']['iptrunk_sideA_node'][
                        'device_fqdn'],
-                   params.subscription['iptrunk']['iptrunk_sideB_node'][
-                       'device_fqdn']],
         extra_vars=extra_vars,
         callback=params.callback
     )
