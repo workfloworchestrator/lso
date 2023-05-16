@@ -58,7 +58,7 @@ def provision_ip_trunk(params: IPTrunkProvisioningParams) \
         'object': params.object,
         'commit_comment': f'IPtrunk '
                           f"{params.subscription['iptrunk']['geant_s_sid']} "
-                          f"({params.subscription['id']}) - "
+                          f"({params.subscription['subscription_id']}) - "
                           f'deployment of {params.object}'
     }
 
