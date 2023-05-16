@@ -14,7 +14,8 @@ setup(
         'pydantic',
         'ansible-runner',
         'requests',
-        'uvicorn'
+        'uvicorn',
+        'ncclient'
     ],
     license='MIT',
     license_files=('LICENSE.txt',),
