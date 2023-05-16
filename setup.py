@@ -15,7 +15,8 @@ setup(
         'ansible-runner',
         'requests',
         'uvicorn',
-        'ncclient'
+        'ncclient',
+        'xmltodict'
     ],
     license='MIT',
     license_files=('LICENSE.txt',),
