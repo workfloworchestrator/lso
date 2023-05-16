@@ -12,7 +12,7 @@ setup(
         'jsonschema',
         'fastapi',
         'pydantic',
-        'ansible-runner',
+        'ansible',
         'requests',
         'uvicorn',
         'ncclient',
