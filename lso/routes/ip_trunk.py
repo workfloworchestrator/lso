@@ -55,7 +55,7 @@ def provision_ip_trunk(params: IPTrunkProvisioningParams) \
         'wfo_trunk_json': params.subscription,
         'dry_run': str(params.dry_run),
         'verb': 'deploy',
-        'object': params.object,
+        'config_object': params.object,
         'commit_comment': f'IPtrunk '
                           f"{params.subscription['iptrunk']['geant_s_sid']} "
                           f"({params.subscription['subscription_id']}) - "
