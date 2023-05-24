@@ -30,7 +30,7 @@ class IPTrunkModifyParams(IPTrunkParams):
     """Additional parameters for modifying an IPtrunk."""
     dry_run: Optional[bool] = True
     old_subscription: dict
-    verb: str
+    object: str
 
 
 class IPTrunkCheckParams(IPTrunkParams):
@@ -41,7 +41,6 @@ class IPTrunkCheckParams(IPTrunkParams):
 class IPTrunkDeleteParams(IPTrunkParams):
     """Additional parameters for deleting an IPtrunk."""
     dry_run: Optional[bool] = True
-    verb: str
 
 
 @router.post('/')
@@ -80,19 +79,24 @@ def modify_ip_trunk(params: IPTrunkModifyParams) -> PlaybookLaunchResponse:
     Launch a playbook that modifies an existing IP trunk service.
     """
     extra_vars = {
-        'wfo_ip_trunk_json': params.subscription,
-        'wfo_old_ip_trunk_json': params.old_subscription,
+        'wfo_trunk_json': params.subscription,
+        'old_wfo_trunk_json': params.old_subscription,
         'dry_run': str(params.dry_run),
-        'verb': params.verb
+        'verb': 'modify',
+        'config_object': params.object,
+        'commit_comment': f'IPtrunk '
+                          f"{params.subscription['iptrunk']['geant_s_sid']} "
+                          f"({params.subscription['subscription_id']}) - "
+                          f'modification of {params.object}'
     }
 
     return run_playbook(
         playbook_path=path.join(config_params.ansible_playbooks_root_dir,
                                 'iptrunks.yaml'),
-        inventory=[params.subscription['iptrunk']['iptrunk_sideA_node'][
-                       'device_fqdn'],
-                   params.subscription['iptrunk']['iptrunk_sideB_node'][
-                       'device_fqdn']],
+        inventory=str(params.subscription['iptrunk']['iptrunk_sideA_node'][
+                          'device_fqdn'] + "\n" +
+                      params.subscription['iptrunk']['iptrunk_sideB_node'][
+                          'device_fqdn'] + "\n"),
         extra_vars=extra_vars,
         callback=params.callback
     )
@@ -106,7 +110,7 @@ def delete_ip_trunk(params: IPTrunkDeleteParams) -> PlaybookLaunchResponse:
     extra_vars = {
         'wfo_trunk_json': params.subscription,
         'dry_run': str(params.dry_run),
-        'verb': params.verb,
+        'verb': 'terminate',
         'config_object': "trunk_deprovision",
         'commit_comment': f'IPtrunk '
                           f"{params.subscription['iptrunk']['geant_s_sid']} "
