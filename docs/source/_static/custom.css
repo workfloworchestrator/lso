@@ -1,0 +1,13 @@
+.wy-menu > p > span {
+    color: rgb(237 21 86);
+}
+
+section > dl > .sig-object {
+    background: #e5e8e8 !important;
+    color: rgb(237 21 86) !important;
+    border-top: 3px solid rgb(167 179 180) !important;
+}
+
+.code.literal {
+    color: rgb(226 67 1) !important;
+}
