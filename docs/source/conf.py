@@ -48,7 +48,7 @@ def setup(app):
 
 # -- Project information -----------------------------------------------------
 
-project = 'Lightweight Ansible Runner Provisioner'
+project = 'Lightweight Service Orchestrator'
 copyright = '2023, GÉANT'
 author = 'GÉANT Orchestration & Automation Team'
 

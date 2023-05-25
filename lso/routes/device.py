@@ -45,7 +45,7 @@ async def provision_node(params: NodeProvisioningParams) \
     :param params: Parameters for provisioning a new node
     :type params: :class:`NodeProvisioningParams`
     :return: Response from the Ansible runner, including a run ID.
-    :rtype: :class:`PlaybookLaunchResponse`
+    :rtype: :class:`lso.playbook.PlaybookLaunchResponse`
     """
     extra_vars = {
         'wfo_device_json': params.subscription,

@@ -16,30 +16,47 @@ config_params = config.load()
 
 class IPTrunkParams(BaseModel):
     """Default parameters for an IPtrunk deployment."""
+    #: The address where LSO should call back to upon completion.
     callback: HttpUrl
+    #: A dictionary representation of the IP trunk
+    #: subscription that is to be provisioned.
     subscription: dict
 
 
 class IPTrunkProvisioningParams(IPTrunkParams):
     """Additional parameters for provisioning an IPtrunk."""
+    #: Whether this playbook execution should be a dry run, or run for real.
+    #: defaults to ``True`` for obvious reasons, also making it an optional
+    #: parameter.
     dry_run: Optional[bool] = True
+    #: The type of object that is changed.
     object: str
 
 
 class IPTrunkModifyParams(IPTrunkParams):
     """Additional parameters for modifying an IPtrunk."""
+    #: Whether this playbook execution should be a dry run, or run for real.
+    #: defaults to ``True`` for obvious reasons, also making it an optional
+    #: parameter.
     dry_run: Optional[bool] = True
+    #: The old subscription object, represented as a dictionary. This allows
+    #: for calculating the difference in subscriptions.
     old_subscription: dict
+    #: The type of object that is changed.
     object: str
 
 
 class IPTrunkCheckParams(IPTrunkParams):
     """Additional parameters for checking an IPtrunk."""
+    #: The name of the check that is to be performed.
     check_name: str
 
 
 class IPTrunkDeleteParams(IPTrunkParams):
     """Additional parameters for deleting an IPtrunk."""
+    #: Whether this playbook execution should be a dry run, or run for real.
+    #: defaults to ``True`` for obvious reasons, also making it an optional
+    #: parameter.
     dry_run: Optional[bool] = True
 
 
@@ -49,6 +66,12 @@ def provision_ip_trunk(params: IPTrunkProvisioningParams) \
     """
     Launch a playbook to provision a new IP trunk service.
     The response will contain either a job ID, or error information.
+
+    :param params: The parameters that define the new subscription object that
+        is to be deployed.
+    :type params: :class:`IPTrunkProvisioningParams`
+    :return: Response from the Ansible runner, including a run ID.
+    :rtype: :class:`lso.playbook.PlaybookLaunchResponse`
     """
     extra_vars = {
         'wfo_trunk_json': params.subscription,
@@ -77,6 +100,11 @@ def provision_ip_trunk(params: IPTrunkProvisioningParams) \
 def modify_ip_trunk(params: IPTrunkModifyParams) -> PlaybookLaunchResponse:
     """
     Launch a playbook that modifies an existing IP trunk service.
+
+    :param params: The parameters that define the change in configuration.
+    :type params: :class:`IPTrunkModifyParams`
+    :return: Response from the Ansible runner, including a run ID.
+    :rtype: :class:`lso.playbook.PlaybookLaunchResponse`
     """
     extra_vars = {
         'wfo_trunk_json': params.subscription,
@@ -106,6 +134,12 @@ def modify_ip_trunk(params: IPTrunkModifyParams) -> PlaybookLaunchResponse:
 def delete_ip_trunk(params: IPTrunkDeleteParams) -> PlaybookLaunchResponse:
     """
     Launch a playbook that deletes an existing IP trunk service.
+
+    :param params: Parameters that define the subscription that should get
+        terminated.
+    :type params: :class:`IPTrunkDeleteParams`
+    :return: Response from the Ansible runner, including a run ID.
+    :rtype: :class:`lso.playbook.PlaybookLaunchResponse`
     """
     extra_vars = {
         'wfo_trunk_json': params.subscription,
@@ -134,6 +168,12 @@ def delete_ip_trunk(params: IPTrunkDeleteParams) -> PlaybookLaunchResponse:
 def check_ip_trunk(params: IPTrunkCheckParams) -> PlaybookLaunchResponse:
     """
     Launch a playbook that performs a check on an IP trunk service instance.
+
+    :param params: Parameters that define the check that is going to be
+        executed, including on which relevant subscription.
+    :type params: :class:`IPTrunkCheckParams`
+    :return: Response from the Ansible runner, including a run ID.
+    :rtype: :class:`lso.playbook.PlaybookLaunchResponse`
     """
     extra_vars = {
         'wfo_ip_trunk_json': params.subscription,
