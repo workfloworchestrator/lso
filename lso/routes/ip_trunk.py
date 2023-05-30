@@ -42,8 +42,6 @@ class IPTrunkModifyParams(IPTrunkParams):
     #: The old subscription object, represented as a dictionary. This allows
     #: for calculating the difference in subscriptions.
     old_subscription: dict
-    #: The type of object that is changed.
-    object: str
 
 
 class IPTrunkCheckParams(IPTrunkParams):
@@ -111,11 +109,9 @@ def modify_ip_trunk(params: IPTrunkModifyParams) -> PlaybookLaunchResponse:
         'old_wfo_trunk_json': params.old_subscription,
         'dry_run': str(params.dry_run),
         'verb': 'modify',
-        'config_object': params.object,
         'commit_comment': f'IPtrunk '
                           f"{params.subscription['iptrunk']['geant_s_sid']} "
-                          f"({params.subscription['subscription_id']}) - "
-                          f'modification of {params.object}'
+                          f"({params.subscription['subscription_id']})"
     }
 
     return run_playbook(
