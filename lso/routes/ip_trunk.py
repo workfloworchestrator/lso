@@ -173,7 +173,9 @@ def check_ip_trunk(params: IPTrunkCheckParams) -> PlaybookLaunchResponse:
     """
     extra_vars = {
         'wfo_ip_trunk_json': params.subscription,
-    }  # FIXME: needs to be updated when checks become available
+    }
+    # FIXME: needs to be updated when checks become available, this includes
+    # writing tests.
 
     return run_playbook(
         playbook_path=path.join(config_params.ansible_playbooks_root_dir,
