@@ -8,7 +8,7 @@ from lso.playbook import PlaybookLaunchResponse
 
 
 @responses.activate
-def test_nominal_node_provisioning(client):
+def test_router_provisioning(client):
     callback_url = 'http://fqdn.xyz.abc:12345/'
     responses.add(
         method=responses.POST,
