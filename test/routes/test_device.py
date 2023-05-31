@@ -5,17 +5,15 @@ import jsonschema
 import responses
 
 from lso.playbook import PlaybookLaunchResponse
+from test.routes import test_ansible_runner_run, TEST_CALLBACK_URL
 
 
 @responses.activate
 def test_router_provisioning(client):
-    callback_url = 'http://fqdn.xyz.abc:12345/'
-    responses.add(
-        method=responses.POST,
-        url=callback_url)
+    responses.put(url=TEST_CALLBACK_URL, status=204)
 
     params = {
-        'callback': callback_url,
+        'callback': TEST_CALLBACK_URL,
         'dry_run': True,
         'verb': 'deploy',
         'subscription': {
@@ -38,15 +36,15 @@ def test_router_provisioning(client):
         }
     }
 
-    with patch('lso.playbook.ansible_runner.run') as _run:
+    with patch('lso.playbook.ansible_runner.run',
+               new=test_ansible_runner_run) as _run:
         rv = client.post('/api/device/', json=params)
         assert rv.status_code == 200
         response = rv.json()
-        # wait a second for the run thread to finish
-        time.sleep(1)
-        _run.assert_called()
+        # wait two seconds for the run thread to finish
+        time.sleep(2)
 
     jsonschema.validate(response, PlaybookLaunchResponse.schema())
-    # responses.assert_call_count(callback_url, 1)
+    responses.assert_call_count(TEST_CALLBACK_URL, 1)
 
     assert response['status'] == 'ok'
