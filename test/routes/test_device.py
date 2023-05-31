@@ -17,6 +17,7 @@ def test_router_provisioning(client):
     params = {
         'callback': callback_url,
         'dry_run': True,
+        'verb': 'deploy',
         'subscription': {
             'device': {
                 'ts_address': '127.0.0.1',
