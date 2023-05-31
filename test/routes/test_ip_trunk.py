@@ -108,6 +108,7 @@ def test_ip_trunk_provisioning(client):
         'callback': callback_url,
         'dry_run': True,
         'object': 'trunk_interface',
+        'verb': 'deploy',
         'subscription': _SUBSCRIPTION_OBJECT
     }
 
@@ -135,6 +136,7 @@ def test_ip_trunk_modification(client):
     params = {
         'callback': callback_url,
         'dry_run': True,
+        'verb': 'modify',
         'subscription': _SUBSCRIPTION_OBJECT,
         'old_subscription': _SUBSCRIPTION_OBJECT
     }
@@ -163,6 +165,7 @@ def test_ip_trunk_modification(client):
     params = {
         'callback': callback_url,
         'dry_run': True,
+        'verb': 'terminate',
         'subscription': _SUBSCRIPTION_OBJECT
     }
 
