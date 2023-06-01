@@ -115,6 +115,8 @@ def test_ip_trunk_provisioning(client):
         rv = client.post('/api/ip_trunk/', json=params)
         assert rv.status_code == 200
         response = rv.json()
+        # wait a second for the run thread to finish
+        time.sleep(1)
 
     jsonschema.validate(response, PlaybookLaunchResponse.schema())
     responses.assert_call_count(TEST_CALLBACK_URL, 1)
