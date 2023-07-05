@@ -7,7 +7,7 @@ from typing import Optional
 from fastapi import APIRouter
 from pydantic import BaseModel, HttpUrl
 
-from lso import playbook, config
+from lso import config, playbook
 
 router = APIRouter()
 config_params = config.load()

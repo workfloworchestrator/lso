@@ -5,7 +5,6 @@ import json
 import logging.config
 import os
 
-
 LOGGING_DEFAULT_CONFIG = {
     'version': 1,
     'disable_existing_loggers': False,

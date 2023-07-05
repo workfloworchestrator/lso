@@ -5,7 +5,7 @@ import jsonschema
 import responses
 
 from lso.playbook import PlaybookLaunchResponse
-from test.routes import test_ansible_runner_run, TEST_CALLBACK_URL
+from test.routes import TEST_CALLBACK_URL, test_ansible_runner_run
 
 
 @responses.activate

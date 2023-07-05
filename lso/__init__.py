@@ -6,8 +6,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from lso import config
-from lso import environment
+from lso import config, environment
 from lso.routes import default, device, ip_trunk
 
 

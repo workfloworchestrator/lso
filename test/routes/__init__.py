@@ -1,6 +1,5 @@
 from typing import TextIO
 
-
 TEST_CALLBACK_URL = 'https://fqdn.abc.xyz/api/resume'
 
 
