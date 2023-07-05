@@ -102,7 +102,7 @@ def test_ip_trunk_provisioning(client):
         "subscription": _SUBSCRIPTION_OBJECT,
     }
 
-    with patch("lso.playbook.ansible_runner.run", new=test_ansible_runner_run) as _run:
+    with patch("lso.playbook.ansible_runner.run", new=test_ansible_runner_run) as _:
         rv = client.post("/api/ip_trunk/", json=params)
         assert rv.status_code == 200
         response = rv.json()
@@ -127,7 +127,7 @@ def test_ip_trunk_modification(client):
         "old_subscription": _SUBSCRIPTION_OBJECT,
     }
 
-    with patch("lso.playbook.ansible_runner.run", new=test_ansible_runner_run) as _run:
+    with patch("lso.playbook.ansible_runner.run", new=test_ansible_runner_run) as _:
         rv = client.put("/api/ip_trunk/", json=params)
         assert rv.status_code == 200
         response = rv.json()
@@ -146,7 +146,7 @@ def test_ip_trunk_deletion(client):
 
     params = {"callback": TEST_CALLBACK_URL, "dry_run": True, "verb": "terminate", "subscription": _SUBSCRIPTION_OBJECT}
 
-    with patch("lso.playbook.ansible_runner.run", new=test_ansible_runner_run) as _run:
+    with patch("lso.playbook.ansible_runner.run", new=test_ansible_runner_run) as _:
         rv = client.request(url="/api/ip_trunk/", method=responses.DELETE, json=params)
         assert rv.status_code == 200
         response = rv.json()

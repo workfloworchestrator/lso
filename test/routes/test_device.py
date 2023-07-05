@@ -36,7 +36,7 @@ def test_router_provisioning(client):
         },
     }
 
-    with patch("lso.playbook.ansible_runner.run", new=test_ansible_runner_run) as _run:
+    with patch("lso.playbook.ansible_runner.run", new=test_ansible_runner_run) as _:
         rv = client.post("/api/device/", json=params)
         assert rv.status_code == 200
         response = rv.json()
