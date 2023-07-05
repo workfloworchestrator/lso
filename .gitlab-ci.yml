@@ -1,0 +1,41 @@
+---
+stages:
+  - tox
+  - documentation
+
+include:
+  - docs/.gitlab-ci.yml
+
+####################################  tox   -   Testing and linting
+run-tox-pipeline:
+  stage: tox
+  tags:
+    - docker-executor
+  image: python:3.10
+
+  # Change pip's cache directory to be inside the project directory since we can
+  # only cache local items.
+  variables:
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+  # Pip's cache doesn't store the python packages
+  # https://pip.pypa.io/en/stable/topics/caching/
+  #
+  # If you want to also cache the installed packages, you have to install
+  # them in a virtualenv and cache it as well.
+  cache:
+    paths:
+      - .cache/pip
+
+  before_script:
+    - pip install virtualenv
+    - virtualenv venv
+    - . venv/bin/activate
+
+  script:
+    - pip install tox
+    - tox
+
+  artifacts:
+    paths:
+      - htmlcov

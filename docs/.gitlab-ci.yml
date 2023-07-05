@@ -1,0 +1,38 @@
+---
+##### Sphinx  - Generate documentation
+build-documentation:
+  stage: documentation
+  tags:
+    - docker-executor
+  image: sphinxdoc/sphinx:latest
+
+  before_script:
+    - pip install sphinx_rtd_theme
+  script:
+    - sphinx-apidoc lso lso/app.py -o docs/source -d 2 -f
+    - sphinx-build -b html docs/source docs/build
+
+  artifacts:
+    paths:
+      - $CI_PROJECT_DIR/docs/build/html
+
+##### Vale    - Documentation linter
+lint-documentation:
+  stage: documentation
+  image:
+    name: jdkato/vale:latest
+    entrypoint: [""]
+
+  tags:
+    - docker-executor
+  needs:
+    - job: build-documentation # Only run when documentation has been built
+      artifacts: true
+
+  before_script:
+    - cd $CI_PROJECT_DIR/docs/vale
+    - vale sync
+
+  script:
+    - vale sync
+    - vale $CI_PROJECT_DIR/docs/source/*.rst $CI_PROJECT_DIR/**/*.py
