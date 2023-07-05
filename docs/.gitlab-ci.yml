@@ -17,7 +17,7 @@ build-documentation:
 
   artifacts:
     paths:
-      - $CI_PROJECT_DIR/docs/build/html
+      - $CI_PROJECT_DIR/docs/build
 
 ##### Vale    - Documentation linter
 lint-documentation:
