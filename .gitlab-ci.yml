@@ -31,11 +31,12 @@ run-tox-pipeline:
     - pip install virtualenv
     - virtualenv venv
     - . venv/bin/activate
+    - pip install tox
 
   script:
-    - pip install tox
     - tox
 
   artifacts:
     paths:
       - htmlcov
+      - docs/source/_static/openapi.json
