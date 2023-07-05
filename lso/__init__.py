@@ -10,7 +10,7 @@ from lso import config, environment
 from lso.routes import default, device, ip_trunk
 
 
-def create_app():
+def create_app() -> FastAPI:
     """
     overrides default settings with those found
     in the file read from environment variable `SETTINGS_FILENAME`

@@ -20,8 +20,8 @@ class Version(BaseModel):
     `goat-lso` module.
     """
 
-    api: VERSION_STRING
-    module: VERSION_STRING
+    api: VERSION_STRING  # type: ignore
+    module: VERSION_STRING  # type: ignore
 
 
 @router.get("/version")

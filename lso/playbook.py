@@ -66,7 +66,7 @@ def playbook_launch_error(reason: str) -> PlaybookLaunchResponse:
     return PlaybookLaunchResponse(status=PlaybookJobStatus.ERROR, info=reason)
 
 
-def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, inventory: [str], callback: str):
+def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, inventory: list[str], callback: str) -> None:
     """
     Internal function for running a playbook.
 
@@ -94,7 +94,7 @@ def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, invent
     assert request_result.status_code == 204
 
 
-def run_playbook(playbook_path: str, extra_vars: dict, inventory: [str], callback: str) -> PlaybookLaunchResponse:
+def run_playbook(playbook_path: str, extra_vars: dict, inventory: str, callback: str) -> PlaybookLaunchResponse:
     """
     Run an Ansible playbook against a specified inventory.
 

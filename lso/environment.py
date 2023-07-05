@@ -22,7 +22,7 @@ LOGGING_DEFAULT_CONFIG = {
 }
 
 
-def setup_logging():
+def setup_logging() -> None:
     """
     set up logging using the configured filename
 

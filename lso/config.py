@@ -8,6 +8,7 @@ behaviour in :func:`load`.
 
 import json
 import os
+from typing import TextIO
 
 import jsonschema
 from pydantic import BaseModel, DirectoryPath
@@ -30,7 +31,7 @@ class Config(BaseModel):
     ansible_playbooks_root_dir: DirectoryPath
 
 
-def load_from_file(file) -> Config:
+def load_from_file(file: TextIO) -> Config:
     """
     Loads, validates and returns configuration parameters.
 

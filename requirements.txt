@@ -19,6 +19,8 @@ black
 flake8
 mypy
 ruff
+types-setuptools
+types-requests
 
 ansible-core==2.14.0
 ansible_merge_vars
