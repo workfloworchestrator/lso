@@ -7,8 +7,8 @@ build-documentation:
   image: sphinxdoc/sphinx:latest
 
   before_script:
-    - pip install sphinx_rtd_theme
-    - python $CI_PROJECT_DIR/docs/dump-openapi-spec.py
+    - pip install sphinx_rtd_theme fastapi
+    - python docs/dump-openapi-spec.py
   script:
     - sphinx-apidoc lso lso/app.py -o docs/source -d 2 -f
     - sphinx-build -b html docs/source docs/build
