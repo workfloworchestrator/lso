@@ -8,6 +8,7 @@ build-documentation:
 
   before_script:
     - pip install sphinx_rtd_theme
+    - python $CI_PROJECT_DIR/docs/dump-openapi-spec.py
   script:
     - sphinx-apidoc lso lso/app.py -o docs/source -d 2 -f
     - sphinx-build -b html docs/source docs/build
@@ -30,9 +31,7 @@ lint-documentation:
       artifacts: true
 
   before_script:
-    - cd $CI_PROJECT_DIR/docs/vale
-    - vale sync
+    - vale --config=docs/vale/.vale.ini sync
 
   script:
-    - vale sync
-    - vale $CI_PROJECT_DIR/docs/source/*.rst $CI_PROJECT_DIR/**/*.py
+    - vale --config=docs/vale/.vale.ini docs/source/*.rst lso/*.py
