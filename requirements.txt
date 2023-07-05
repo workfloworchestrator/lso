@@ -14,6 +14,11 @@ sphinx
 sphinx-rtd-theme
 requests
 docutils
+isort
+black
+flake8
+mypy
+ruff
 
 ansible-core==2.14.0
 ansible_merge_vars

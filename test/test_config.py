@@ -16,16 +16,14 @@ def test_validate_testenv_config(config_file):
 
     :param config_file: Configuration file pytest fixture
     """
-    os.environ['SETTINGS_FILENAME'] = config_file
+    os.environ["SETTINGS_FILENAME"] = config_file
     params = config.load()
     assert params
 
 
-@pytest.mark.parametrize('bad_config', [
-    {'name': 'bad version', 'version': 123},
-    {'name': 'missing version'},
-    {'version': 'missing name'}
-])
+@pytest.mark.parametrize(
+    "bad_config", [{"name": "bad version", "version": 123}, {"name": "missing version"}, {"version": "missing name"}]
+)
 def test_bad_config(bad_config):
     with io.StringIO(json.dumps(bad_config)) as file:
         file.seek(0)  # rewind file position to the beginning

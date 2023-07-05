@@ -13,13 +13,11 @@ import jsonschema
 from pydantic import BaseModel, DirectoryPath
 
 CONFIG_SCHEMA = {
-    '$schema': 'http://json-schema.org/draft-07/schema#',
-    'type': 'object',
-    'properties': {
-        'ansible_playbooks_root_dir': {'type': 'string'}
-    },
-    'required': ['ansible_playbooks_root_dir'],
-    'additionalProperties': False
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {"ansible_playbooks_root_dir": {"type": "string"}},
+    "required": ["ansible_playbooks_root_dir"],
+    "additionalProperties": False,
 }
 
 
@@ -28,6 +26,7 @@ class Config(BaseModel):
     Simple Config class that only contains the path to the used Ansible
     playbooks.
     """
+
     ansible_playbooks_root_dir: DirectoryPath
 
 
@@ -55,6 +54,6 @@ def load() -> Config:
 
     :return: a dict containing the parsed configuration parameters
     """
-    assert 'SETTINGS_FILENAME' in os.environ
-    with open(os.environ['SETTINGS_FILENAME'], encoding='utf-8') as file:
+    assert "SETTINGS_FILENAME" in os.environ
+    with open(os.environ["SETTINGS_FILENAME"], encoding="utf-8") as file:
         return load_from_file(file)

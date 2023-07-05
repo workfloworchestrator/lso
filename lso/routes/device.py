@@ -24,6 +24,7 @@ class NodeProvisioningParams(BaseModel):
     :param dry_run:
     :type dry_run: bool, optional
     """
+
     #: Callback URL that is reported back to WFO, this will allow for the
     #: workflow to continue once the playbook has been executed.
     callback: HttpUrl
@@ -35,9 +36,8 @@ class NodeProvisioningParams(BaseModel):
     dry_run: Optional[bool] = True
 
 
-@router.post('/')
-async def provision_node(params: NodeProvisioningParams) \
-        -> playbook.PlaybookLaunchResponse:
+@router.post("/")
+async def provision_node(params: NodeProvisioningParams) -> playbook.PlaybookLaunchResponse:
     """
     Launches a playbook to provision a new node.
     The response will contain either a job id or error information.
@@ -48,22 +48,20 @@ async def provision_node(params: NodeProvisioningParams) \
     :rtype: :class:`lso.playbook.PlaybookLaunchResponse`
     """
     extra_vars = {
-        'wfo_device_json': params.subscription,
-        'dry_run': str(params.dry_run),
-        'verb': 'deploy',
-        'commit_comment': 'Base config deployed with WFO/LSO & Ansible'
+        "wfo_device_json": params.subscription,
+        "dry_run": str(params.dry_run),
+        "verb": "deploy",
+        "commit_comment": "Base config deployed with WFO/LSO & Ansible",
     }
 
-    if params.subscription['device_type'] == 'router':
-        playbook_path = \
-            os.path.join(config_params.ansible_playbooks_root_dir,
-                         'base_config.yaml')
+    if params.subscription["device_type"] == "router":
+        playbook_path = os.path.join(config_params.ansible_playbooks_root_dir, "base_config.yaml")
     else:
-        raise ValueError(f'Cannot find playbook path for device type '
-                         f"{params.subscription['device_type']}!!")
+        raise ValueError(f"Cannot find playbook path for device type " f"{params.subscription['device_type']}!!")
 
     return playbook.run_playbook(
         playbook_path=playbook_path,
         inventory=f"{params.subscription['device']['device_fqdn']}",
         extra_vars=extra_vars,
-        callback=params.callback)
+        callback=params.callback,
+    )

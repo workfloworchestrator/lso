@@ -18,10 +18,11 @@ class PlaybookJobStatus(str, enum.Enum):
     """
     Enumerator for status codes of a playbook job that's running.
     """
+
     #: All is well.
-    OK = 'ok'
+    OK = "ok"
     #: An error has occurred.
-    ERROR = 'error'
+    ERROR = "error"
 
 
 class PlaybookLaunchResponse(BaseModel):
@@ -34,12 +35,13 @@ class PlaybookLaunchResponse(BaseModel):
     :param info:
     :type info: str, optional
     """
+
     #: Status of a Playbook job.
     status: PlaybookJobStatus
     #: The ID assigned to a job.
-    job_id: str = ''
+    job_id: str = ""
     #: Information on a job.
-    info: str = ''
+    info: str = ""
 
 
 def playbook_launch_success(job_id: str) -> PlaybookLaunchResponse:
@@ -64,13 +66,7 @@ def playbook_launch_error(reason: str) -> PlaybookLaunchResponse:
     return PlaybookLaunchResponse(status=PlaybookJobStatus.ERROR, info=reason)
 
 
-def _run_playbook_proc(
-        job_id: str,
-        playbook_path: str,
-        extra_vars: dict,
-        inventory: [str],
-        callback: str
-):
+def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, inventory: [str], callback: str):
     """
     Internal function for running a playbook.
 
@@ -80,21 +76,17 @@ def _run_playbook_proc(
     :param str callback: Callback URL to PUT to when execution is completed.
     :param [str] inventory: Ansible inventory to run the playbook against.
     """
-    ansible_playbook_run = ansible_runner.run(
-        playbook=playbook_path,
-        inventory=inventory,
-        extravars=extra_vars
-    )
+    ansible_playbook_run = ansible_runner.run(playbook=playbook_path, inventory=inventory, extravars=extra_vars)
 
     payload = [
         {
-            'pp_run_results': {
-                'status': ansible_playbook_run.status,
-                'job_id': job_id,
-                'output': str(ansible_playbook_run.stdout.read()),
-                'return_code': int(ansible_playbook_run.rc)
+            "pp_run_results": {
+                "status": ansible_playbook_run.status,
+                "job_id": job_id,
+                "output": str(ansible_playbook_run.stdout.read()),
+                "return_code": int(ansible_playbook_run.rc),
             },
-            'confirm': 'ACCEPTED'
+            "confirm": "ACCEPTED",
         }
     ]
 
@@ -102,11 +94,7 @@ def _run_playbook_proc(
     assert request_result.status_code == 204
 
 
-def run_playbook(
-        playbook_path: str,
-        extra_vars: dict,
-        inventory: [str],
-        callback: str) -> PlaybookLaunchResponse:
+def run_playbook(playbook_path: str, extra_vars: dict, inventory: [str], callback: str) -> PlaybookLaunchResponse:
     """
     Run an Ansible playbook against a specified inventory.
 
@@ -126,12 +114,13 @@ def run_playbook(
     thread = threading.Thread(
         target=_run_playbook_proc,
         kwargs={
-            'job_id': job_id,
-            'playbook_path': playbook_path,
-            'inventory': inventory,
-            'extra_vars': extra_vars,
-            'callback': callback
-        })
+            "job_id": job_id,
+            "playbook_path": playbook_path,
+            "inventory": inventory,
+            "extra_vars": extra_vars,
+            "callback": callback,
+        },
+    )
     thread.start()
 
     return playbook_launch_success(job_id=job_id)
