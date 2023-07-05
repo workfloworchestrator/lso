@@ -1,6 +1,4 @@
-"""
-automatically invoked app factory
-"""
+"""Automatically invoked app factory."""
 import logging
 
 from fastapi import FastAPI
@@ -11,9 +9,7 @@ from lso.routes import default, device, ip_trunk
 
 
 def create_app() -> FastAPI:
-    """
-    overrides default settings with those found
-    in the file read from environment variable `SETTINGS_FILENAME`
+    """Override default settings with those found in the file read from environment variable `SETTINGS_FILENAME`.
 
     :return: a new flask app instance
     """

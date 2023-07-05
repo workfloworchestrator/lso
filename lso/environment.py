@@ -1,5 +1,4 @@
-"""Environment module for setting up logging.
-"""
+"""Environment module for setting up logging."""
 
 import json
 import logging.config
@@ -23,8 +22,7 @@ LOGGING_DEFAULT_CONFIG = {
 
 
 def setup_logging() -> None:
-    """
-    set up logging using the configured filename
+    """Set up logging using the configured filename.
 
     if LOGGING_CONFIG is defined in the environment, use this for
     the filename, otherwise use LOGGING_DEFAULT_CONFIG

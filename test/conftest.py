@@ -12,16 +12,13 @@ TEST_CONFIG = {"collection-name": "kvklink.echo", "test-role": "kvklink.echo.ech
 
 @pytest.fixture
 def config_data():
-    """
-    valid config data used to start the server
-    """
+    """Start the server with valid configuration data."""
     return {"ansible_playbooks_root_dir": "/"}
 
 
 @pytest.fixture
 def config_file(config_data):
-    """
-    Fixture that yields a filename that contains a valid configuration
+    """Fixture that will yield a filename that contains a valid configuration.
 
     :return: Path to valid configuration file
     """
@@ -33,9 +30,7 @@ def config_file(config_data):
 
 @pytest.fixture
 def client(config_file):
-    """
-    returns a client that can be used to test the server
-    """
+    """Return a client that can be used to test the server."""
     os.environ["SETTINGS_FILENAME"] = config_file
     app = lso.create_app()
     yield TestClient(app)  # wait here until calling context ends

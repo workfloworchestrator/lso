@@ -1,6 +1,4 @@
-"""Set of tests that verify correct config is accepted and incorrect config is
-not.
-"""
+"""Set of tests that verify correct config is accepted and incorrect config is not."""
 import io
 import json
 import os

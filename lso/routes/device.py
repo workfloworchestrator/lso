@@ -1,6 +1,4 @@
-"""
-Routes for handling device/base_config-related requests
-"""
+"""Routes for handling device/base_config-related requests."""
 import os
 from typing import Optional
 
@@ -14,8 +12,7 @@ config_params = config.load()
 
 
 class NodeProvisioningParams(BaseModel):
-    """
-    Parameters for node provisioning
+    """Parameters for node provisioning.
 
     :param callback:
     :type callback: pydantic.HttpUrl
@@ -38,9 +35,7 @@ class NodeProvisioningParams(BaseModel):
 
 @router.post("/")
 async def provision_node(params: NodeProvisioningParams) -> playbook.PlaybookLaunchResponse:
-    """
-    Launches a playbook to provision a new node.
-    The response will contain either a job id or error information.
+    """Launch a playbook to provision a new node. The response will contain either a job id or error information.
 
     :param params: Parameters for provisioning a new node
     :type params: :class:`NodeProvisioningParams`

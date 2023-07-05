@@ -1,6 +1,4 @@
-"""
-Routes for handling events related to the IP trunk service.
-"""
+"""Routes for handling events related to the IP trunk service."""
 from os import path
 from typing import Optional
 
@@ -65,8 +63,8 @@ class IPTrunkDeleteParams(IPTrunkParams):
 
 @router.post("/")
 def provision_ip_trunk(params: IPTrunkProvisioningParams) -> PlaybookLaunchResponse:
-    """
-    Launch a playbook to provision a new IP trunk service.
+    """Launch a playbook to provision a new IP trunk service.
+
     The response will contain either a job ID, or error information.
 
     :param params: The parameters that define the new subscription object that
@@ -101,8 +99,7 @@ def provision_ip_trunk(params: IPTrunkProvisioningParams) -> PlaybookLaunchRespo
 
 @router.put("/")
 def modify_ip_trunk(params: IPTrunkModifyParams) -> PlaybookLaunchResponse:
-    """
-    Launch a playbook that modifies an existing IP trunk service.
+    """Launch a playbook that modifies an existing IP trunk service.
 
     :param params: The parameters that define the change in configuration.
     :type params: :class:`IPTrunkModifyParams`
@@ -134,8 +131,7 @@ def modify_ip_trunk(params: IPTrunkModifyParams) -> PlaybookLaunchResponse:
 
 @router.delete("/")
 def delete_ip_trunk(params: IPTrunkDeleteParams) -> PlaybookLaunchResponse:
-    """
-    Launch a playbook that deletes an existing IP trunk service.
+    """Launch a playbook that deletes an existing IP trunk service.
 
     :param params: Parameters that define the subscription that should get
         terminated.
@@ -169,8 +165,7 @@ def delete_ip_trunk(params: IPTrunkDeleteParams) -> PlaybookLaunchResponse:
 
 @router.post("/perform_check")
 def check_ip_trunk(params: IPTrunkCheckParams) -> PlaybookLaunchResponse:
-    """
-    Launch a playbook that performs a check on an IP trunk service instance.
+    """Launch a playbook that performs a check on an IP trunk service instance.
 
     :param params: Parameters that define the check that is going to be
         executed, including on which relevant subscription.

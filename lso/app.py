@@ -1,6 +1,4 @@
-"""
-default app creation
-"""
+"""default app creation."""
 import lso
 
 app = lso.create_app()

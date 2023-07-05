@@ -141,7 +141,7 @@ def test_ip_trunk_modification(client):
 
 
 @responses.activate
-def test_ip_trunk_modification(client):
+def test_ip_trunk_deletion(client):
     responses.put(url=TEST_CALLBACK_URL, status=204)
 
     params = {"callback": TEST_CALLBACK_URL, "dry_run": True, "verb": "terminate", "subscription": _SUBSCRIPTION_OBJECT}

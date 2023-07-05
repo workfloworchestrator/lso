@@ -1,9 +1,8 @@
-"""
-A module for loading configuration data, including a config schema that
-data is validated against. Data is loaded from a file, the location of which
-may be specified when using :func:`load_from_file`. Config file location can
-also be loaded from environment variable `SETTINGS_FILENAME`, which is default
-behaviour in :func:`load`.
+"""A module for loading configuration data, including a config schema that data is validated against.
+
+Data is loaded from a file, the location of which may be specified when using :func:`load_from_file`.
+Config file location can also be loaded from environment variable `SETTINGS_FILENAME`, which is default behaviour in
+:func:`load`.
 """
 
 import json
@@ -23,17 +22,13 @@ CONFIG_SCHEMA = {
 
 
 class Config(BaseModel):
-    """
-    Simple Config class that only contains the path to the used Ansible
-    playbooks.
-    """
+    """Simple Config class that only contains the path to the used Ansible playbooks."""
 
     ansible_playbooks_root_dir: DirectoryPath
 
 
 def load_from_file(file: TextIO) -> Config:
-    """
-    Loads, validates and returns configuration parameters.
+    """Load, validate and return configuration parameters.
 
     Input is validated against this jsonschema:
 
@@ -48,10 +43,9 @@ def load_from_file(file: TextIO) -> Config:
 
 
 def load() -> Config:
-    """
-    Loads a config file, located at the path specified in the environment
-    variable $SETTINGS_FILENAME. Loading and validating the file is performed
-    by :func:`load_from_file`.
+    """Load a config file, located at the path specified in the environment variable $SETTINGS_FILENAME.
+
+    Loading and validating the file is performed by :func:`load_from_file`.
 
     :return: a dict containing the parsed configuration parameters
     """

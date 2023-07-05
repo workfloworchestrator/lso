@@ -1,6 +1,4 @@
-"""
-Module that gathers common API responses and data models.
-"""
+"""Module that gathers common API responses and data models."""
 import enum
 import logging
 import threading
@@ -15,9 +13,7 @@ logger = logging.getLogger(__name__)
 
 # enum.StrEnum is only available in python 3.11
 class PlaybookJobStatus(str, enum.Enum):
-    """
-    Enumerator for status codes of a playbook job that's running.
-    """
+    """Enumerator for status codes of a playbook job that's running."""
 
     #: All is well.
     OK = "ok"
@@ -26,8 +22,7 @@ class PlaybookJobStatus(str, enum.Enum):
 
 
 class PlaybookLaunchResponse(BaseModel):
-    """
-    Running a playbook gives this response.
+    """Running a playbook gives this response.
 
     :param PlaybookJobStatus status:
     :param job_id:
@@ -45,9 +40,7 @@ class PlaybookLaunchResponse(BaseModel):
 
 
 def playbook_launch_success(job_id: str) -> PlaybookLaunchResponse:
-    """
-    Return a :class:`PlaybookLaunchResponse` for the successful start of a
-    playbook execution.
+    """Return a :class:`PlaybookLaunchResponse` for the successful start of a playbook execution.
 
     :return PlaybookLaunchResponse: A playbook launch response that's
         successful.
@@ -56,9 +49,7 @@ def playbook_launch_success(job_id: str) -> PlaybookLaunchResponse:
 
 
 def playbook_launch_error(reason: str) -> PlaybookLaunchResponse:
-    """
-    Return a :class:`PlaybookLaunchResponse` for the erroneous start of a
-    playbook execution.
+    """Return a :class:`PlaybookLaunchResponse` for the erroneous start of a playbook execution.
 
     :return PlaybookLaunchResponse: A playbook launch response that's
         unsuccessful.
@@ -67,8 +58,7 @@ def playbook_launch_error(reason: str) -> PlaybookLaunchResponse:
 
 
 def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, inventory: list[str], callback: str) -> None:
-    """
-    Internal function for running a playbook.
+    """Run a playbook, internal function.
 
     :param str job_id: Identifier of the job that's executed.
     :param str playbook_path: Ansible playbook to be executed.
@@ -95,8 +85,7 @@ def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, invent
 
 
 def run_playbook(playbook_path: str, extra_vars: dict, inventory: str, callback: str) -> PlaybookLaunchResponse:
-    """
-    Run an Ansible playbook against a specified inventory.
+    """Run an Ansible playbook against a specified inventory.
 
     :param str playbook_path: playbook to be executed.
     :param dict extra_vars: Any extra vars needed for the playbook to run.
