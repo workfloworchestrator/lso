@@ -49,7 +49,7 @@ def setup(app):
 # -- Project information -----------------------------------------------------
 
 project = 'Lightweight Service Orchestrator'
-copyright = '2023, GÉANT'
+copyright = '2023, GÉANT Vereniging'
 author = 'GÉANT Orchestration & Automation Team'
 
 # -- General configuration ---------------------------------------------------

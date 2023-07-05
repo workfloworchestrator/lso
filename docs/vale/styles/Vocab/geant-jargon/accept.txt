@@ -1,2 +1,3 @@
 [LSO|lso]
 [Ss]ubpackages
+Vereniging

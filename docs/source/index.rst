@@ -8,7 +8,7 @@ Documentation for LSO (Lightweight Service Orchestrator).
    :caption: Contents:
 
    quickstart
-   modules
+   lso
 
 
 `Swagger API Docs <_static/openapi.html>`__

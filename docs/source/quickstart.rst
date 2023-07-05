@@ -50,10 +50,4 @@ Examples
 
      curl http://localhost:44444/api/version
 
-* (Not available yet) List all available playbooks
-
-  .. code-block:: bash
-
-     curl http://localhost:44444/api/playbook
-
-* View the docs by loading `http://localhost:44444/docs` in your browser
+* View the docs by loading <http://localhost:44444/docs> in your browser
