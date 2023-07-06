@@ -17,17 +17,15 @@ class IPTrunkParams(BaseModel):
 
     #: The address where LSO should call back to upon completion.
     callback: HttpUrl
-    #: A dictionary representation of the IP trunk
-    #: subscription that is to be provisioned.
+    #: A dictionary representation of the IP trunk subscription that is to be provisioned.
     subscription: dict
 
 
 class IPTrunkProvisioningParams(IPTrunkParams):
     """Additional parameters for provisioning an IPtrunk."""
 
-    #: Whether this playbook execution should be a dry run, or run for real.
-    #: defaults to ``True`` for obvious reasons, also making it an optional
-    #: parameter.
+    #: Whether this playbook execution should be a dry run, or run for real. Defaults to ``True`` for obvious reasons,
+    #: also making it an optional parameter.
     dry_run: Optional[bool] = True
     #: The type of object that is changed.
     object: str
@@ -36,9 +34,8 @@ class IPTrunkProvisioningParams(IPTrunkParams):
 class IPTrunkModifyParams(IPTrunkParams):
     """Additional parameters for modifying an IPtrunk."""
 
-    #: Whether this playbook execution should be a dry run, or run for real.
-    #: defaults to ``True`` for obvious reasons, also making it an optional
-    #: parameter.
+    #: Whether this playbook execution should be a dry run, or run for real. Defaults to ``True`` for obvious reasons,
+    #: also making it an optional parameter.
     dry_run: Optional[bool] = True
     #: The old subscription object, represented as a dictionary. This allows
     #: for calculating the difference in subscriptions.
@@ -55,9 +52,8 @@ class IPTrunkCheckParams(IPTrunkParams):
 class IPTrunkDeleteParams(IPTrunkParams):
     """Additional parameters for deleting an IPtrunk."""
 
-    #: Whether this playbook execution should be a dry run, or run for real.
-    #: defaults to ``True`` for obvious reasons, also making it an optional
-    #: parameter.
+    #: Whether this playbook execution should be a dry run, or run for real. Defaults to ``True`` for obvious reasons,
+    #: also making it an optional parameter.
     dry_run: Optional[bool] = True
 
 

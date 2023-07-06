@@ -22,14 +22,13 @@ class NodeProvisioningParams(BaseModel):
     :type dry_run: bool, optional
     """
 
-    #: Callback URL that is reported back to WFO, this will allow for the
-    #: workflow to continue once the playbook has been executed.
+    #: Callback URL that is reported back to WFO, this will allow for the workflow to continue once the playbook has
+    #: been executed.
     callback: HttpUrl
     #: Parameters for the new device.
     subscription: dict
-    #: Whether this playbook execution should be a dry run, or run for real.
-    #: defaults to ``True`` for obvious reasons, also making it an optional
-    #: parameter.
+    #: Whether this playbook execution should be a dry run, or run for real. Defaults to ``True`` for obvious reasons,
+    #: also making it an optional parameter.
     dry_run: Optional[bool] = True
 
 

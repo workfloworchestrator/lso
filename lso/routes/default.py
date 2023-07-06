@@ -1,7 +1,6 @@
 """Default route located at the root URL /.
 
-For now only includes a single endpoint that responds with the current version
-of the API and LSO.
+For now only includes a single endpoint that responds with the current version of the API and LSO.
 """
 import pkg_resources
 from fastapi import APIRouter
