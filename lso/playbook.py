@@ -6,7 +6,7 @@ import uuid
 
 import ansible_runner
 import requests
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl
 
 logger = logging.getLogger(__name__)
 
@@ -84,14 +84,14 @@ def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, invent
     assert request_result.status_code == 204
 
 
-def run_playbook(playbook_path: str, extra_vars: dict, inventory: str, callback: str) -> PlaybookLaunchResponse:
+def run_playbook(playbook_path: str, extra_vars: dict, inventory: str, callback: HttpUrl) -> PlaybookLaunchResponse:
     """Run an Ansible playbook against a specified inventory.
 
     :param str playbook_path: playbook to be executed.
     :param dict extra_vars: Any extra vars needed for the playbook to run.
     :param [str] inventory: The inventory that the playbook is executed
                             against.
-    :param str callback: Callback URL where the playbook should send a status
+    :param :class:`HttpUrl` callback: Callback URL where the playbook should send a status
         update when execution is completed. This is used for
         workflow-orchestrator to continue with the next step in a workflow.
     :return: Result of playbook launch, this could either be successful or

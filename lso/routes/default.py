@@ -2,12 +2,13 @@
 
 For now only includes a single endpoint that responds with the current version of the API and LSO.
 """
-import pkg_resources
+from importlib import metadata
+
 from fastapi import APIRouter
 from pydantic import BaseModel, constr
 
 API_VERSION = "0.1"
-VERSION_STRING = constr(regex=r"\d+\.\d+")
+VERSION_STRING = constr(pattern=r"\d+\.\d+")
 
 router = APIRouter()
 
@@ -25,4 +26,4 @@ def version() -> Version:
 
     :return: Version object with both API and `goat-lso` versions numbers.
     """
-    return Version(api=API_VERSION, module=pkg_resources.get_distribution("goat-lso").version)
+    return Version(api=API_VERSION, module=metadata.version("goat-lso"))
