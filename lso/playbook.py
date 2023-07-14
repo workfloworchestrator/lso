@@ -1,4 +1,5 @@
 """Module that gathers common API responses and data models."""
+import json
 import enum
 import logging
 import threading
@@ -66,17 +67,34 @@ def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, invent
     :param str callback: Callback URL to PUT to when execution is completed.
     :param [str] inventory: Ansible inventory to run the playbook against.
     """
-    ansible_playbook_run = ansible_runner.run(playbook=playbook_path, inventory=inventory, extravars=extra_vars)
+    ansible_playbook_run = ansible_runner.run(
+        playbook=playbook_path,
+        inventory=inventory,
+        extravars=extra_vars,
+        json_mode=True
+    )
+
+    # Process playbook JSON stdout
+    json_output = ansible_playbook_run.stdout
+    json_content = json_output.read()
+
+    parsed_output = []
+    for line in json_content.strip().splitlines():
+        try:
+            task_output = json.loads(line)
+            parsed_output.append(task_output)
+        except json.JSONDecodeError as e:
+            pass # Skip empty line
 
     payload = [
         {
             "pp_run_results": {
                 "status": ansible_playbook_run.status,
                 "job_id": job_id,
-                "output": str(ansible_playbook_run.stdout.read()),
-                "return_code": int(ansible_playbook_run.rc),
+                "output": json.dumps(parsed_output, indent=4),
+                "return_code": int(ansible_playbook_run.rc)
             },
-            "confirm": "ACCEPTED",
+            "confirm": "ACCEPTED"
         }
     ]
 
