@@ -1,6 +1,6 @@
 """Module that gathers common API responses and data models."""
-import json
 import enum
+import json
 import logging
 import threading
 import uuid
@@ -71,7 +71,7 @@ def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, invent
         playbook=playbook_path,
         inventory=inventory,
         extravars=extra_vars,
-        json_mode=True
+        json_mode=True,
     )
 
     # Process playbook JSON stdout
@@ -83,8 +83,8 @@ def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, invent
         try:
             task_output = json.loads(line)
             parsed_output.append(task_output)
-        except json.JSONDecodeError as e:
-            pass # Skip empty line
+        except json.JSONDecodeError:
+            parsed_output.append({"invalid_json": line})
 
     payload = [
         {
@@ -92,9 +92,9 @@ def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, invent
                 "status": ansible_playbook_run.status,
                 "job_id": job_id,
                 "output": json.dumps(parsed_output, indent=4),
-                "return_code": int(ansible_playbook_run.rc)
+                "return_code": int(ansible_playbook_run.rc),
             },
-            "confirm": "ACCEPTED"
+            "confirm": "ACCEPTED",
         }
     ]
 

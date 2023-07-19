@@ -1,4 +1,4 @@
-from typing import TextIO
+from io import StringIO
 
 TEST_CALLBACK_URL = "https://fqdn.abc.xyz/api/resume"
 
@@ -8,6 +8,6 @@ def test_ansible_runner_run(**kwargs):
         def __init__(self):
             self.status = "success"
             self.rc = 0
-            self.stdout = TextIO()
+            self.stdout = StringIO("some initial text data")
 
     return Runner()
