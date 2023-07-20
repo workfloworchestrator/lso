@@ -3,13 +3,14 @@ from unittest.mock import patch
 
 import jsonschema
 import responses
+from starlette.testclient import TestClient
 
 from lso.playbook import PlaybookLaunchResponse
 from test.routes import TEST_CALLBACK_URL, test_ansible_runner_run
 
 
 @responses.activate
-def test_router_provisioning(client):
+def test_router_provisioning(client: TestClient) -> None:
     responses.put(url=TEST_CALLBACK_URL, status=204)
 
     params = {
@@ -43,7 +44,7 @@ def test_router_provisioning(client):
         # wait two seconds for the run thread to finish
         time.sleep(2)
 
-    jsonschema.validate(response, PlaybookLaunchResponse.schema())
+    jsonschema.validate(response, PlaybookLaunchResponse.model_json_schema())
     responses.assert_call_count(TEST_CALLBACK_URL, 1)
 
     assert response["status"] == "ok"

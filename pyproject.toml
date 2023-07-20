@@ -24,7 +24,6 @@ exclude = '''
 [tool.mypy]
 exclude = [
     "venv",
-    "test/*",
     "docs"
 ]
 ignore_missing_imports = true

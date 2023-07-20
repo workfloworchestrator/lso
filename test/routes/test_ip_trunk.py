@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 import jsonschema
 import responses
+from starlette.testclient import TestClient
 
 from lso.playbook import PlaybookLaunchResponse
 from test.routes import TEST_CALLBACK_URL, test_ansible_runner_run
@@ -91,7 +92,7 @@ _SUBSCRIPTION_OBJECT = {
 
 
 @responses.activate
-def test_ip_trunk_provisioning(client):
+def test_ip_trunk_provisioning(client: TestClient) -> None:
     responses.put(url=TEST_CALLBACK_URL, status=204)
 
     params = {
@@ -109,14 +110,14 @@ def test_ip_trunk_provisioning(client):
         # wait a second for the run thread to finish
         time.sleep(1)
 
-    jsonschema.validate(response, PlaybookLaunchResponse.schema())
+    jsonschema.validate(response, PlaybookLaunchResponse.model_json_schema())
     responses.assert_call_count(TEST_CALLBACK_URL, 1)
 
     assert response["status"] == "ok"
 
 
 @responses.activate
-def test_ip_trunk_modification(client):
+def test_ip_trunk_modification(client: TestClient) -> None:
     responses.put(url=TEST_CALLBACK_URL, status=204)
 
     params = {
@@ -134,14 +135,14 @@ def test_ip_trunk_modification(client):
         # wait a second for the run thread to finish
         time.sleep(1)
 
-    jsonschema.validate(response, PlaybookLaunchResponse.schema())
+    jsonschema.validate(response, PlaybookLaunchResponse.model_json_schema())
     responses.assert_call_count(TEST_CALLBACK_URL, 1)
 
     assert response["status"] == "ok"
 
 
 @responses.activate
-def test_ip_trunk_deletion(client):
+def test_ip_trunk_deletion(client: TestClient) -> None:
     responses.put(url=TEST_CALLBACK_URL, status=204)
 
     params = {"callback": TEST_CALLBACK_URL, "dry_run": True, "verb": "terminate", "subscription": _SUBSCRIPTION_OBJECT}
@@ -153,7 +154,7 @@ def test_ip_trunk_deletion(client):
         # wait a second for the run thread to finish
         time.sleep(1)
 
-    jsonschema.validate(response, PlaybookLaunchResponse.schema())
+    jsonschema.validate(response, PlaybookLaunchResponse.model_json_schema())
     responses.assert_call_count(TEST_CALLBACK_URL, 1)
 
     assert response["status"] == "ok"

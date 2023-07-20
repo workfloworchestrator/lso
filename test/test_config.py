@@ -9,7 +9,7 @@ import pytest
 from lso import config
 
 
-def test_validate_testenv_config(config_file):
+def test_validate_testenv_config(config_file: str) -> None:
     """Load a configuration from a file.
 
     :param config_file: Configuration file pytest fixture
@@ -22,7 +22,7 @@ def test_validate_testenv_config(config_file):
 @pytest.mark.parametrize(
     "bad_config", [{"name": "bad version", "version": 123}, {"name": "missing version"}, {"version": "missing name"}]
 )
-def test_bad_config(bad_config):
+def test_bad_config(bad_config: dict) -> None:
     with io.StringIO(json.dumps(bad_config)) as file:
         file.seek(0)  # rewind file position to the beginning
         with pytest.raises(jsonschema.ValidationError):
