@@ -1,9 +1,9 @@
 --extra-index-url https://artifactory.software.geant.org/artifactory/api/pypi/geant-swd-pypi/simple
 
-jsonschema
-fastapi
-pydantic
-ansible-runner
+jsonschema~=4.18.0
+fastapi~=0.100.0
+pydantic~=2.0.2
+ansible-runner==2.3.3
 
 uvicorn[standard]
 httpx
@@ -22,7 +22,7 @@ ruff
 types-setuptools
 types-requests
 
-ansible-core==2.14.0
+ansible-core~=2.14.0
 ansible_merge_vars
 GitPython
 jinja2==3.1.1
