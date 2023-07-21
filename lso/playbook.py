@@ -82,6 +82,7 @@ def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, invent
     for line in json_content.strip().splitlines():
         try:
             task_output = json.loads(line)
+            task_output.pop("stdout", None)
             parsed_output.append(task_output)
         except json.JSONDecodeError:
             parsed_output.append({"invalid_json": line})
@@ -91,7 +92,7 @@ def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, invent
             "pp_run_results": {
                 "status": ansible_playbook_run.status,
                 "job_id": job_id,
-                "output": json.dumps(parsed_output, indent=4),
+                "output": parsed_output,
                 "return_code": int(ansible_playbook_run.rc),
             },
             "confirm": "ACCEPTED",
