@@ -122,7 +122,7 @@ def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, invent
                 parsed_output.append(task_output["event_data"])
 
         except json.JSONDecodeError:
-            #  If the line cannot be decoded as JSON, include it in its entirety.
+            #  If the line can't be decoded as JSON, include it in its entirety.
             parsed_output.append({"invalid_json": line})
 
     payload = [
@@ -148,9 +148,11 @@ def run_playbook(playbook_path: str, extra_vars: dict, inventory: str, callback:
     :param dict extra_vars: Any extra vars needed for the playbook to run.
     :param [str] inventory: The inventory that the playbook is executed
                             against.
+
     :param :class:`HttpUrl` callback: Callback URL where the playbook should send a status
         update when execution is completed. This is used for
         workflow-orchestrator to continue with the next step in a workflow.
+
     :return: Result of playbook launch, this could either be successful or
         unsuccessful.
     :rtype: :class:`PlaybookLaunchResponse`
