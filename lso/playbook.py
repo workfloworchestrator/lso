@@ -79,12 +79,50 @@ def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, invent
     json_content = json_output.read()
 
     parsed_output = []
+    too_verbose_keys = [
+        "_ansible_no_log",
+        "_ansible_delegated_vars",
+        "_ansible_verbose_always",
+        "ansible_facts",
+        "changed",
+        "file",
+        "invocation",
+        "include",
+        "include_args",
+    ]
     for line in json_content.strip().splitlines():
         try:
             task_output = json.loads(line)
-            task_output.pop("stdout", None)
-            parsed_output.append(task_output)
+            if "res" in task_output["event_data"] and (
+                task_output["event_data"]["res"]["changed"] is True or int(ansible_playbook_run.rc) != 0
+            ):
+                #  The line contains result data, and must either consist of a change, or the playbook failed, and we
+                #  want all steps, including those that didn't make changes.
+                task_result = task_output["event_data"]["res"]
+
+                #  Remove redundant ansible-related keys.
+                for remove in too_verbose_keys:
+                    task_result.pop(remove, None)
+
+                #  Remove meta-steps that just copy some temporary files, and continue to the next event
+                if "state" in task_result:
+                    if task_result["state"] == "directory" or task_result["state"] == "file":
+                        continue
+
+                if "diff_lines" in task_result:
+                    #  Prevent the diff from being displayed twice, and only keep the formatted version.
+                    task_result.pop("diff", None)
+
+                if bool(task_result):
+                    #  Only add the event if there are any relevant keys left.
+                    parsed_output.append({"host": task_output["event_data"]["host"]} | task_result)
+
+            elif "ok" in task_output["event_data"]:
+                #  Always include the final message that contains the playbook execution overview.
+                parsed_output.append(task_output["event_data"])
+
         except json.JSONDecodeError:
+            #  If the line cannot be decoded as JSON, include it in its entirety.
             parsed_output.append({"invalid_json": line})
 
     payload = [
