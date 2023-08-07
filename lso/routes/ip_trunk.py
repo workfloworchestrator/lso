@@ -169,10 +169,7 @@ def check_ip_trunk(params: IPTrunkCheckParams) -> PlaybookLaunchResponse:
     :return: Response from the Ansible runner, including a run ID.
     :rtype: :class:`lso.playbook.PlaybookLaunchResponse`
     """
-    extra_vars = {
-        "wfo_ip_trunk_json": params.subscription,
-        "check": params.check_name
-    }
+    extra_vars = {"wfo_ip_trunk_json": params.subscription, "check": params.check_name}
     # FIXME: needs to be updated when checks become available, this includes
     # writing tests.
 
