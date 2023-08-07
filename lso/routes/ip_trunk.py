@@ -171,12 +171,13 @@ def check_ip_trunk(params: IPTrunkCheckParams) -> PlaybookLaunchResponse:
     """
     extra_vars = {
         "wfo_ip_trunk_json": params.subscription,
+        "check": params.check_name
     }
     # FIXME: needs to be updated when checks become available, this includes
     # writing tests.
 
     return run_playbook(
-        playbook_path=path.join(config_params.ansible_playbooks_root_dir, f"{params.check_name}.yaml"),
+        playbook_path=path.join(config_params.ansible_playbooks_root_dir, "iptrunks_checks.yaml"),
         inventory=params.subscription["iptrunk"]["iptrunk_sideA_node"]["device_fqdn"],
         extra_vars=extra_vars,
         callback=params.callback,
