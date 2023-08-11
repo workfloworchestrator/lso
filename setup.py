@@ -18,6 +18,7 @@ setup(
         "ncclient",
         "xmltodict",
         "netaddr",
+        "ansible-runner==2.3.3",
     ],
     license="MIT",
     license_files=("LICENSE.txt",),
