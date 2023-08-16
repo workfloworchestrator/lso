@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from lso import config, environment
-from lso.routes import default, router, ip_trunk
+from lso.routes import default, ip_trunk, router
 
 
 def create_app() -> FastAPI:

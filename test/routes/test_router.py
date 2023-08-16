@@ -18,10 +18,10 @@ def test_router_provisioning(client: TestClient) -> None:
         "dry_run": True,
         "verb": "deploy",
         "subscription": {
-            "device": {
+            "router": {
                 "ts_address": "127.0.0.1",
                 "ts_port": "1234",
-                "device_fqdn": "bogus.fqdn.org",
+                "router_fqdn": "bogus.fqdn.org",
                 "lo_address": {"v4": "1.2.3.4", "v6": "2001:db8::1"},
                 "lo_iso_address": "1.2.3.4.5.6",
                 "snmp_location": "city,country[1.2,3.4]",
@@ -32,13 +32,13 @@ def test_router_provisioning(client: TestClient) -> None:
                 "site_latitude": "0.000",
                 "site_longitude": "0.000",
             },
-            "device_type": "router",
-            "device_vendor": "vendor",
+            "router_type": "router",
+            "router_vendor": "vendor",
         },
     }
 
     with patch("lso.playbook.ansible_runner.run", new=test_ansible_runner_run) as _:
-        rv = client.post("/api/device/", json=params)
+        rv = client.post("/api/router/", json=params)
         assert rv.status_code == 200
         response = rv.json()
         # wait two seconds for the run thread to finish
