@@ -42,20 +42,17 @@ async def provision_node(params: NodeProvisioningParams) -> playbook.PlaybookLau
     :rtype: :class:`lso.playbook.PlaybookLaunchResponse`
     """
     extra_vars = {
-        "wfo_device_json": params.subscription,
+        "wfo_router_json": params.subscription,
         "dry_run": str(params.dry_run),
         "verb": "deploy",
         "commit_comment": "Base config deployed with WFO/LSO & Ansible",
     }
 
-    if params.subscription["device_type"] == "router":
-        playbook_path = os.path.join(config_params.ansible_playbooks_root_dir, "base_config.yaml")
-    else:
-        raise ValueError(f"Cannot find playbook path for device type " f"{params.subscription['device_type']}!!")
+    playbook_path = os.path.join(config_params.ansible_playbooks_root_dir, "base_config.yaml")
 
     return playbook.run_playbook(
         playbook_path=playbook_path,
-        inventory=f"{params.subscription['device']['device_fqdn']}",
+        inventory=f"{params.subscription['router']['router_fqdn']}",
         extra_vars=extra_vars,
         callback=params.callback,
     )

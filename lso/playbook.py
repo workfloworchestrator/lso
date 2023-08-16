@@ -94,7 +94,7 @@ def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, invent
         try:
             task_output = json.loads(line)
             if "res" in task_output["event_data"] and (
-                task_output["event_data"]["res"]["changed"] is True or int(ansible_playbook_run.rc) != 0
+                int(ansible_playbook_run.rc) != 0 or task_output["event_data"]["res"]["changed"] is True
             ):
                 #  The line contains result data, and must either consist of a change, or the playbook failed, and we
                 #  want all steps, including those that didn't make changes.
