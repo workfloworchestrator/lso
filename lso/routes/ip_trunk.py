@@ -74,18 +74,16 @@ def provision_ip_trunk(params: IPTrunkProvisioningParams) -> PlaybookLaunchRespo
         "dry_run": str(params.dry_run),
         "verb": "deploy",
         "config_object": params.object,
-        "commit_comment": f"IPtrunk "
-        f"{params.subscription['iptrunk']['geant_s_sid']} "
-        f"({params.subscription['subscription_id']}) - "
-        f"deployment of {params.object}",
+        "commit_comment": f"IPtrunk {params.subscription['iptrunk']['geant_s_sid']} "
+        f"({params.subscription['subscription_id']}) - deployment of {params.object}",
     }
 
     return run_playbook(
         playbook_path=path.join(config_params.ansible_playbooks_root_dir, "iptrunks.yaml"),
         inventory=str(
-            params.subscription["iptrunk"]["iptrunk_sideA_node"]["device_fqdn"]
+            params.subscription["iptrunk"]["iptrunk_sideA_node"]["router_fqdn"]
             + "\n"
-            + params.subscription["iptrunk"]["iptrunk_sideB_node"]["device_fqdn"]
+            + params.subscription["iptrunk"]["iptrunk_sideB_node"]["router_fqdn"]
             + "\n"
         ),
         extra_vars=extra_vars,
@@ -115,9 +113,9 @@ def modify_ip_trunk(params: IPTrunkModifyParams) -> PlaybookLaunchResponse:
     return run_playbook(
         playbook_path=path.join(config_params.ansible_playbooks_root_dir, "iptrunks.yaml"),
         inventory=str(
-            params.subscription["iptrunk"]["iptrunk_sideA_node"]["device_fqdn"]
+            params.subscription["iptrunk"]["iptrunk_sideA_node"]["router_fqdn"]
             + "\n"
-            + params.subscription["iptrunk"]["iptrunk_sideB_node"]["device_fqdn"]
+            + params.subscription["iptrunk"]["iptrunk_sideB_node"]["router_fqdn"]
             + "\n"
         ),
         extra_vars=extra_vars,
@@ -149,9 +147,9 @@ def delete_ip_trunk(params: IPTrunkDeleteParams) -> PlaybookLaunchResponse:
     return run_playbook(
         playbook_path=path.join(config_params.ansible_playbooks_root_dir, "iptrunks.yaml"),
         inventory=str(
-            params.subscription["iptrunk"]["iptrunk_sideA_node"]["device_fqdn"]
+            params.subscription["iptrunk"]["iptrunk_sideA_node"]["router_fqdn"]
             + "\n"
-            + params.subscription["iptrunk"]["iptrunk_sideB_node"]["device_fqdn"]
+            + params.subscription["iptrunk"]["iptrunk_sideB_node"]["router_fqdn"]
             + "\n"
         ),
         extra_vars=extra_vars,
@@ -175,7 +173,7 @@ def check_ip_trunk(params: IPTrunkCheckParams) -> PlaybookLaunchResponse:
 
     return run_playbook(
         playbook_path=path.join(config_params.ansible_playbooks_root_dir, "iptrunks_checks.yaml"),
-        inventory=params.subscription["iptrunk"]["iptrunk_sideA_node"]["device_fqdn"],
+        inventory=params.subscription["iptrunk"]["iptrunk_sideA_node"]["router_fqdn"],
         extra_vars=extra_vars,
         callback=params.callback,
     )
