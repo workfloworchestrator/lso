@@ -46,8 +46,7 @@ class PlaybookLaunchResponse(BaseModel):
 def playbook_launch_success(job_id: str) -> PlaybookLaunchResponse:
     """Return a :class:`PlaybookLaunchResponse` for the successful start of a playbook execution.
 
-    :return PlaybookLaunchResponse: A playbook launch response that's
-        successful.
+    :return PlaybookLaunchResponse: A playbook launch response that's successful.
     """
     return PlaybookLaunchResponse(status=PlaybookJobStatus.OK, job_id=job_id)
 
@@ -55,8 +54,7 @@ def playbook_launch_success(job_id: str) -> PlaybookLaunchResponse:
 def playbook_launch_error(reason: str) -> PlaybookLaunchResponse:
     """Return a :class:`PlaybookLaunchResponse` for the erroneous start of a playbook execution.
 
-    :return PlaybookLaunchResponse: A playbook launch response that's
-        unsuccessful.
+    :return PlaybookLaunchResponse: A playbook launch response that's unsuccessful.
     """
     return PlaybookLaunchResponse(status=PlaybookJobStatus.ERROR, info=reason)
 
@@ -64,7 +62,7 @@ def playbook_launch_error(reason: str) -> PlaybookLaunchResponse:
 def _process_json_output(runner: ansible_runner.Runner) -> list[dict[Any, Any]]:  # ignore: C901
     """Handle Ansible runner output, and filter out redundant an overly verbose messages.
 
-    :param ansible_runner.Runner runner: The result of an Ansible playbook execution.
+    :param :class:`ansible_runner.Runner` runner: Ansible runner that has already executed a playbook.
     :return: A filtered dictionary that contains only the relevant parts of the output from executing an Ansible
              playbook.
     :rtype: list[dict[Any, Any]]
@@ -90,8 +88,8 @@ def _process_json_output(runner: ansible_runner.Runner) -> list[dict[Any, Any]]:
             if "res" in task_output["event_data"] and (
                 int(runner.rc) != 0 or task_output["event_data"]["res"]["changed"] is True
             ):
-                #  The line contains result data, and must either consist of a change, or the playbook failed, and we
-                #  want all steps, including those that didn't make changes.
+                #  The line contains result data, and must either consist of a change, or the playbook failed, and all
+                #  steps should be included, including those that didn't make changes.
                 task_result = task_output["event_data"]["res"]
 
                 #  Remove redundant ansible-related keys.
@@ -108,8 +106,8 @@ def _process_json_output(runner: ansible_runner.Runner) -> list[dict[Any, Any]]:
                     task_result.pop("diff", None)
                 elif "diff" in task_result and "before" in task_result["diff"] and "after" in task_result["diff"]:
                     #  Nokia-specific
-                    #  We have a chunk of Nokia config, and we would like to show the actual diff, not a full before and
-                    #  after.
+                    #  This is a chunk of Nokia config, and the actual difference must be calculated now, instead of
+                    #  simply returning the before and after.
                     before_parsed = xmltodict.parse(task_result["diff"]["before"])
                     after_parsed = xmltodict.parse(task_result["diff"]["after"])
                     #  Only leave the diff in the resulting output
@@ -169,15 +167,10 @@ def run_playbook(playbook_path: str, extra_vars: dict, inventory: str, callback:
 
     :param str playbook_path: playbook to be executed.
     :param dict extra_vars: Any extra vars needed for the playbook to run.
-    :param [str] inventory: The inventory that the playbook is executed
-                            against.
-
-    :param :class:`HttpUrl` callback: Callback URL where the playbook should send a status
-        update when execution is completed. This is used for
-        workflow-orchestrator to continue with the next step in a workflow.
-
-    :return: Result of playbook launch, this could either be successful or
-        unsuccessful.
+    :param [str] inventory: The inventory that the playbook is executed against.
+    :param :class:`HttpUrl` callback: Callback URL where the playbook should send a status update when execution is
+        completed. This is used for workflow-orchestrator to continue with the next step in a workflow.
+    :return: Result of playbook launch, this could either be successful or unsuccessful.
     :rtype: :class:`PlaybookLaunchResponse`
     """
 

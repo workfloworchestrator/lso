@@ -22,7 +22,7 @@ ruff
 types-setuptools
 types-requests
 
-ansible-core~=2.14.0
+ansible-core~=2.15.1
 ansible_merge_vars
 GitPython
 jinja2==3.1.1
