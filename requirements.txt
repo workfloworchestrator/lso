@@ -30,4 +30,6 @@ junos-eznc
 jxmlease
 ncclient
 ruamel.yaml
-xmltodict
+xmltodict~=0.13.0
+dictdiffer~=0.9.0
+jmespath~=1.0.1

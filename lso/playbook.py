@@ -8,6 +8,7 @@ import uuid
 import ansible_runner
 import requests
 import xmltodict
+from dictdiffer import diff
 from pydantic import BaseModel, HttpUrl
 
 logger = logging.getLogger(__name__)
@@ -115,15 +116,14 @@ def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, invent
                     #  Juniper-specific
                     #  Prevent the diff from being displayed twice, and only keep the formatted version.
                     task_result.pop("diff", None)
-                elif "before" in task_result["diff"] and "after" in task_result["diff"]:
+                elif "diff" in task_result and "before" in task_result["diff"] and "after" in task_result["diff"]:
                     #  Nokia-specific
                     #  We have a chunk of Nokia config, and we would like to show the actual diff, not a full before and
-                    #  after. This will take some extra steps.
+                    #  after.
                     before_parsed = xmltodict.parse(task_result["diff"]["before"])
                     after_parsed = xmltodict.parse(task_result["diff"]["after"])
                     #  Only leave the diff in the resulting output
-                    task_result["diff"] = {k: v for k, v in after_parsed.items() if
-                                           k not in before_parsed or v != before_parsed[k]}
+                    task_result["diff"] = list(diff(before_parsed, after_parsed))[0]
 
                 if bool(task_result):
                     #  Only add the event if there are any relevant keys left.
