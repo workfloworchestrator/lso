@@ -4,6 +4,7 @@ import json
 import logging
 import threading
 import uuid
+from typing import Any
 
 import ansible_runner
 import requests
@@ -60,27 +61,14 @@ def playbook_launch_error(reason: str) -> PlaybookLaunchResponse:
     return PlaybookLaunchResponse(status=PlaybookJobStatus.ERROR, info=reason)
 
 
-def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, inventory: list[str], callback: str) -> None:
-    """Run a playbook, internal function.
+def _process_json_output(runner: ansible_runner.Runner) -> list[dict[Any, Any]]:  # ignore: C901
+    """Handle Ansible runner output, and filter out redundant an overly verbose messages.
 
-    :param str job_id: Identifier of the job that's executed.
-    :param str playbook_path: Ansible playbook to be executed.
-    :param dict extra_vars: Extra variables passed to the Ansible playbook.
-    :param str callback: Callback URL to PUT to when execution is completed.
-    :param [str] inventory: Ansible inventory to run the playbook against.
+    :param ansible_runner.Runner runner: The result of an Ansible playbook execution.
+    :return: A filtered dictionary that contains only the relevant parts of the output from executing an Ansible
+             playbook.
+    :rtype: list[dict[Any, Any]]
     """
-    ansible_playbook_run = ansible_runner.run(
-        playbook=playbook_path,
-        inventory=inventory,
-        extravars=extra_vars,
-        json_mode=True,
-    )
-
-    # Process playbook JSON stdout
-    json_output = ansible_playbook_run.stdout
-    json_content = json_output.read()
-
-    parsed_output = []
     too_verbose_keys = [
         "_ansible_no_log",
         "_ansible_delegated_vars",
@@ -93,11 +81,14 @@ def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, invent
         "include_args",
         "server_capabilities",
     ]
+    json_content = runner.stdout.read()
+    parsed_output = []
+
     for line in json_content.strip().splitlines():
         try:
             task_output = json.loads(line)
             if "res" in task_output["event_data"] and (
-                int(ansible_playbook_run.rc) != 0 or task_output["event_data"]["res"]["changed"] is True
+                int(runner.rc) != 0 or task_output["event_data"]["res"]["changed"] is True
             ):
                 #  The line contains result data, and must either consist of a change, or the playbook failed, and we
                 #  want all steps, including those that didn't make changes.
@@ -108,9 +99,8 @@ def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, invent
                     task_result.pop(remove, None)
 
                 #  Remove meta-steps that just copy some temporary files, and continue to the next event
-                if "state" in task_result:
-                    if task_result["state"] == "directory" or task_result["state"] == "file":
-                        continue
+                if "state" in task_result and (task_result["state"] == "directory" or task_result["state"] == "file"):
+                    continue
 
                 if "diff_lines" in task_result:
                     #  Juniper-specific
@@ -136,6 +126,27 @@ def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, invent
         except json.JSONDecodeError:
             #  If the line can't be decoded as JSON, include it in its entirety.
             parsed_output.append({"invalid_json": line})
+
+    return parsed_output
+
+
+def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, inventory: list[str], callback: str) -> None:
+    """Run a playbook, internal function.
+
+    :param str job_id: Identifier of the job that's executed.
+    :param str playbook_path: Ansible playbook to be executed.
+    :param dict extra_vars: Extra variables passed to the Ansible playbook.
+    :param str callback: Callback URL to PUT to when execution is completed.
+    :param [str] inventory: Ansible inventory to run the playbook against.
+    """
+    ansible_playbook_run = ansible_runner.run(
+        playbook=playbook_path,
+        inventory=inventory,
+        extravars=extra_vars,
+        json_mode=True,
+    )
+
+    parsed_output = _process_json_output(ansible_playbook_run)
 
     payload = [
         {
