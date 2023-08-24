@@ -81,9 +81,9 @@ def provision_ip_trunk(params: IPTrunkProvisioningParams) -> PlaybookLaunchRespo
     return run_playbook(
         playbook_path=path.join(config_params.ansible_playbooks_root_dir, "iptrunks.yaml"),
         inventory=str(
-            params.subscription["iptrunk"]["iptrunk_sideA_node"]["router_fqdn"]
+            params.subscription["iptrunk"]["iptrunk_sides"][0]["iptrunk_side_node"]["router_fqdn"]
             + "\n"
-            + params.subscription["iptrunk"]["iptrunk_sideB_node"]["router_fqdn"]
+            + params.subscription["iptrunk"]["iptrunk_sides"][1]["iptrunk_side_node"]["router_fqdn"]
             + "\n"
         ),
         extra_vars=extra_vars,
@@ -113,9 +113,9 @@ def modify_ip_trunk(params: IPTrunkModifyParams) -> PlaybookLaunchResponse:
     return run_playbook(
         playbook_path=path.join(config_params.ansible_playbooks_root_dir, "iptrunks.yaml"),
         inventory=str(
-            params.subscription["iptrunk"]["iptrunk_sideA_node"]["router_fqdn"]
+            params.subscription["iptrunk"]["iptrunk_sides"][0]["iptrunk_side_node"]["router_fqdn"]
             + "\n"
-            + params.subscription["iptrunk"]["iptrunk_sideB_node"]["router_fqdn"]
+            + params.subscription["iptrunk"]["iptrunk_sides"][1]["iptrunk_side_node"]["router_fqdn"]
             + "\n"
         ),
         extra_vars=extra_vars,
@@ -147,9 +147,9 @@ def delete_ip_trunk(params: IPTrunkDeleteParams) -> PlaybookLaunchResponse:
     return run_playbook(
         playbook_path=path.join(config_params.ansible_playbooks_root_dir, "iptrunks.yaml"),
         inventory=str(
-            params.subscription["iptrunk"]["iptrunk_sideA_node"]["router_fqdn"]
+            params.subscription["iptrunk"]["iptrunk_sides"][0]["iptrunk_side_node"]["router_fqdn"]
             + "\n"
-            + params.subscription["iptrunk"]["iptrunk_sideB_node"]["router_fqdn"]
+            + params.subscription["iptrunk"]["iptrunk_sides"][1]["iptrunk_side_node"]["router_fqdn"]
             + "\n"
         ),
         extra_vars=extra_vars,
