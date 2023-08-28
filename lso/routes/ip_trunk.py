@@ -42,6 +42,18 @@ class IPTrunkModifyParams(IPTrunkParams):
     old_subscription: dict
 
 
+class IPTrunkMigrationParams(IPTrunkParams):
+    """Additional parameters for migrating an IPTrunk."""
+
+    #: Whether this playbook execution should be a dry run, or run for real. Defaults to ``True`` for obvious reasons,
+    #: also making it an optional parameter.
+    dry_run: Optional[bool] = True
+    #: The new Router that this IP Trunk is migrating to.
+    new_side: dict
+    #: An Ansible playbook verb that is passed along for indicating the phase of the migration that is performed.
+    verb: str
+
+
 class IPTrunkCheckParams(IPTrunkParams):
     """Additional parameters for checking an IPtrunk."""
 
@@ -173,7 +185,38 @@ def check_ip_trunk(params: IPTrunkCheckParams) -> PlaybookLaunchResponse:
 
     return run_playbook(
         playbook_path=path.join(config_params.ansible_playbooks_root_dir, "iptrunks_checks.yaml"),
-        inventory=params.subscription["iptrunk"]["iptrunk_sideA_node"]["router_fqdn"],
+        inventory=params.subscription["iptrunk"]["iptrunk_sides"][0]["iptrunk_side_node"]["router_fqdn"],
+        extra_vars=extra_vars,
+        callback=params.callback,
+    )
+
+
+@router.post("/migrate")
+def migrate_ip_trunk(params: IPTrunkMigrationParams) -> PlaybookLaunchResponse:
+    """Launch a playbook to provision a new IP trunk service.
+
+    The response will contain either a job ID, or error information.
+
+    :param params: The parameters that define the new subscription object that is to be migrated.
+    :type params: :class:`IPTrunkMigrationParams`
+    :return: Response from the Ansible runner, including a run ID.
+    :rtype: :class:`lso.playbook.PlaybookLaunchResponse`
+    """
+    extra_vars = {
+        "wfo_trunk_json": params.subscription,
+        "new_side": params.new_side,
+        "dry_run": str(params.dry_run),
+        "verb": params.verb,
+    }
+
+    return run_playbook(
+        playbook_path=path.join(config_params.ansible_playbooks_root_dir, "iptrunks.yaml"),
+        inventory=str(
+            params.subscription["iptrunk"]["iptrunk_sides"][0]["iptrunk_side_node"]["router_fqdn"]
+            + "\n"
+            + params.subscription["iptrunk"]["iptrunk_sides"][1]["iptrunk_side_node"]["router_fqdn"]
+            + "\n"
+        ),
         extra_vars=extra_vars,
         callback=params.callback,
     )
