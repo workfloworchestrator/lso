@@ -20,7 +20,7 @@ setup(
         "netaddr",
         "jmespath~=1.0.0",
         "dictdiffer~=0.9.0",
-        "ansible-runner==2.3.3",
+        "ansible-runner~=2.3.3",
     ],
     license="MIT",
     license_files=("LICENSE.txt",),
