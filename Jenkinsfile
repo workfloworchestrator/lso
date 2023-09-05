@@ -8,6 +8,6 @@ String name = 'goat-lso'
 List<String> extraRecipients = ['erik.reid@geant.org']
 
 // python versions (docker tags) to test against, must be explicit versions
-List<String> pythonTestVersions = ['3.10', '3.11']
+List<String> pythonTestVersions = [g'3.11']
 
 SimplePythonBuild(name, extraRecipients, pythonTestVersions)
