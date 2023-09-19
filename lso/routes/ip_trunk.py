@@ -19,6 +19,8 @@ class IPTrunkParams(BaseModel):
     callback: HttpUrl
     #: A dictionary representation of the IP trunk subscription that is to be provisioned.
     subscription: dict
+    tt_number: str
+    process_id: str
 
 
 class IPTrunkProvisioningParams(IPTrunkParams):
@@ -52,7 +54,7 @@ class IPTrunkMigrationParams(IPTrunkParams):
     new_side: dict
     #: An Ansible playbook verb that is passed along for indicating the phase of the migration that is performed.
     verb: str
-
+    config_object: str
 
 class IPTrunkCheckParams(IPTrunkParams):
     """Additional parameters for checking an IPtrunk."""
@@ -86,8 +88,7 @@ def provision_ip_trunk(params: IPTrunkProvisioningParams) -> PlaybookLaunchRespo
         "dry_run": str(params.dry_run),
         "verb": "deploy",
         "config_object": params.object,
-        "commit_comment": f"IPtrunk {params.subscription['iptrunk']['geant_s_sid']} "
-        f"({params.subscription['subscription_id']}) - deployment of {params.object}",
+        "commit_comment": f"GSO_PROCESS_ID: {params.process_id} - TT_NUMBER: {params.tt_number} - Deploy config for {params.subscription['iptrunk']['geant_s_sid']} ",
     }
 
     return run_playbook(
@@ -117,9 +118,7 @@ def modify_ip_trunk(params: IPTrunkModifyParams) -> PlaybookLaunchResponse:
         "old_wfo_trunk_json": params.old_subscription,
         "dry_run": str(params.dry_run),
         "verb": "modify",
-        "commit_comment": f"IPtrunk "
-        f"{params.subscription['iptrunk']['geant_s_sid']} "
-        f"({params.subscription['subscription_id']})",
+        "commit_comment": f"GSO_PROCESS_ID: {params.process_id} - TT_NUMBER: {params.tt_number} - Modify config for {params.subscription['iptrunk']['geant_s_sid']} ",
     }
 
     return run_playbook(
@@ -150,10 +149,7 @@ def delete_ip_trunk(params: IPTrunkDeleteParams) -> PlaybookLaunchResponse:
         "dry_run": str(params.dry_run),
         "verb": "terminate",
         "config_object": "trunk_deprovision",
-        "commit_comment": f"IPtrunk "
-        f"{params.subscription['iptrunk']['geant_s_sid']} "
-        f"({params.subscription['subscription_id']}) "
-        f"- termination",
+        "commit_comment": f"GSO_PROCESS_ID: {params.process_id} - TT_NUMBER: {params.tt_number} - Remove config for {params.subscription['iptrunk']['geant_s_sid']} ",
     }
 
     return run_playbook(
@@ -204,17 +200,24 @@ def migrate_ip_trunk(params: IPTrunkMigrationParams) -> PlaybookLaunchResponse:
     """
     extra_vars = {
         "wfo_trunk_json": params.subscription,
-        "new_side": params.new_side,
-        "dry_run": str(params.dry_run),
+        "new_node": params.new_side["new_node"],
+        "new_lag_interface": params.new_side["new_lag_interface"],
+        "new_lag_member_interfaces": params.new_side["new_lag_member_interfaces"],
+        "replace_index": params.new_side["replace_index"],
         "verb": params.verb,
+        "config_object": params.config_object,
+        "dry_run": str(params.dry_run),
+        "commit_comment": f"GSO_PROCESS_ID: {params.process_id} - TT_NUMBER: {params.tt_number} - Migrating - {params.verb} - {params.subscription['iptrunk']['geant_s_sid']} ",
     }
 
     return run_playbook(
-        playbook_path=path.join(config_params.ansible_playbooks_root_dir, "iptrunks.yaml"),
+        playbook_path=path.join(config_params.ansible_playbooks_root_dir, "iptrunks_migration.yaml"),
         inventory=str(
             params.subscription["iptrunk"]["iptrunk_sides"][0]["iptrunk_side_node"]["router_fqdn"]
             + "\n"
             + params.subscription["iptrunk"]["iptrunk_sides"][1]["iptrunk_side_node"]["router_fqdn"]
+            + "\n"
+            + params.new_side["new_node"]["router"]["router_fqdn"]
             + "\n"
         ),
         extra_vars=extra_vars,

@@ -30,6 +30,8 @@ class NodeProvisioningParams(BaseModel):
     #: Whether this playbook execution should be a dry run, or run for real. Defaults to ``True`` for obvious reasons,
     #: also making it an optional parameter.
     dry_run: Optional[bool] = True
+    tt_number: str
+    process_id: str
 
 
 @router.post("/")
@@ -45,7 +47,7 @@ async def provision_node(params: NodeProvisioningParams) -> playbook.PlaybookLau
         "wfo_router_json": params.subscription,
         "dry_run": str(params.dry_run),
         "verb": "deploy",
-        "commit_comment": "Base config deployed with WFO/LSO & Ansible",
+        "commit_comment": f"GSO_PROCESS_ID: {params.process_id} - TT_NUMBER: {params.tt_number} - Deploy base config",
     }
 
     playbook_path = os.path.join(config_params.ansible_playbooks_root_dir, "base_config.yaml")
