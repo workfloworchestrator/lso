@@ -56,6 +56,7 @@ class IPTrunkMigrationParams(IPTrunkParams):
     verb: str
     config_object: str
 
+
 class IPTrunkCheckParams(IPTrunkParams):
     """Additional parameters for checking an IPtrunk."""
 
@@ -88,7 +89,9 @@ def provision_ip_trunk(params: IPTrunkProvisioningParams) -> PlaybookLaunchRespo
         "dry_run": str(params.dry_run),
         "verb": "deploy",
         "config_object": params.object,
-        "commit_comment": f"GSO_PROCESS_ID: {params.process_id} - TT_NUMBER: {params.tt_number} - Deploy config for {params.subscription['iptrunk']['geant_s_sid']} ",
+        "commit_comment": f"GSO_PROCESS_ID: {params.process_id} "
+        f"- TT_NUMBER: {params.tt_number}"
+        f"- Deploy config for {params.subscription['iptrunk']['geant_s_sid']} ",
     }
 
     return run_playbook(
@@ -118,7 +121,9 @@ def modify_ip_trunk(params: IPTrunkModifyParams) -> PlaybookLaunchResponse:
         "old_wfo_trunk_json": params.old_subscription,
         "dry_run": str(params.dry_run),
         "verb": "modify",
-        "commit_comment": f"GSO_PROCESS_ID: {params.process_id} - TT_NUMBER: {params.tt_number} - Modify config for {params.subscription['iptrunk']['geant_s_sid']} ",
+        "commit_comment": f"GSO_PROCESS_ID: {params.process_id} "
+        f"- TT_NUMBER: {params.tt_number}"
+        f"- Modify config  for {params.subscription['iptrunk']['geant_s_sid']} ",
     }
 
     return run_playbook(
@@ -149,7 +154,9 @@ def delete_ip_trunk(params: IPTrunkDeleteParams) -> PlaybookLaunchResponse:
         "dry_run": str(params.dry_run),
         "verb": "terminate",
         "config_object": "trunk_deprovision",
-        "commit_comment": f"GSO_PROCESS_ID: {params.process_id} - TT_NUMBER: {params.tt_number} - Remove config for {params.subscription['iptrunk']['geant_s_sid']} ",
+        "commit_comment": f"GSO_PROCESS_ID: {params.process_id} "
+        f"- TT_NUMBER: {params.tt_number}"
+        f"- Remove config for {params.subscription['iptrunk']['geant_s_sid']} ",
     }
 
     return run_playbook(
@@ -207,7 +214,9 @@ def migrate_ip_trunk(params: IPTrunkMigrationParams) -> PlaybookLaunchResponse:
         "verb": params.verb,
         "config_object": params.config_object,
         "dry_run": str(params.dry_run),
-        "commit_comment": f"GSO_PROCESS_ID: {params.process_id} - TT_NUMBER: {params.tt_number} - Migrating - {params.verb} - {params.subscription['iptrunk']['geant_s_sid']} ",
+        "commit_comment": f"GSO_PROCESS_ID: {params.process_id} "
+        f"- TT_NUMBER: {params.tt_number}"
+        f"- Deploy config for {params.subscription['iptrunk']['geant_s_sid']} ",
     }
 
     return run_playbook(

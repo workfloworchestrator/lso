@@ -16,6 +16,8 @@ def test_router_provisioning(client: TestClient) -> None:
     params = {
         "callback": TEST_CALLBACK_URL,
         "dry_run": True,
+        "process_id": "cb5f6c71-63d7-4857-9124-4fc6e7ef3f41",
+        "tt_number": "TT123456789",
         "verb": "deploy",
         "subscription": {
             "router": {
