@@ -16,8 +16,8 @@ router = APIRouter()
 class Version(BaseModel):
     """Simple model for returning a version number of both the API and the `goat-lso` module."""
 
-    api: VERSION_STRING  # type: ignore
-    module: VERSION_STRING  # type: ignore
+    api: VERSION_STRING  # type: ignore[valid-type]
+    module: VERSION_STRING  # type: ignore[valid-type]
 
 
 @router.get("/version")
