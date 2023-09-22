@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 import jsonschema
 import responses
+from faker import Faker
 from starlette.testclient import TestClient
 
 from lso.playbook import PlaybookLaunchResponse
@@ -10,29 +11,29 @@ from test.routes import TEST_CALLBACK_URL, test_ansible_runner_run
 
 
 @responses.activate
-def test_router_provisioning(client: TestClient) -> None:
+def test_router_provisioning(client: TestClient, faker: Faker) -> None:
     responses.put(url=TEST_CALLBACK_URL, status=204)
 
     params = {
         "callback": TEST_CALLBACK_URL,
-        "dry_run": True,
-        "process_id": "cb5f6c71-63d7-4857-9124-4fc6e7ef3f41",
-        "tt_number": "TT123456789",
+        "dry_run": faker.pybool(),
+        "process_id": faker.uuid4(),
+        "tt_number": faker.pystr(),
         "verb": "deploy",
         "subscription": {
             "router": {
-                "ts_address": "127.0.0.1",
-                "ts_port": "1234",
+                "ts_address": faker.ipv4(),
+                "ts_port": str(faker.pyint()),
                 "router_fqdn": "bogus.fqdn.org",
-                "lo_address": {"v4": "1.2.3.4", "v6": "2001:db8::1"},
+                "lo_address": {"v4": faker.ipv4(), "v6": faker.ipv6()},
                 "lo_iso_address": "1.2.3.4.5.6",
                 "snmp_location": "city,country[1.2,3.4]",
-                "si_ipv4_network": "1.2.3.0/24",
-                "ias_lt_network": {"v4": "1.2.3.0/24", "v6": "2001:db8::/64"},
-                "site_country_code": "XX",
-                "site_city": "NOWHERE",
-                "site_latitude": "0.000",
-                "site_longitude": "0.000",
+                "si_ipv4_network": faker.ipv4() + "/24",
+                "ias_lt_network": {"v4": faker.ipv4() + "/24", "v6": faker.ipv6() + "/64"},
+                "site_country_code": faker.country_code(),
+                "site_city": faker.city(),
+                "site_latitude": float(faker.latitude()),
+                "site_longitude": float(faker.longitude()),
             },
             "router_type": "router",
             "router_vendor": "vendor",
