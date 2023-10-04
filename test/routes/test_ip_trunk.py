@@ -158,7 +158,7 @@ def migration_object(faker: Faker) -> dict:
 
 @responses.activate
 def test_ip_trunk_provisioning(client: TestClient, subscription_object: dict) -> None:
-    responses.put(url=TEST_CALLBACK_URL, status=204)
+    responses.post(url=TEST_CALLBACK_URL, status=204)
 
     params = {
         "callback": TEST_CALLBACK_URL,
@@ -185,7 +185,7 @@ def test_ip_trunk_provisioning(client: TestClient, subscription_object: dict) ->
 
 @responses.activate
 def test_ip_trunk_modification(client: TestClient, subscription_object: dict) -> None:
-    responses.put(url=TEST_CALLBACK_URL, status=204)
+    responses.post(url=TEST_CALLBACK_URL, status=204)
 
     params = {
         "callback": TEST_CALLBACK_URL,
@@ -212,7 +212,7 @@ def test_ip_trunk_modification(client: TestClient, subscription_object: dict) ->
 
 @responses.activate
 def test_ip_trunk_deletion(client: TestClient, subscription_object: dict) -> None:
-    responses.put(url=TEST_CALLBACK_URL, status=204)
+    responses.post(url=TEST_CALLBACK_URL, status=204)
 
     params = {
         "callback": TEST_CALLBACK_URL,
@@ -238,7 +238,7 @@ def test_ip_trunk_deletion(client: TestClient, subscription_object: dict) -> Non
 
 @responses.activate
 def test_ip_trunk_migration(client: TestClient, subscription_object: dict, migration_object: dict) -> None:
-    responses.put(url=TEST_CALLBACK_URL, status=204)
+    responses.post(url=TEST_CALLBACK_URL, status=204)
 
     params = {
         "callback": TEST_CALLBACK_URL,

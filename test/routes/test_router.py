@@ -12,7 +12,7 @@ from test.routes import TEST_CALLBACK_URL, test_ansible_runner_run
 
 @responses.activate
 def test_router_provisioning(client: TestClient, faker: Faker) -> None:
-    responses.put(url=TEST_CALLBACK_URL, status=204)
+    responses.post(url=TEST_CALLBACK_URL, status=204)
 
     params = {
         "callback": TEST_CALLBACK_URL,

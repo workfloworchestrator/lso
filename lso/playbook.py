@@ -146,20 +146,15 @@ def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, invent
 
     parsed_output = _process_json_output(ansible_playbook_run)
 
-    payload = [
-        {
-            "pp_run_results": {
-                "status": ansible_playbook_run.status,
-                "job_id": job_id,
-                "output": parsed_output,
-                "return_code": int(ansible_playbook_run.rc),
-            },
-            "confirm": "ACCEPTED",
-        }
-    ]
+    payload = {
+        "status": ansible_playbook_run.status,
+        "job_id": job_id,
+        "output": parsed_output,
+        "return_code": int(ansible_playbook_run.rc),
+    }
 
-    request_result = requests.put(callback, json=payload, timeout=10000)
-    assert request_result.status_code == 204
+    request_result = requests.post(callback, json=json.dumps(payload), timeout=10000)
+    assert request_result.status_code == 200
 
 
 def run_playbook(playbook_path: str, extra_vars: dict, inventory: str, callback: HttpUrl) -> PlaybookLaunchResponse:
