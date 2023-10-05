@@ -1,6 +1,5 @@
 """Routes for handling events related to the IP trunk service."""
 from os import path
-from typing import Optional
 
 from fastapi import APIRouter
 from pydantic import BaseModel, HttpUrl
@@ -30,7 +29,7 @@ class IPTrunkProvisioningParams(IPTrunkParams):
 
     #: Whether this playbook execution should be a dry run, or run for real. Defaults to ``True`` for obvious reasons,
     #: also making it an optional parameter.
-    dry_run: Optional[bool] = True
+    dry_run: bool | None = True
     #: The type of object that is changed.
     object: str
 
@@ -40,7 +39,7 @@ class IPTrunkModifyParams(IPTrunkParams):
 
     #: Whether this playbook execution should be a dry run, or run for real. Defaults to ``True`` for obvious reasons,
     #: also making it an optional parameter.
-    dry_run: Optional[bool] = True
+    dry_run: bool | None = True
     #: The old subscription object, represented as a dictionary. This allows
     #: for calculating the difference in subscriptions.
     old_subscription: dict
@@ -51,7 +50,7 @@ class IPTrunkMigrationParams(IPTrunkParams):
 
     #: Whether this playbook execution should be a dry run, or run for real. Defaults to ``True`` for obvious reasons,
     #: also making it an optional parameter.
-    dry_run: Optional[bool] = True
+    dry_run: bool | None = True
     #: The new Router that this IP Trunk is migrating to.
     new_side: dict
     #: An Ansible playbook verb that is passed along for indicating the phase of the migration that is performed.
@@ -72,7 +71,7 @@ class IPTrunkDeleteParams(IPTrunkParams):
 
     #: Whether this playbook execution should be a dry run, or run for real. Defaults to ``True`` for obvious reasons,
     #: also making it an optional parameter.
-    dry_run: Optional[bool] = True
+    dry_run: bool | None = True
 
 
 @router.post("/")
@@ -217,8 +216,7 @@ def migrate_ip_trunk(params: IPTrunkMigrationParams) -> PlaybookLaunchResponse:
         "verb": params.verb,
         "config_object": params.config_object,
         "dry_run": str(params.dry_run),
-        "commit_comment": f"GSO_PROCESS_ID: {params.process_id} "
-        f"- TT_NUMBER: {params.tt_number}"
+        "commit_comment": f"GSO_PROCESS_ID: {params.process_id} - TT_NUMBER: {params.tt_number}"
         f"- Deploy config for {params.subscription['iptrunk']['geant_s_sid']} ",
     }
 
