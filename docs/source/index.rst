@@ -1,4 +1,4 @@
-Lightweight service orchestrator
+Lightweight Service Orchestrator
 ================================
 
 Documentation for LSO (Lightweight Service Orchestrator).
@@ -8,7 +8,7 @@ Documentation for LSO (Lightweight Service Orchestrator).
    :caption: Contents:
 
    quickstart
-   lso
+   modules
 
 
-`Swagger API Docs <_static/openapi.html>`__
+`Swagger API Docs <_static/openapi.html>`_

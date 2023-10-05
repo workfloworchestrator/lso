@@ -1,24 +1,4 @@
 ---
-##### Sphinx  - Generate documentation
-build-documentation:
-  stage: documentation
-  tags:
-    - docker-executor
-  image: sphinxdoc/sphinx:latest
-  needs:
-    - job: run-tox-pipeline
-      artifacts: true
-
-  before_script:
-    - pip install sphinx_rtd_theme
-  script:
-    - sphinx-apidoc lso lso/app.py -o docs/source -d 2 -f
-    - sphinx-build -b html docs/source docs/build
-
-  artifacts:
-    paths:
-      - $CI_PROJECT_DIR/docs/build
-
 ##### Vale    - Documentation linter
 lint-documentation:
   stage: documentation
@@ -29,8 +9,7 @@ lint-documentation:
   tags:
     - docker-executor
   needs:
-    - job: build-documentation # Only run when documentation has been built
-      artifacts: true
+    - job: run-tox-pipeline # Only run when tox has finished
 
   before_script:
     - vale --config=docs/vale/.vale.ini sync

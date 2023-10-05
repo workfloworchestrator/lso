@@ -75,8 +75,7 @@ html_css_files = ['custom.css']
 html_logo = '_static/geant_logo_white.svg'
 
 
-# Both the class' and the __init__ method's docstring
-# are concatenated and inserted.
+# Both the class' and the ``__init__`` method's docstring are concatenated and inserted.
 autoclass_content = 'both'
 autodoc_typehints = 'none'
 

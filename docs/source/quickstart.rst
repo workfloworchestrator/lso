@@ -1,10 +1,10 @@
 Quick start
-==================
+===========
 
-*This is a quick setup guide for running standalone on your local machine*
+This is a quick setup guide for running standalone on your local machine.
 
 Install the module
---------------------
+------------------
 
 *One of these should be what you're looking for:*
 
@@ -32,11 +32,11 @@ Install the module
     pip install -r requirements.txt
 
 Running the app
--------------------
+---------------
 
-* Create a settings file, see `config.json.example` for an example.
-* If necessary, set the environment vairable `ANSIBLE_HOME` to a custom path.
-* Run the app like this (`app.py` starts the server on port 44444):
+* Create a settings file, see ``config.json.example`` for an example.
+* If necessary, set the environment variable ``ANSIBLE_HOME`` to a custom path.
+* Run the app like this (``app.py`` starts the server on port 44444):
 
   .. code-block:: bash
 
