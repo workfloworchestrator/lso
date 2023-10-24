@@ -153,7 +153,7 @@ def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, invent
         "return_code": int(ansible_playbook_run.rc),
     }
 
-    request_result = requests.post(callback, json=json.dumps(payload), timeout=10000)
+    request_result = requests.post(callback, json=payload, timeout=10000)
     assert request_result.status_code == 200
 
 
