@@ -7,8 +7,8 @@ from importlib import metadata
 from fastapi import APIRouter
 from pydantic import BaseModel, constr
 
-API_VERSION = "0.1"
-VERSION_STRING = constr(pattern=r"\d+\.\d+")
+API_VERSION = "1"
+VersionString = constr(pattern=r"\d+\.\d+")
 
 router = APIRouter()
 
@@ -16,8 +16,8 @@ router = APIRouter()
 class Version(BaseModel):
     """Simple model for returning a version number of both the API and the `goat-lso` module."""
 
-    api: VERSION_STRING  # type: ignore[valid-type]
-    module: VERSION_STRING  # type: ignore[valid-type]
+    api: VersionString  # type: ignore[valid-type]
+    module: VersionString  # type: ignore[valid-type]
 
 
 @router.get("/version")
