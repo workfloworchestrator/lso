@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="goat-lso",
-    version="0.1",
+    version="0.1.0",
     author="GÉANT Orchestration & Automation Team",
     author_email="TBD",
     description="Lightweight Service Orchestrator",
