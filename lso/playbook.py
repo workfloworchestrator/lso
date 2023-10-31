@@ -12,6 +12,8 @@ import xmltodict
 from dictdiffer import diff
 from pydantic import BaseModel, HttpUrl
 
+from lso.config import DEFAULT_REQUEST_TIMEOUT
+
 logger = logging.getLogger(__name__)
 
 
@@ -153,7 +155,7 @@ def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, invent
         "return_code": int(ansible_playbook_run.rc),
     }
 
-    request_result = requests.post(callback, json=payload, timeout=10000)
+    request_result = requests.post(callback, json=payload, timeout=DEFAULT_REQUEST_TIMEOUT)
     assert request_result.status_code == 200
 
 

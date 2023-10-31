@@ -19,6 +19,7 @@ CONFIG_SCHEMA = {
     "required": ["ansible_playbooks_root_dir"],
     "additionalProperties": False,
 }
+DEFAULT_REQUEST_TIMEOUT = 10
 
 
 class Config(BaseModel):
