@@ -158,7 +158,7 @@ def migration_object(faker: Faker) -> dict:
 
 @responses.activate
 def test_ip_trunk_provisioning(client: TestClient, subscription_object: dict) -> None:
-    responses.post(url=TEST_CALLBACK_URL, status=204)
+    responses.post(url=TEST_CALLBACK_URL, status=200)
 
     params = {
         "callback": TEST_CALLBACK_URL,
@@ -185,7 +185,7 @@ def test_ip_trunk_provisioning(client: TestClient, subscription_object: dict) ->
 
 @responses.activate
 def test_ip_trunk_modification(client: TestClient, subscription_object: dict) -> None:
-    responses.post(url=TEST_CALLBACK_URL, status=204)
+    responses.post(url=TEST_CALLBACK_URL, status=200)
 
     params = {
         "callback": TEST_CALLBACK_URL,
@@ -252,7 +252,7 @@ def test_ip_trunk_migration(client: TestClient, subscription_object: dict, migra
     }
 
     with patch("lso.playbook.ansible_runner.run", new=test_ansible_runner_run) as _:
-        rv = client.request(url="/api/ip_trunk/migrate", method=responses.POST, json=params)
+        rv = client.post(url="/api/ip_trunk/migrate", json=params)
         assert rv.status_code == 200
         response = rv.json()
         #  Wait a second for the run to finish

@@ -9,8 +9,6 @@ from fastapi.testclient import TestClient
 
 import lso
 
-TEST_CONFIG = {"collection-name": "kvklink.echo", "test-role": "kvklink.echo.echo_uptime"}
-
 
 @pytest.fixture(scope="session")
 def config_data() -> dict[str, str]:
