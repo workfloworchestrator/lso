@@ -2,6 +2,7 @@
 stages:
   - tox
   - documentation
+  - trigger_jenkins_build
 
 include:
   - docs/.gitlab-ci.yml
@@ -40,3 +41,16 @@ run-tox-pipeline:
     paths:
       - htmlcov
       - docs/source/_static/openapi.json
+
+trigger_jenkins_build:
+  stage: trigger_jenkins_build
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache curl
+  script: curl -u "$JENKINS_USERNAME:$JENKINS_API_TOKEN"
+    --data "PROJECT=goat-lso"
+    "http://test-swd-release-service01.geant.org:8080/job/build-python-snapshot/buildWithParameters"
+  only:
+    - develop
+  tags:
+    - docker-executor
