@@ -1,4 +1,5 @@
 import time
+from typing import Callable
 from unittest.mock import patch
 
 import jsonschema
@@ -7,11 +8,12 @@ from faker import Faker
 from starlette.testclient import TestClient
 
 from lso.playbook import PlaybookLaunchResponse
-from test.routes import TEST_CALLBACK_URL, test_ansible_runner_run
+
+TEST_CALLBACK_URL = "https://fqdn.abc.xyz/api/resume"
 
 
 @responses.activate
-def test_router_provisioning(client: TestClient, faker: Faker) -> None:
+def test_router_provisioning(client: TestClient, faker: Faker, mocked_ansible_runner_run: Callable) -> None:
     responses.put(url=TEST_CALLBACK_URL, status=200)
 
     params = {
@@ -40,7 +42,7 @@ def test_router_provisioning(client: TestClient, faker: Faker) -> None:
         },
     }
 
-    with patch("lso.playbook.ansible_runner.run", new=test_ansible_runner_run) as _:
+    with patch("lso.playbook.ansible_runner.run", new=mocked_ansible_runner_run) as _:
         rv = client.post("/api/router/", json=params)
         assert rv.status_code == 200
         response = rv.json()

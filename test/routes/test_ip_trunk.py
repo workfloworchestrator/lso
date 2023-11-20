@@ -1,4 +1,5 @@
 import time
+from typing import Callable
 from unittest.mock import patch
 
 import jsonschema
@@ -8,7 +9,8 @@ from faker import Faker
 from starlette.testclient import TestClient
 
 from lso.playbook import PlaybookLaunchResponse
-from test.routes import TEST_CALLBACK_URL, test_ansible_runner_run
+
+TEST_CALLBACK_URL = "https://fqdn.abc.xyz/api/resume"
 
 
 @pytest.fixture(scope="session")
@@ -157,7 +159,9 @@ def migration_object(faker: Faker) -> dict:
 
 
 @responses.activate
-def test_ip_trunk_provisioning(client: TestClient, subscription_object: dict) -> None:
+def test_ip_trunk_provisioning(
+    client: TestClient, subscription_object: dict, mocked_ansible_runner_run: Callable
+) -> None:
     responses.post(url=TEST_CALLBACK_URL, status=200)
 
     params = {
@@ -170,7 +174,7 @@ def test_ip_trunk_provisioning(client: TestClient, subscription_object: dict) ->
         "subscription": subscription_object,
     }
 
-    with patch("lso.playbook.ansible_runner.run", new=test_ansible_runner_run) as _:
+    with patch("lso.playbook.ansible_runner.run", new=mocked_ansible_runner_run) as _:
         rv = client.post("/api/ip_trunk/", json=params)
         assert rv.status_code == 200
         response = rv.json()
@@ -184,7 +188,9 @@ def test_ip_trunk_provisioning(client: TestClient, subscription_object: dict) ->
 
 
 @responses.activate
-def test_ip_trunk_modification(client: TestClient, subscription_object: dict) -> None:
+def test_ip_trunk_modification(
+    client: TestClient, subscription_object: dict, mocked_ansible_runner_run: Callable
+) -> None:
     responses.post(url=TEST_CALLBACK_URL, status=200)
 
     params = {
@@ -197,7 +203,7 @@ def test_ip_trunk_modification(client: TestClient, subscription_object: dict) ->
         "old_subscription": subscription_object,
     }
 
-    with patch("lso.playbook.ansible_runner.run", new=test_ansible_runner_run) as _:
+    with patch("lso.playbook.ansible_runner.run", new=mocked_ansible_runner_run) as _:
         rv = client.put("/api/ip_trunk/", json=params)
         assert rv.status_code == 200
         response = rv.json()
@@ -211,7 +217,7 @@ def test_ip_trunk_modification(client: TestClient, subscription_object: dict) ->
 
 
 @responses.activate
-def test_ip_trunk_deletion(client: TestClient, subscription_object: dict) -> None:
+def test_ip_trunk_deletion(client: TestClient, subscription_object: dict, mocked_ansible_runner_run: Callable) -> None:
     responses.post(url=TEST_CALLBACK_URL, status=204)
 
     params = {
@@ -223,7 +229,7 @@ def test_ip_trunk_deletion(client: TestClient, subscription_object: dict) -> Non
         "subscription": subscription_object,
     }
 
-    with patch("lso.playbook.ansible_runner.run", new=test_ansible_runner_run) as _:
+    with patch("lso.playbook.ansible_runner.run", new=mocked_ansible_runner_run) as _:
         rv = client.request(url="/api/ip_trunk/", method=responses.DELETE, json=params)
         assert rv.status_code == 200
         response = rv.json()
@@ -237,7 +243,9 @@ def test_ip_trunk_deletion(client: TestClient, subscription_object: dict) -> Non
 
 
 @responses.activate
-def test_ip_trunk_migration(client: TestClient, subscription_object: dict, migration_object: dict) -> None:
+def test_ip_trunk_migration(
+    client: TestClient, subscription_object: dict, migration_object: dict, mocked_ansible_runner_run: Callable
+) -> None:
     responses.post(url=TEST_CALLBACK_URL, status=204)
 
     params = {
@@ -251,7 +259,7 @@ def test_ip_trunk_migration(client: TestClient, subscription_object: dict, migra
         "new_side": migration_object,
     }
 
-    with patch("lso.playbook.ansible_runner.run", new=test_ansible_runner_run) as _:
+    with patch("lso.playbook.ansible_runner.run", new=mocked_ansible_runner_run) as _:
         rv = client.post(url="/api/ip_trunk/migrate", json=params)
         assert rv.status_code == 200
         response = rv.json()

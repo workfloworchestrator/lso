@@ -12,7 +12,7 @@ run-tox-pipeline:
   stage: tox
   tags:
     - docker-executor
-  image: python:3.10
+  image: python:3.11
 
   # Change pip's cache directory to be inside the project directory since we can
   # only cache local items.

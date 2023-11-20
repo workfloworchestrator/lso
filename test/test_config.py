@@ -9,12 +9,12 @@ import pytest
 from lso import config
 
 
-def test_validate_testenv_config(config_file: str) -> None:
+def test_validate_testenv_config(data_config_filename: str) -> None:
     """Load a configuration from a file.
 
-    :param config_file: Configuration file pytest fixture
+    :param data_config_filename: Configuration file pytest fixture
     """
-    os.environ["SETTINGS_FILENAME"] = config_file
+    os.environ["SETTINGS_FILENAME"] = data_config_filename
     params = config.load()
     assert params
 

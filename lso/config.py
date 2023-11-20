@@ -10,7 +10,7 @@ import os
 from typing import TextIO
 
 import jsonschema
-from pydantic import BaseModel, DirectoryPath
+from pydantic import BaseModel
 
 CONFIG_SCHEMA = {
     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -25,7 +25,7 @@ DEFAULT_REQUEST_TIMEOUT = 10
 class Config(BaseModel):
     """Simple Config class that only contains the path to the used Ansible playbooks."""
 
-    ansible_playbooks_root_dir: DirectoryPath
+    ansible_playbooks_root_dir: str
 
 
 def load_from_file(file: TextIO) -> Config:

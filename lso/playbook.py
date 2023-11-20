@@ -18,8 +18,6 @@ from lso.config import DEFAULT_REQUEST_TIMEOUT
 
 logger = logging.getLogger(__name__)
 
-config_params = config.load()
-
 
 # enum.StrEnum is only available in python 3.11
 class PlaybookJobStatus(str, enum.Enum):
@@ -50,6 +48,7 @@ class PlaybookLaunchResponse(BaseModel):
 
 
 def get_playbook_path(playbook_name: str) -> str:
+    config_params = config.load()
     return os.path.join(config_params.ansible_playbooks_root_dir, playbook_name)
 
 

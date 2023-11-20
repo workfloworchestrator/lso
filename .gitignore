@@ -13,4 +13,7 @@ docs/vale/styles/*
 venv/
 .venv/
 
+.DS_Store # macOS
+Thumbs.db # Windows
+
 config.json
