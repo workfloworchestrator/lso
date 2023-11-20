@@ -1,14 +1,11 @@
 """Routes for handling events related to the IP trunk service."""
-from os import path
 
 from fastapi import APIRouter
 from pydantic import BaseModel, HttpUrl
 
-from lso import config
-from lso.playbook import PlaybookLaunchResponse, run_playbook
+from lso.playbook import PlaybookLaunchResponse, get_playbook_path, run_playbook
 
 router = APIRouter()
-config_params = config.load()
 
 
 class IPTrunkParams(BaseModel):
@@ -97,13 +94,9 @@ def provision_ip_trunk(params: IPTrunkProvisioningParams) -> PlaybookLaunchRespo
     }
 
     return run_playbook(
-        playbook_path=path.join(config_params.ansible_playbooks_root_dir, "iptrunks.yaml"),
-        inventory=str(
-            params.subscription["iptrunk"]["iptrunk_sides"][0]["iptrunk_side_node"]["router_fqdn"]
-            + "\n"
-            + params.subscription["iptrunk"]["iptrunk_sides"][1]["iptrunk_side_node"]["router_fqdn"]
-            + "\n"
-        ),
+        playbook_path=get_playbook_path("iptrunks.yaml"),
+        inventory=f"{params.subscription['iptrunk']['iptrunk_sides'][0]['iptrunk_side_node']['router_fqdn']}\n"
+        f"{params.subscription['iptrunk']['iptrunk_sides'][1]['iptrunk_side_node']['router_fqdn']}\n",
         extra_vars=extra_vars,
         callback=params.callback,
     )
@@ -129,13 +122,9 @@ def modify_ip_trunk(params: IPTrunkModifyParams) -> PlaybookLaunchResponse:
     }
 
     return run_playbook(
-        playbook_path=path.join(config_params.ansible_playbooks_root_dir, "iptrunks.yaml"),
-        inventory=str(
-            params.subscription["iptrunk"]["iptrunk_sides"][0]["iptrunk_side_node"]["router_fqdn"]
-            + "\n"
-            + params.subscription["iptrunk"]["iptrunk_sides"][1]["iptrunk_side_node"]["router_fqdn"]
-            + "\n"
-        ),
+        playbook_path=get_playbook_path("iptrunks.yaml"),
+        inventory=f"{params.subscription['iptrunk']['iptrunk_sides'][0]['iptrunk_side_node']['router_fqdn']}\n"
+        f"{params.subscription['iptrunk']['iptrunk_sides'][1]['iptrunk_side_node']['router_fqdn']}\n",
         extra_vars=extra_vars,
         callback=params.callback,
     )
@@ -162,13 +151,9 @@ def delete_ip_trunk(params: IPTrunkDeleteParams) -> PlaybookLaunchResponse:
     }
 
     return run_playbook(
-        playbook_path=path.join(config_params.ansible_playbooks_root_dir, "iptrunks.yaml"),
-        inventory=str(
-            params.subscription["iptrunk"]["iptrunk_sides"][0]["iptrunk_side_node"]["router_fqdn"]
-            + "\n"
-            + params.subscription["iptrunk"]["iptrunk_sides"][1]["iptrunk_side_node"]["router_fqdn"]
-            + "\n"
-        ),
+        playbook_path=get_playbook_path("iptrunks.yaml"),
+        inventory=f"{params.subscription['iptrunk']['iptrunk_sides'][0]['iptrunk_side_node']['router_fqdn']}\n"
+        f"{params.subscription['iptrunk']['iptrunk_sides'][1]['iptrunk_side_node']['router_fqdn']}\n",
         extra_vars=extra_vars,
         callback=params.callback,
     )
@@ -189,7 +174,7 @@ def check_ip_trunk(params: IPTrunkCheckParams) -> PlaybookLaunchResponse:
     # writing tests.
 
     return run_playbook(
-        playbook_path=path.join(config_params.ansible_playbooks_root_dir, "iptrunks_checks.yaml"),
+        playbook_path=get_playbook_path("iptrunks_checks.yaml"),
         inventory=params.subscription["iptrunk"]["iptrunk_sides"][0]["iptrunk_side_node"]["router_fqdn"],
         extra_vars=extra_vars,
         callback=params.callback,
@@ -221,15 +206,10 @@ def migrate_ip_trunk(params: IPTrunkMigrationParams) -> PlaybookLaunchResponse:
     }
 
     return run_playbook(
-        playbook_path=path.join(config_params.ansible_playbooks_root_dir, "iptrunks_migration.yaml"),
-        inventory=str(
-            params.subscription["iptrunk"]["iptrunk_sides"][0]["iptrunk_side_node"]["router_fqdn"]
-            + "\n"
-            + params.subscription["iptrunk"]["iptrunk_sides"][1]["iptrunk_side_node"]["router_fqdn"]
-            + "\n"
-            + params.new_side["new_node"]["router"]["router_fqdn"]
-            + "\n"
-        ),
+        playbook_path=get_playbook_path("iptrunks_migration.yaml"),
+        inventory=f"{params.subscription['iptrunk']['iptrunk_sides'][0]['iptrunk_side_node']['router_fqdn']}\n"
+        f"{params.subscription['iptrunk']['iptrunk_sides'][1]['iptrunk_side_node']['router_fqdn']}\n"
+        f"{params.new_side['new_node']['router']['router_fqdn']}\n",
         extra_vars=extra_vars,
         callback=params.callback,
     )

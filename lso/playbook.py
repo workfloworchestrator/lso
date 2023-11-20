@@ -2,6 +2,7 @@
 import enum
 import json
 import logging
+import os
 import threading
 import uuid
 from typing import Any
@@ -12,9 +13,12 @@ import xmltodict
 from dictdiffer import diff
 from pydantic import BaseModel, HttpUrl
 
+from lso import config
 from lso.config import DEFAULT_REQUEST_TIMEOUT
 
 logger = logging.getLogger(__name__)
+
+config_params = config.load()
 
 
 # enum.StrEnum is only available in python 3.11
@@ -43,6 +47,10 @@ class PlaybookLaunchResponse(BaseModel):
     job_id: str = ""
     #: Information on a job.
     info: str = ""
+
+
+def get_playbook_path(playbook_name: str) -> str:
+    return os.path.join(config_params.ansible_playbooks_root_dir, playbook_name)
 
 
 def playbook_launch_success(job_id: str) -> PlaybookLaunchResponse:
@@ -156,7 +164,7 @@ def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, invent
     }
 
     request_result = requests.post(callback, json=payload, timeout=DEFAULT_REQUEST_TIMEOUT)
-    assert request_result.status_code == 200
+    assert request_result.status_code == 200, f"Callback failed: {request_result.text}"
 
 
 def run_playbook(playbook_path: str, extra_vars: dict, inventory: str, callback: HttpUrl) -> PlaybookLaunchResponse:

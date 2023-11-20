@@ -1,13 +1,12 @@
 """Routes for handling device/base_config-related requests."""
-import os
 
 from fastapi import APIRouter
 from pydantic import BaseModel, HttpUrl
 
-from lso import config, playbook
+from lso import playbook
+from lso.playbook import get_playbook_path
 
 router = APIRouter()
-config_params = config.load()
 
 
 class NodeProvisioningParams(BaseModel):
@@ -51,10 +50,8 @@ async def provision_node(params: NodeProvisioningParams) -> playbook.PlaybookLau
         "commit_comment": f"GSO_PROCESS_ID: {params.process_id} - TT_NUMBER: {params.tt_number} - Deploy base config",
     }
 
-    playbook_path = os.path.join(config_params.ansible_playbooks_root_dir, "base_config.yaml")
-
     return playbook.run_playbook(
-        playbook_path=playbook_path,
+        playbook_path=get_playbook_path("base_config.yaml"),
         inventory=f"{params.subscription['router']['router_fqdn']}",
         extra_vars=extra_vars,
         callback=params.callback,

@@ -50,6 +50,6 @@ def load() -> Config:
 
     :return: a dict containing the parsed configuration parameters
     """
-    assert "SETTINGS_FILENAME" in os.environ
+    assert "SETTINGS_FILENAME" in os.environ, "Environment variable SETTINGS_FILENAME not set"
     with open(os.environ["SETTINGS_FILENAME"], encoding="utf-8") as file:
         return load_from_file(file)
