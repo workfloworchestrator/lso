@@ -4,19 +4,20 @@ ARG ARTIFACT_VERSION
 
 WORKDIR /app
 
-RUN apk add --update --no-cache gcc libc-dev libffi-dev curl vim ansible bash openssh && \
-    addgroup -S appgroup && adduser -S appuser -G appgroup -h /app
+RUN apk add --update --no-cache gcc libc-dev libffi-dev curl vim bash openssh
+    
 
 
 # Create ansible.cfg file and set custom paths for collections and roles
 RUN mkdir -p /app/gap/collections /app/gap/roles /etc/ansible && \
     printf "[defaults]\ncollections_paths = /app/gap/collections\nroles_path = /app/gap/roles" > /etc/ansible/ansible.cfg
 
-RUN pip install \
+RUN pip3 install \
     --pre \
     --extra-index-url https://artifactory.software.geant.org/artifactory/api/pypi/geant-swd-pypi/simple \
     --target /app \
     goat-lso==${ARTIFACT_VERSION} && \
+    pip3 install ncclient xmltodict junos-eznc jxmlease ansible ansible_merge_vars && \
     ansible-galaxy collection install  \
                    community.general  \
                    juniper.device \
@@ -24,8 +25,7 @@ RUN pip install \
                    geant.gap_ansible -p /app/gap/collections && \
     ansible-galaxy role install Juniper.junos -p /app/gap/roles
 
-RUN chown -R appuser:appgroup /app
-USER appuser
+
 EXPOSE 8000
 ENTRYPOINT []
 CMD ["python", "-m",  "uvicorn", "lso.app:app", "--host", "0.0.0.0", "--port", "8000"]
