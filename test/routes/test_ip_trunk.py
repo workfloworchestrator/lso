@@ -1,5 +1,5 @@
 import time
-from typing import Callable
+from collections.abc import Callable
 from unittest.mock import patch
 
 import jsonschema
@@ -66,7 +66,10 @@ def subscription_object(faker: Faker) -> dict:
                     "iptrunk_side_ae_members": ["ge-0/0/0", "ge-0/0/1"],
                     "subscription_instance_id": faker.uuid4(),
                     "iptrunk_side_ae_geant_a_sid": "SID-11112",
-                    "iptrunk_side_ae_members_description": [faker.pystr(), faker.pystr()],
+                    "iptrunk_side_ae_members_description": [
+                        faker.pystr(),
+                        faker.pystr(),
+                    ],
                 },
                 {
                     "name": "IptrunkSideBlock",
@@ -110,7 +113,10 @@ def subscription_object(faker: Faker) -> dict:
                     "iptrunk_side_ae_members": ["ge-0/0/0", "ge-0/0/1"],
                     "subscription_instance_id": faker.uuid4(),
                     "iptrunk_side_ae_geant_a_sid": "SID-11112",
-                    "iptrunk_side_ae_members_description": [faker.pystr(), faker.pystr()],
+                    "iptrunk_side_ae_members_description": [
+                        faker.pystr(),
+                        faker.pystr(),
+                    ],
                 },
             ],
         },
@@ -160,7 +166,7 @@ def migration_object(faker: Faker) -> dict:
 
 @responses.activate
 def test_ip_trunk_provisioning(
-    client: TestClient, subscription_object: dict, mocked_ansible_runner_run: Callable
+    client: TestClient, subscription_object: dict, mocked_ansible_runner_run: Callable,
 ) -> None:
     responses.post(url=TEST_CALLBACK_URL, status=200)
 
@@ -189,7 +195,7 @@ def test_ip_trunk_provisioning(
 
 @responses.activate
 def test_ip_trunk_modification(
-    client: TestClient, subscription_object: dict, mocked_ansible_runner_run: Callable
+    client: TestClient, subscription_object: dict, mocked_ansible_runner_run: Callable,
 ) -> None:
     responses.post(url=TEST_CALLBACK_URL, status=200)
 
@@ -244,7 +250,10 @@ def test_ip_trunk_deletion(client: TestClient, subscription_object: dict, mocked
 
 @responses.activate
 def test_ip_trunk_migration(
-    client: TestClient, subscription_object: dict, migration_object: dict, mocked_ansible_runner_run: Callable
+    client: TestClient,
+    subscription_object: dict,
+    migration_object: dict,
+    mocked_ansible_runner_run: Callable,
 ) -> None:
     responses.post(url=TEST_CALLBACK_URL, status=204)
 

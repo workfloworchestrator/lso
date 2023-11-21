@@ -4,9 +4,9 @@ setup(
     name="goat-lso",
     version="0.1",
     author="GÉANT Orchestration & Automation Team",
-    author_email="TBD",
+    author_email="goat@geant.org",
     description="Lightweight Service Orchestrator",
-    url="https://gitlab.geant.org/goat/gap/lso",
+    url="https://gitlab.software.geant.org/goat/gap/lso",
     packages=find_packages(),
     install_requires=[
         "jsonschema~=4.18.0",
@@ -34,11 +34,10 @@ setup(
     license_files=("LICENSE.txt",),
     classifiers=[
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Development Status :: 2 - Pre-Alpha",
     ],
-    python_requires=">=3.10",
+    python_requires=">=3.11",
 )

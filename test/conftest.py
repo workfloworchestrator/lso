@@ -1,8 +1,9 @@
 import json
 import os
 import tempfile
+from collections.abc import Callable, Generator
 from io import StringIO
-from typing import Any, Callable, Generator
+from typing import Any
 
 import pytest
 from faker import Faker
@@ -11,7 +12,7 @@ from fastapi.testclient import TestClient
 import lso
 
 
-@pytest.fixture
+@pytest.fixture()
 def mocked_ansible_runner_run() -> Callable:
     class Runner:
         def __init__(self) -> None:
@@ -19,7 +20,7 @@ def mocked_ansible_runner_run() -> Callable:
             self.rc = 0
             self.stdout = StringIO("[{'step one': 'results'}, {'step two': 2}]")
 
-    def run(*args: Any, **kwargs: Any) -> Runner:
+    def run(*args: Any, **kwargs: Any) -> Runner:  # noqa: ARG001
         return Runner()
 
     return run
@@ -44,11 +45,11 @@ def data_config_filename(configuration_data: dict[str, str]) -> Generator[str, A
 
 
 @pytest.fixture(scope="session")
-def client(data_config_filename: str) -> Generator[TestClient, Any, None]:
+def client(data_config_filename: str) -> TestClient:
     """Return a client that can be used to test the server."""
     os.environ["SETTINGS_FILENAME"] = data_config_filename
     app = lso.create_app()
-    yield TestClient(app)  # wait here until calling context ends
+    return TestClient(app)  # wait here until calling context ends
 
 
 @pytest.fixture(scope="session")

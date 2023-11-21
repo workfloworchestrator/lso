@@ -1,4 +1,5 @@
 """Set of tests that verify correct config is accepted and incorrect config is not."""
+
 import io
 import json
 import os
@@ -20,7 +21,12 @@ def test_validate_testenv_config(data_config_filename: str) -> None:
 
 
 @pytest.mark.parametrize(
-    "bad_config", [{"name": "bad version", "version": 123}, {"name": "missing version"}, {"version": "missing name"}]
+    "bad_config",
+    [
+        {"name": "bad version", "version": 123},
+        {"name": "missing version"},
+        {"version": "missing name"},
+    ],
 )
 def test_bad_config(bad_config: dict) -> None:
     with io.StringIO(json.dumps(bad_config)) as file:

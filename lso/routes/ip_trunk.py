@@ -28,7 +28,7 @@ class IPTrunkProvisioningParams(IPTrunkParams):
     #: also making it an optional parameter.
     dry_run: bool | None = True
     #: The type of object that is changed.
-    object: str
+    object: str  # noqa: A003
 
 
 class IPTrunkModifyParams(IPTrunkParams):

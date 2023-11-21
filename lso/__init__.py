@@ -1,4 +1,5 @@
 """Automatically invoked app factory."""
+
 import logging
 
 from fastapi import FastAPI
@@ -13,7 +14,6 @@ def create_app() -> FastAPI:
 
     :return: a new flask app instance
     """
-
     app = FastAPI()
     # app = FastAPI(dependencies=[Depends(get_query_token)])
 

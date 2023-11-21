@@ -1,5 +1,5 @@
 import time
-from typing import Callable
+from collections.abc import Callable
 from unittest.mock import patch
 
 import jsonschema
@@ -31,7 +31,10 @@ def test_router_provisioning(client: TestClient, faker: Faker, mocked_ansible_ru
                 "lo_iso_address": "1.2.3.4.5.6",
                 "snmp_location": "city,country[1.2,3.4]",
                 "si_ipv4_network": faker.ipv4() + "/24",
-                "ias_lt_network": {"v4": faker.ipv4() + "/24", "v6": faker.ipv6() + "/64"},
+                "ias_lt_network": {
+                    "v4": faker.ipv4() + "/24",
+                    "v6": faker.ipv6() + "/64",
+                },
                 "site_country_code": faker.country_code(),
                 "site_city": faker.city(),
                 "site_latitude": float(faker.latitude()),

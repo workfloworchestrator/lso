@@ -1,9 +1,0 @@
-[MAIN]
-extension-pkg-whitelist=pydantic
-
-[MISCELLANEOUS]
-
-# List of note tags to take in consideration, separated by a comma.
-# Note that it does not contain TODO, only the default FIXME and XXX
-notes=FIXME,
-      XXX

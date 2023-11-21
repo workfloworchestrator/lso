@@ -1,4 +1,5 @@
 """Module that gathers common API responses and data models."""
+
 import enum
 import json
 import logging
@@ -137,7 +138,13 @@ def _process_json_output(runner: ansible_runner.Runner) -> list[dict[Any, Any]]:
     return parsed_output
 
 
-def _run_playbook_proc(job_id: str, playbook_path: str, extra_vars: dict, inventory: list[str], callback: str) -> None:
+def _run_playbook_proc(
+    job_id: str,
+    playbook_path: str,
+    extra_vars: dict,
+    inventory: list[str],
+    callback: str,
+) -> None:
     """Run a playbook, internal function.
 
     :param str job_id: Identifier of the job that's executed.
@@ -177,7 +184,6 @@ def run_playbook(playbook_path: str, extra_vars: dict, inventory: str, callback:
     :return: Result of playbook launch, this could either be successful or unsuccessful.
     :rtype: :class:`PlaybookLaunchResponse`
     """
-
     job_id = str(uuid.uuid4())
     thread = threading.Thread(
         target=_run_playbook_proc,

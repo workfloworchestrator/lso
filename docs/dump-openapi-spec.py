@@ -4,21 +4,19 @@ import os
 from fastapi.testclient import TestClient
 import lso
 
-config_filename = os.path.join(
-    os.path.dirname(__file__),
-    '..', 'config.json.example')
+config_filename = os.path.join(os.path.dirname(__file__), "..", "config.json.example")
 
 output_filename = os.path.join(
-    os.path.dirname(__file__),
-    'source', '_static', 'openapi.json')
+    os.path.dirname(__file__), "source", "_static", "openapi.json"
+)
 
-os.environ['SETTINGS_FILENAME'] = config_filename
+os.environ["SETTINGS_FILENAME"] = config_filename
 app = lso.create_app()
 client = TestClient(app)
-rsp = client.get('/openapi.json')
+rsp = client.get("/openapi.json")
 openapi_doc = json.dumps(rsp.json(), indent=2)
 
-with open(output_filename, 'w') as f:
+with open(output_filename, "w") as f:
     f.write(openapi_doc)
 
-print(f'wrote {output_filename}')
+print(f"wrote {output_filename}")

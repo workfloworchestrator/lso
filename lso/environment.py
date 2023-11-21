@@ -7,16 +7,22 @@ import os
 LOGGING_DEFAULT_CONFIG = {
     "version": 1,
     "disable_existing_loggers": False,
-    "formatters": {"simple": {"format": "%(asctime)s - %(name)s " "(%(lineno)d) - %(levelname)s - %(message)s"}},
+    "formatters": {"simple": {"format": "%(asctime)s - %(name)s (%(lineno)d) - %(levelname)s - %(message)s"}},
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
             "level": "DEBUG",
             "formatter": "simple",
             "stream": "ext://sys.stdout",
-        }
+        },
     },
-    "loggers": {"resource_management": {"level": "DEBUG", "handlers": ["console"], "propagate": False}},
+    "loggers": {
+        "resource_management": {
+            "level": "DEBUG",
+            "handlers": ["console"],
+            "propagate": False,
+        },
+    },
     "root": {"level": "INFO", "handlers": ["console"]},
 }
 
