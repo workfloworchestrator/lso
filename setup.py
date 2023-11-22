@@ -12,7 +12,7 @@ setup(
         "jsonschema~=4.18.0",
         "fastapi~=0.100.0",
         "pydantic~=2.0.2",
-        "ansible~=9.0.1",
+        "ansible~=8.1.0",
         "requests~=2.31.0",
         "uvicorn~=0.22.0",
         "ncclient~=0.6.13",
