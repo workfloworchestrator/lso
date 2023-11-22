@@ -17,6 +17,7 @@ RUN pip install \
     --extra-index-url https://artifactory.software.geant.org/artifactory/api/pypi/geant-swd-pypi/simple \
     --target /app \
     goat-lso==${ARTIFACT_VERSION} && \
+    pip install ansible && \
     ansible-galaxy collection install  \
                    community.general  \
                    juniper.device \
