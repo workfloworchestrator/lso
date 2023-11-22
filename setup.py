@@ -23,7 +23,7 @@ setup(
         "ansible-runner~=2.3.3",
         "junos-eznc~=2.6.8",
         "jxmlease~=1.0.3",
-        "ansible-core~=2.16.0",
+        "ansible-core~=2.15.1",
         "ansible_merge_vars~=5.0.0",
         "httpx~=0.25.1",
         "GitPython~=3.1.40",
