@@ -12,12 +12,11 @@ RUN apk add --update --no-cache gcc libc-dev libffi-dev curl vim bash openssh
 RUN mkdir -p /app/gap/collections /app/gap/roles /etc/ansible && \
     printf "[defaults]\ncollections_paths = /app/gap/collections\nroles_path = /app/gap/roles" > /etc/ansible/ansible.cfg
 
-RUN pip3 install \
+RUN pip install \
     --pre \
     --extra-index-url https://artifactory.software.geant.org/artifactory/api/pypi/geant-swd-pypi/simple \
     --target /app \
     goat-lso==${ARTIFACT_VERSION} && \
-    pip3 install ncclient xmltodict junos-eznc jxmlease ansible ansible_merge_vars && \
     ansible-galaxy collection install  \
                    community.general  \
                    juniper.device \
