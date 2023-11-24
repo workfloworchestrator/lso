@@ -5,6 +5,7 @@ from unittest.mock import patch
 import jsonschema
 import responses
 from faker import Faker
+from fastapi import status
 from starlette.testclient import TestClient
 
 from lso.playbook import PlaybookLaunchResponse
@@ -47,7 +48,7 @@ def test_router_provisioning(client: TestClient, faker: Faker, mocked_ansible_ru
 
     with patch("lso.playbook.ansible_runner.run", new=mocked_ansible_runner_run) as _:
         rv = client.post("/api/router/", json=params)
-        assert rv.status_code == 200
+        assert rv.status_code == status.HTTP_200_OK
         response = rv.json()
         # wait two seconds for the run thread to finish
         time.sleep(2)

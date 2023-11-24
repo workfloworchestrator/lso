@@ -15,7 +15,6 @@ def create_app() -> FastAPI:
     :return: a new flask app instance
     """
     app = FastAPI()
-    # app = FastAPI(dependencies=[Depends(get_query_token)])
 
     app.add_middleware(
         CORSMiddleware,

@@ -7,7 +7,7 @@ Config file location can also be loaded from environment variable `SETTINGS_FILE
 
 import json
 import os
-from typing import TextIO
+from pathlib import Path
 
 import jsonschema
 from pydantic import BaseModel
@@ -28,17 +28,17 @@ class Config(BaseModel):
     ansible_playbooks_root_dir: str
 
 
-def load_from_file(file: TextIO) -> Config:
+def load_from_file(file: Path) -> Config:
     """Load, validate and return configuration parameters.
 
     Input is validated against this jsonschema:
 
     .. asjson:: lso.config.CONFIG_SCHEMA
 
-    :param file: file-like object that produces the config file
-    :return: a dict containing the parsed configuration parameters
+    :param file: :class:`Path` object that produces the config file.
+    :return: a dict containing the parsed configuration parameters.
     """
-    config = json.loads(file.read())
+    config = json.loads(file.read_text())
     jsonschema.validate(config, CONFIG_SCHEMA)
     return Config(**config)
 
@@ -50,6 +50,5 @@ def load() -> Config:
 
     :return: a dict containing the parsed configuration parameters
     """
-    assert "SETTINGS_FILENAME" in os.environ, "Environment variable SETTINGS_FILENAME not set"
-    with open(os.environ["SETTINGS_FILENAME"], encoding="utf-8") as file:
-        return load_from_file(file)
+    assert "SETTINGS_FILENAME" in os.environ, "Environment variable SETTINGS_FILENAME not set"  # noqa: S101
+    return load_from_file(Path(os.environ["SETTINGS_FILENAME"]))

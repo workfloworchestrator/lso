@@ -1,8 +1,9 @@
 """Set of tests that verify correct config is accepted and incorrect config is not."""
 
-import io
 import json
 import os
+import tempfile
+from pathlib import Path
 
 import jsonschema
 import pytest
@@ -29,7 +30,7 @@ def test_validate_testenv_config(data_config_filename: str) -> None:
     ],
 )
 def test_bad_config(bad_config: dict) -> None:
-    with io.StringIO(json.dumps(bad_config)) as file:
-        file.seek(0)  # rewind file position to the beginning
+    with tempfile.NamedTemporaryFile(mode="w") as file:
+        Path(file.name).write_text(json.dumps(bad_config))
         with pytest.raises(jsonschema.ValidationError):
-            config.load_from_file(file)
+            config.load_from_file(Path(file.name))

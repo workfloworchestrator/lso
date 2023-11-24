@@ -36,7 +36,8 @@ ignore = [
     "N805",
     "PLR0913",
     "PLR0904",
-    "PLW1514"
+    "PLW1514",
+    "S104"
 ]
 line-length = 120
 select = [
@@ -95,7 +96,7 @@ target-version = "py311"
 ban-relative-imports = "all"
 
 [tool.ruff.per-file-ignores]
-"test/*" = ["D", "S101", "PLR2004"]
+"test/*" = ["D", "S101"]
 "setup.py" = ["D100"]
 
 [tool.ruff.isort]

@@ -3,6 +3,7 @@
 import json
 import logging.config
 import os
+from pathlib import Path
 
 LOGGING_DEFAULT_CONFIG = {
     "version": 1,
@@ -35,7 +36,7 @@ def setup_logging() -> None:
     logging_config = LOGGING_DEFAULT_CONFIG
     if "LOGGING_CONFIG" in os.environ:
         filename = os.environ["LOGGING_CONFIG"]
-        with open(filename, encoding="utf-8") as file:
-            logging_config = json.loads(file.read())
+        config_file = Path(filename).read_text()
+        logging_config = json.loads(config_file)
 
     logging.config.dictConfig(logging_config)

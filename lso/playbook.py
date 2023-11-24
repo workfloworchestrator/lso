@@ -3,15 +3,16 @@
 import enum
 import json
 import logging
-import os
 import threading
 import uuid
+from pathlib import Path
 from typing import Any
 
 import ansible_runner
 import requests
 import xmltodict
 from dictdiffer import diff
+from fastapi import status
 from pydantic import BaseModel, HttpUrl
 
 from lso import config
@@ -48,9 +49,10 @@ class PlaybookLaunchResponse(BaseModel):
     info: str = ""
 
 
-def get_playbook_path(playbook_name: str) -> str:
+def get_playbook_path(playbook_name: str) -> Path:
+    """Get the path of a playbook on the local filesystem."""
     config_params = config.load()
-    return os.path.join(config_params.ansible_playbooks_root_dir, playbook_name)
+    return Path(config_params.ansible_playbooks_root_dir) / playbook_name
 
 
 def playbook_launch_success(job_id: str) -> PlaybookLaunchResponse:
@@ -121,7 +123,7 @@ def _process_json_output(runner: ansible_runner.Runner) -> list[dict[Any, Any]]:
                     before_parsed = xmltodict.parse(task_result["diff"]["before"])
                     after_parsed = xmltodict.parse(task_result["diff"]["after"])
                     #  Only leave the diff in the resulting output
-                    task_result["diff"] = list(diff(before_parsed, after_parsed))[0]
+                    task_result["diff"] = next(iter(diff(before_parsed, after_parsed)))
 
                 if bool(task_result):
                     #  Only add the event if there are any relevant keys left.
@@ -170,13 +172,15 @@ def _run_playbook_proc(
     }
 
     request_result = requests.post(callback, json=payload, timeout=DEFAULT_REQUEST_TIMEOUT)
-    assert request_result.status_code == 200, f"Callback failed: {request_result.text}"
+    if request_result.status_code != status.HTTP_200_OK:
+        msg = f"Callback failed: {request_result.text}"
+        logger.error(msg)
 
 
-def run_playbook(playbook_path: str, extra_vars: dict, inventory: str, callback: HttpUrl) -> PlaybookLaunchResponse:
+def run_playbook(playbook_path: Path, extra_vars: dict, inventory: str, callback: HttpUrl) -> PlaybookLaunchResponse:
     """Run an Ansible playbook against a specified inventory.
 
-    :param str playbook_path: playbook to be executed.
+    :param Path playbook_path: playbook to be executed.
     :param dict extra_vars: Any extra vars needed for the playbook to run.
     :param [str] inventory: The inventory that the playbook is executed against.
     :param :class:`HttpUrl` callback: Callback URL where the playbook should send a status update when execution is
@@ -189,7 +193,7 @@ def run_playbook(playbook_path: str, extra_vars: dict, inventory: str, callback:
         target=_run_playbook_proc,
         kwargs={
             "job_id": job_id,
-            "playbook_path": playbook_path,
+            "playbook_path": str(playbook_path),
             "inventory": inventory,
             "extra_vars": extra_vars,
             "callback": callback,
