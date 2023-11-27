@@ -18,7 +18,9 @@ RUN pip install \
 RUN ansible-galaxy install \
                    -r ansible-galaxy-requirements.yaml \
                    -p /app/gap/ansible
-
+RUN ansible-galaxy collection install \
+                   -r ansible-galaxy-requirements.yaml \
+                   -p /app/gap/ansible
 EXPOSE 8000
 ENTRYPOINT []
 CMD ["python", "-m",  "uvicorn", "lso.app:app", "--host", "0.0.0.0", "--port", "8000"]
