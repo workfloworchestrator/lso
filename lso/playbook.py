@@ -1,10 +1,10 @@
 """Module that gathers common API responses and data models."""
 
-import enum
 import json
 import logging
 import threading
 import uuid
+from enum import StrEnum, auto
 from pathlib import Path
 from typing import Any
 
@@ -21,14 +21,13 @@ from lso.config import DEFAULT_REQUEST_TIMEOUT
 logger = logging.getLogger(__name__)
 
 
-# enum.StrEnum is only available in python 3.11
-class PlaybookJobStatus(str, enum.Enum):
+class PlaybookJobStatus(StrEnum):
     """Enumerator for status codes of a playbook job that's running."""
 
     #: All is well.
-    OK = "ok"
+    OK = auto()
     #: An error has occurred.
-    ERROR = "error"
+    ERROR = auto()
 
 
 class PlaybookLaunchResponse(BaseModel):

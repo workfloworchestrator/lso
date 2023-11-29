@@ -36,7 +36,10 @@ setup(
         "Programming Language :: Python :: 3.11",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 3 - Alpha",
+        "Framework :: FastAPI",
+        "Intended Audience :: System Administrators",
+        "Intended Audience :: Telecommunications Industry",
     ],
     python_requires=">=3.11",
 )
