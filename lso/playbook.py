@@ -176,12 +176,17 @@ def _run_playbook_proc(
         logger.error(msg)
 
 
-def run_playbook(playbook_path: Path, extra_vars: dict, inventory: str, callback: HttpUrl) -> PlaybookLaunchResponse:
+def run_playbook(
+    playbook_path: Path,
+    extra_vars: dict[str, Any],
+    inventory: dict[str, Any] | str,
+    callback: HttpUrl,
+) -> PlaybookLaunchResponse:
     """Run an Ansible playbook against a specified inventory.
 
     :param Path playbook_path: playbook to be executed.
-    :param dict extra_vars: Any extra vars needed for the playbook to run.
-    :param [str] inventory: The inventory that the playbook is executed against.
+    :param dict[str, Any] extra_vars: Any extra vars needed for the playbook to run.
+    :param dict[str, Any] | str inventory: The inventory that the playbook is executed against.
     :param :class:`HttpUrl` callback: Callback URL where the playbook should send a status update when execution is
         completed. This is used for workflow-orchestrator to continue with the next step in a workflow.
     :return: Result of playbook launch, this could either be successful or unsuccessful.

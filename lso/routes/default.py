@@ -8,7 +8,7 @@ from importlib import metadata
 from fastapi import APIRouter
 from pydantic import BaseModel, constr
 
-API_VERSION = "0.1"
+API_VERSION = "0.2"
 VersionString = constr(pattern=r"\d+\.\d+")
 
 router = APIRouter()
