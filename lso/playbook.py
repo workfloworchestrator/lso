@@ -143,7 +143,7 @@ def _run_playbook_proc(
     job_id: str,
     playbook_path: str,
     extra_vars: dict,
-    inventory: list[str],
+    inventory: dict[str, Any] | str,
     callback: str,
 ) -> None:
     """Run a playbook, internal function.
@@ -152,7 +152,7 @@ def _run_playbook_proc(
     :param str playbook_path: Ansible playbook to be executed.
     :param dict extra_vars: Extra variables passed to the Ansible playbook.
     :param str callback: Callback URL to PUT to when execution is completed.
-    :param [str] inventory: Ansible inventory to run the playbook against.
+    :param dict[str, Any] | str inventory: Ansible inventory to run the playbook against.
     """
     ansible_playbook_run = ansible_runner.run(
         playbook=playbook_path,
@@ -192,6 +192,14 @@ def run_playbook(
     :return: Result of playbook launch, this could either be successful or unsuccessful.
     :rtype: :class:`PlaybookLaunchResponse`
     """
+    if not Path.exists(playbook_path):
+        msg = f"Filename '{playbook_path}' does not exist."
+        return playbook_launch_error(msg)
+
+    if not ansible_runner.utils.isinventory(inventory):
+        msg = "Invalid inventory provided. Should be a string, or JSON object."
+        return playbook_launch_error(msg)
+
     job_id = str(uuid.uuid4())
     thread = threading.Thread(
         target=_run_playbook_proc,
