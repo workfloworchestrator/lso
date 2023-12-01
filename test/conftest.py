@@ -4,6 +4,7 @@ import tempfile
 from collections.abc import Callable, Generator
 from io import StringIO
 from typing import Any
+from unittest.mock import patch
 
 import pytest
 from faker import Faker
@@ -55,3 +56,12 @@ def client(data_config_filename: str) -> TestClient:
 @pytest.fixture(scope="session")
 def faker() -> Faker:
     return Faker(locale="en_GB")
+
+
+@pytest.fixture(scope="session", autouse=True)
+def path_exists() -> bool:
+    """A patch that prevents all test requests from failing since the playbook file does not exist on the filesystem."""
+    with patch("pathlib.Path.exists") as mock_patch:
+        mock_patch.return_value = True
+
+        yield mock_patch

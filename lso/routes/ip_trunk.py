@@ -1,6 +1,6 @@
 """Routes for handling events related to the IP trunk service."""
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Response
 from pydantic import BaseModel, HttpUrl
 
 from lso.playbook import PlaybookLaunchResponse, get_playbook_path, run_playbook
@@ -72,7 +72,7 @@ class IPTrunkDeleteParams(IPTrunkParams):
 
 
 @router.post("/")
-def provision_ip_trunk(params: IPTrunkProvisioningParams) -> PlaybookLaunchResponse:
+def provision_ip_trunk(params: IPTrunkProvisioningParams, response: Response) -> PlaybookLaunchResponse:
     """Launch a playbook to provision a new IP trunk service.
 
     The response will contain either a job ID, or error information.
@@ -80,6 +80,7 @@ def provision_ip_trunk(params: IPTrunkProvisioningParams) -> PlaybookLaunchRespo
     :param params: The parameters that define the new subscription object that
         is to be deployed.
     :type params: :class:`IPTrunkProvisioningParams`
+    :param Response response: A FastAPI response used for returning error codes if needed
     :return: Response from the Ansible runner, including a run ID.
     :rtype: :class:`lso.playbook.PlaybookLaunchResponse`
     """
@@ -99,15 +100,17 @@ def provision_ip_trunk(params: IPTrunkProvisioningParams) -> PlaybookLaunchRespo
         f"{params.subscription['iptrunk']['iptrunk_sides'][1]['iptrunk_side_node']['router_fqdn']}\n",
         extra_vars=extra_vars,
         callback=params.callback,
+        response=response,
     )
 
 
 @router.put("/")
-def modify_ip_trunk(params: IPTrunkModifyParams) -> PlaybookLaunchResponse:
+def modify_ip_trunk(params: IPTrunkModifyParams, response: Response) -> PlaybookLaunchResponse:
     """Launch a playbook that modifies an existing IP trunk service.
 
     :param params: The parameters that define the change in configuration.
     :type params: :class:`IPTrunkModifyParams`
+    :param Response response: A FastAPI response used for returning error codes if needed
     :return: Response from the Ansible runner, including a run ID.
     :rtype: :class:`lso.playbook.PlaybookLaunchResponse`
     """
@@ -127,16 +130,18 @@ def modify_ip_trunk(params: IPTrunkModifyParams) -> PlaybookLaunchResponse:
         f"{params.subscription['iptrunk']['iptrunk_sides'][1]['iptrunk_side_node']['router_fqdn']}\n",
         extra_vars=extra_vars,
         callback=params.callback,
+        response=response,
     )
 
 
 @router.delete("/")
-def delete_ip_trunk(params: IPTrunkDeleteParams) -> PlaybookLaunchResponse:
+def delete_ip_trunk(params: IPTrunkDeleteParams, response: Response) -> PlaybookLaunchResponse:
     """Launch a playbook that deletes an existing IP trunk service.
 
     :param params: Parameters that define the subscription that should get
         terminated.
     :type params: :class:`IPTrunkDeleteParams`
+    :param Response response: A FastAPI response used for returning error codes if needed
     :return: Response from the Ansible runner, including a run ID.
     :rtype: :class:`lso.playbook.PlaybookLaunchResponse`
     """
@@ -156,16 +161,18 @@ def delete_ip_trunk(params: IPTrunkDeleteParams) -> PlaybookLaunchResponse:
         f"{params.subscription['iptrunk']['iptrunk_sides'][1]['iptrunk_side_node']['router_fqdn']}\n",
         extra_vars=extra_vars,
         callback=params.callback,
+        response=response,
     )
 
 
 @router.post("/perform_check")
-def check_ip_trunk(params: IPTrunkCheckParams) -> PlaybookLaunchResponse:
+def check_ip_trunk(params: IPTrunkCheckParams, response: Response) -> PlaybookLaunchResponse:
     """Launch a playbook that performs a check on an IP trunk service instance.
 
     :param params: Parameters that define the check that is going to be
         executed, including on which relevant subscription.
     :type params: :class:`IPTrunkCheckParams`
+    :param Response response: A FastAPI response used for returning error codes if needed
     :return: Response from the Ansible runner, including a run ID.
     :rtype: :class:`lso.playbook.PlaybookLaunchResponse`
     """
@@ -178,17 +185,19 @@ def check_ip_trunk(params: IPTrunkCheckParams) -> PlaybookLaunchResponse:
         inventory=params.subscription["iptrunk"]["iptrunk_sides"][0]["iptrunk_side_node"]["router_fqdn"],
         extra_vars=extra_vars,
         callback=params.callback,
+        response=response,
     )
 
 
 @router.post("/migrate")
-def migrate_ip_trunk(params: IPTrunkMigrationParams) -> PlaybookLaunchResponse:
+def migrate_ip_trunk(params: IPTrunkMigrationParams, response: Response) -> PlaybookLaunchResponse:
     """Launch a playbook to provision a new IP trunk service.
 
     The response will contain either a job ID, or error information.
 
     :param params: The parameters that define the new subscription object that is to be migrated.
     :type params: :class:`IPTrunkMigrationParams`
+    :param Response response: A FastAPI response used for returning error codes if needed
     :return: Response from the Ansible runner, including a run ID.
     :rtype: :class:`lso.playbook.PlaybookLaunchResponse`
     """
@@ -212,4 +221,5 @@ def migrate_ip_trunk(params: IPTrunkMigrationParams) -> PlaybookLaunchResponse:
         f"{params.new_side['new_node']['router']['router_fqdn']}\n",
         extra_vars=extra_vars,
         callback=params.callback,
+        response=response,
     )

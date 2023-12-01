@@ -12,7 +12,7 @@ import ansible_runner
 import requests
 import xmltodict
 from dictdiffer import diff
-from fastapi import status
+from fastapi import Response, status
 from pydantic import BaseModel, HttpUrl
 
 from lso import config
@@ -181,6 +181,7 @@ def run_playbook(
     extra_vars: dict[str, Any],
     inventory: dict[str, Any] | str,
     callback: HttpUrl,
+    response: Response,
 ) -> PlaybookLaunchResponse:
     """Run an Ansible playbook against a specified inventory.
 
@@ -193,10 +194,12 @@ def run_playbook(
     :rtype: :class:`PlaybookLaunchResponse`
     """
     if not Path.exists(playbook_path):
+        response.status_code = status.HTTP_404_NOT_FOUND
         msg = f"Filename '{playbook_path}' does not exist."
         return playbook_launch_error(msg)
 
     if not ansible_runner.utils.isinventory(inventory):
+        response.status_code = status.HTTP_400_BAD_REQUEST
         msg = "Invalid inventory provided. Should be a string, or JSON object."
         return playbook_launch_error(msg)
 

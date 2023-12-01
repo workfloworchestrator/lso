@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Response
 from pydantic import BaseModel, HttpUrl
 
 from lso.playbook import PlaybookLaunchResponse, get_playbook_path, run_playbook
@@ -29,12 +29,13 @@ class PlaybookRunParams(BaseModel):
 
 
 @router.post("/")
-def run_playbook_endpoint(params: PlaybookRunParams) -> PlaybookLaunchResponse:
+def run_playbook_endpoint(params: PlaybookRunParams, response: Response) -> PlaybookLaunchResponse:
     """Launch an Ansible playbook to modify or deploy a subscription instance.
 
     The response will contain either a job ID, or error information.
 
     :param params :class:`PlaybookRunParams`: Parameters for executing a playbook.
+    :param Response response: A FastAPI response used for returning error codes if needed
     :return: Response from the Ansible runner, including a run ID.
     :rtype: :class:`lso.playbook.PlaybookLaunchResponse`
     """
@@ -43,4 +44,5 @@ def run_playbook_endpoint(params: PlaybookRunParams) -> PlaybookLaunchResponse:
         extra_vars=params.extra_vars,
         inventory=params.inventory,
         callback=params.callback,
+        response=response,
     )
