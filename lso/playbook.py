@@ -39,8 +39,8 @@ def playbook_launch_error(reason: str, status_code: int = status.HTTP_400_BAD_RE
     """Return a :class:`PlaybookLaunchResponse` for the erroneous start of a playbook execution.
 
     :param str reason: The reason why a request has failed.
-    :param status status_code: The HTTP status code that should be associated with this request. Defaults to HTTP 400
-                               "Bad request".
+    :param status status_code: The HTTP status code that should be associated with this request. Defaults to HTTP 400:
+                               Bad request.
     :return JSONResponse: A playbook launch response that's unsuccessful.
     """
     return JSONResponse(content={"error": reason}, status_code=status_code)
@@ -164,7 +164,8 @@ def run_playbook(
     :param dict[str, Any] extra_vars: Any extra vars needed for the playbook to run.
     :param dict[str, Any] | str inventory: The inventory that the playbook is executed against.
     :param :class:`HttpUrl` callback: Callback URL where the playbook should send a status update when execution is
-        completed. This is used for workflow-orchestrator to continue with the next step in a workflow.
+                                      completed. This is used for workflow-orchestrator to continue with the next step
+                                      in a workflow.
     :return: Result of playbook launch, this could either be successful or unsuccessful.
     :rtype: :class:`fastapi.responses.JSONResponse`
     """
