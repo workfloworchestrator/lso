@@ -177,8 +177,7 @@ def check_ip_trunk(params: IPTrunkCheckParams, response: Response) -> PlaybookLa
     :rtype: :class:`lso.playbook.PlaybookLaunchResponse`
     """
     extra_vars = {"wfo_ip_trunk_json": params.subscription, "check": params.check_name}
-    # FIXME: needs to be updated when checks become available, this includes
-    # writing tests.
+    # FIXME: needs to be updated when checks become available, this includes writing tests.
 
     return run_playbook(
         playbook_path=get_playbook_path("iptrunks_checks.yaml"),

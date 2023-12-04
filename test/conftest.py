@@ -3,8 +3,8 @@ import os
 import tempfile
 from collections.abc import Callable, Generator
 from io import StringIO
+from pathlib import Path
 from typing import Any
-from unittest.mock import patch
 
 import pytest
 from faker import Faker
@@ -30,7 +30,15 @@ def mocked_ansible_runner_run() -> Callable:
 @pytest.fixture(scope="session")
 def configuration_data() -> dict[str, str]:
     """Start the server with valid configuration data."""
-    return {"ansible_playbooks_root_dir": "/app/gap/collections/ansible_collections/geant/gap_ansible/playbooks"}
+    with tempfile.TemporaryDirectory() as tempdir:
+        # Create required YAML files for the unit tests
+        # TODO: remove once playbook-specific endpoints are deleted
+        (Path(tempdir) / "base_config.yaml").touch()
+        (Path(tempdir) / "iptrunks.yaml").touch()
+        (Path(tempdir) / "iptrunks_checks.yaml").touch()
+        (Path(tempdir) / "iptrunks_migration.yaml").touch()
+
+        yield {"ansible_playbooks_root_dir": tempdir}
 
 
 @pytest.fixture(scope="session")
@@ -56,12 +64,3 @@ def client(data_config_filename: str) -> TestClient:
 @pytest.fixture(scope="session")
 def faker() -> Faker:
     return Faker(locale="en_GB")
-
-
-@pytest.fixture(scope="session", autouse=True)
-def path_exists() -> bool:
-    """A patch that prevents all test requests from failing since the playbook file does not exist on the filesystem."""
-    with patch("pathlib.Path.exists") as mock_patch:
-        mock_patch.return_value = True
-
-        yield mock_patch
