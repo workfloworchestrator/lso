@@ -2,20 +2,17 @@ import time
 from collections.abc import Callable
 from unittest.mock import patch
 
-import jsonschema
 import responses
 from faker import Faker
 from fastapi import status
 from starlette.testclient import TestClient
-
-from lso.playbook import PlaybookLaunchResponse
 
 TEST_CALLBACK_URL = "https://fqdn.abc.xyz/api/resume"
 
 
 @responses.activate
 def test_router_provisioning(client: TestClient, faker: Faker, mocked_ansible_runner_run: Callable) -> None:
-    responses.put(url=TEST_CALLBACK_URL, status=200)
+    responses.put(url=TEST_CALLBACK_URL, status=201)
 
     params = {
         "callback": TEST_CALLBACK_URL,
@@ -48,12 +45,11 @@ def test_router_provisioning(client: TestClient, faker: Faker, mocked_ansible_ru
 
     with patch("lso.playbook.ansible_runner.run", new=mocked_ansible_runner_run) as _:
         rv = client.post("/api/router/", json=params)
-        assert rv.status_code == status.HTTP_200_OK
+        assert rv.status_code == status.HTTP_201_CREATED
         response = rv.json()
         # wait two seconds for the run thread to finish
         time.sleep(2)
 
-    jsonschema.validate(response, PlaybookLaunchResponse.model_json_schema())
+    assert isinstance(response, dict)
+    assert isinstance(response["job_id"], str)
     responses.assert_call_count(TEST_CALLBACK_URL, 1)
-
-    assert response["status"] == "ok"
