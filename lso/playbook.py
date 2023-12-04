@@ -4,7 +4,6 @@ import json
 import logging
 import threading
 import uuid
-from enum import StrEnum, auto
 from pathlib import Path
 from typing import Any
 
@@ -12,40 +11,14 @@ import ansible_runner
 import requests
 import xmltodict
 from dictdiffer import diff
-from fastapi import Response, status
-from pydantic import BaseModel, HttpUrl
+from fastapi import status
+from fastapi.responses import JSONResponse
+from pydantic import HttpUrl
 
 from lso import config
 from lso.config import DEFAULT_REQUEST_TIMEOUT
 
 logger = logging.getLogger(__name__)
-
-
-class PlaybookJobStatus(StrEnum):
-    """Enumerator for status codes of a playbook job that's running."""
-
-    #: All is well.
-    OK = auto()
-    #: An error has occurred.
-    ERROR = auto()
-
-
-class PlaybookLaunchResponse(BaseModel):
-    """Running a playbook gives this response.
-
-    :param PlaybookJobStatus status:
-    :param job_id:
-    :type job_id: str, optional
-    :param info:
-    :type info: str, optional
-    """
-
-    #: Status of a Playbook job.
-    status: PlaybookJobStatus
-    #: The ID assigned to a job.
-    job_id: str = ""
-    #: Information on a job.
-    info: str = ""
 
 
 def get_playbook_path(playbook_name: str) -> Path:
@@ -54,20 +27,23 @@ def get_playbook_path(playbook_name: str) -> Path:
     return Path(config_params.ansible_playbooks_root_dir) / playbook_name
 
 
-def playbook_launch_success(job_id: str) -> PlaybookLaunchResponse:
+def playbook_launch_success(job_id: str) -> JSONResponse:
     """Return a :class:`PlaybookLaunchResponse` for the successful start of a playbook execution.
 
-    :return PlaybookLaunchResponse: A playbook launch response that's successful.
+    :return JSONResponse: A playbook launch response that's successful.
     """
-    return PlaybookLaunchResponse(status=PlaybookJobStatus.OK, job_id=job_id)
+    return JSONResponse(content={"job_id": job_id}, status_code=status.HTTP_201_CREATED)
 
 
-def playbook_launch_error(reason: str) -> PlaybookLaunchResponse:
+def playbook_launch_error(reason: str, status_code: int = status.HTTP_400_BAD_REQUEST) -> JSONResponse:
     """Return a :class:`PlaybookLaunchResponse` for the erroneous start of a playbook execution.
 
-    :return PlaybookLaunchResponse: A playbook launch response that's unsuccessful.
+    :param str reason: The reason why a request has failed.
+    :param status status_code: The HTTP status code that should be associated with this request. Defaults to HTTP 400
+                               "Bad request".
+    :return JSONResponse: A playbook launch response that's unsuccessful.
     """
-    return PlaybookLaunchResponse(status=PlaybookJobStatus.ERROR, info=reason)
+    return JSONResponse(content={"error": reason}, status_code=status_code)
 
 
 def _process_json_output(runner: ansible_runner.Runner) -> list[dict[Any, Any]]:  # ignore: C901
@@ -151,7 +127,7 @@ def _run_playbook_proc(
     :param str job_id: Identifier of the job that's executed.
     :param str playbook_path: Ansible playbook to be executed.
     :param dict extra_vars: Extra variables passed to the Ansible playbook.
-    :param str callback: Callback URL to PUT to when execution is completed.
+    :param str callback: Callback URL to return output to when execution is completed.
     :param dict[str, Any] | str inventory: Ansible inventory to run the playbook against.
     """
     ansible_playbook_run = ansible_runner.run(
@@ -181,8 +157,7 @@ def run_playbook(
     extra_vars: dict[str, Any],
     inventory: dict[str, Any] | str,
     callback: HttpUrl,
-    response: Response,
-) -> PlaybookLaunchResponse:
+) -> JSONResponse:
     """Run an Ansible playbook against a specified inventory.
 
     :param Path playbook_path: playbook to be executed.
@@ -191,17 +166,15 @@ def run_playbook(
     :param :class:`HttpUrl` callback: Callback URL where the playbook should send a status update when execution is
         completed. This is used for workflow-orchestrator to continue with the next step in a workflow.
     :return: Result of playbook launch, this could either be successful or unsuccessful.
-    :rtype: :class:`PlaybookLaunchResponse`
+    :rtype: :class:`fastapi.responses.JSONResponse`
     """
     if not Path.exists(playbook_path):
-        response.status_code = status.HTTP_404_NOT_FOUND
         msg = f"Filename '{playbook_path}' does not exist."
-        return playbook_launch_error(msg)
+        return playbook_launch_error(reason=msg, status_code=status.HTTP_404_NOT_FOUND)
 
     if not ansible_runner.utils.isinventory(inventory):
-        response.status_code = status.HTTP_400_BAD_REQUEST
         msg = "Invalid inventory provided. Should be a string, or JSON object."
-        return playbook_launch_error(msg)
+        return playbook_launch_error(reason=msg, status_code=status.HTTP_400_BAD_REQUEST)
 
     job_id = str(uuid.uuid4())
     thread = threading.Thread(

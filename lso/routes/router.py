@@ -1,6 +1,7 @@
 """Routes for handling device/base_config-related requests."""
 
-from fastapi import APIRouter, Response
+from fastapi import APIRouter
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, HttpUrl
 
 from lso import playbook
@@ -35,12 +36,11 @@ class NodeProvisioningParams(BaseModel):
 
 
 @router.post("/")
-async def provision_node(params: NodeProvisioningParams, response: Response) -> playbook.PlaybookLaunchResponse:
+async def provision_node(params: NodeProvisioningParams) -> JSONResponse:
     """Launch a playbook to provision a new node. The response will contain either a job id or error information.
 
     :param params: Parameters for provisioning a new node
     :type params: :class:`NodeProvisioningParams`
-    :param Response response: A FastAPI response used for returning error codes if needed
     :return: Response from the Ansible runner, including a run ID.
     :rtype: :class:`lso.playbook.PlaybookLaunchResponse`
     """
@@ -56,5 +56,4 @@ async def provision_node(params: NodeProvisioningParams, response: Response) -> 
         inventory=f"{params.subscription['router']['router_fqdn']}",
         extra_vars=extra_vars,
         callback=params.callback,
-        response=response,
     )
