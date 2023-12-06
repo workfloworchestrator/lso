@@ -41,5 +41,4 @@ setup(
         "Intended Audience :: System Administrators",
         "Intended Audience :: Telecommunications Industry",
     ],
-    python_requires=">=3.11",
 )
