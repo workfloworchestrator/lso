@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="goat-lso",
-    version="0.4",
+    version="0.5",
     author="GÉANT Orchestration & Automation Team",
     author_email="goat@geant.org",
     description="Lightweight Service Orchestrator",
@@ -41,5 +41,4 @@ setup(
         "Intended Audience :: System Administrators",
         "Intended Audience :: Telecommunications Industry",
     ],
-    python_requires=">=3.11",
 )
