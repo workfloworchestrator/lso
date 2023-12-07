@@ -14,8 +14,7 @@ RUN mkdir -p /app/gap/ansible /etc/ansible && \
 RUN pip install \
         --pre \
         --extra-index-url https://artifactory.software.geant.org/artifactory/api/pypi/geant-swd-pypi/simple \
-        goat-lso==${ARTIFACT_VERSION} \
-        --no-isolation
+        goat-lso==${ARTIFACT_VERSION}
 RUN ansible-galaxy install \
                    -r ansible-galaxy-requirements.yaml \
                    -p /app/gap/ansible
