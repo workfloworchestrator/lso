@@ -15,17 +15,25 @@ from pydantic import BaseModel
 CONFIG_SCHEMA = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
-    "properties": {"ansible_playbooks_root_dir": {"type": "string"}},
-    "required": ["ansible_playbooks_root_dir"],
+    "properties": {
+        "ansible_playbooks_root_dir": {"type": "string"},
+        "filtered_ansible_keys": {"type": "array", "items": {"type": "string"}},
+    },
+    "required": ["ansible_playbooks_root_dir", "filtered_ansible_keys"],
     "additionalProperties": False,
 }
 DEFAULT_REQUEST_TIMEOUT = 10
 
 
 class Config(BaseModel):
-    """Simple Config class that only contains the path to the used Ansible playbooks."""
+    """Simple Config class.
+
+    Contains the root directory at which Ansible playbooks can be found, and a list of keys that should be filtered
+    from playbook execution output.
+    """
 
     ansible_playbooks_root_dir: str
+    filtered_ansible_keys: list[str]
 
 
 def load_from_file(file: Path) -> Config:

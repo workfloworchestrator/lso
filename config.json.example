@@ -1,3 +1,8 @@
 {
-  "ansible_playbooks_root_dir": "/app/gap/ansible/ansible_collections/geant/gap_ansible/playbooks"
+  "ansible_playbooks_root_dir": "/app/gap/ansible/ansible_collections/geant/gap_ansible/playbooks",
+  "filtered_ansible_keys": [
+    "_ansible_no_log",
+    "_ansible_delegated_vars",
+    "_ansible_verbose_always"
+  ]
 }

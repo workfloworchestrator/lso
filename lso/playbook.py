@@ -54,18 +54,7 @@ def _process_json_output(runner: ansible_runner.Runner) -> list[dict[Any, Any]]:
              playbook.
     :rtype: list[dict[Any, Any]]
     """
-    too_verbose_keys = [
-        "_ansible_no_log",
-        "_ansible_delegated_vars",
-        "_ansible_verbose_always",
-        "ansible_facts",
-        "changed",
-        "file",
-        "invocation",
-        "include",
-        "include_args",
-        "server_capabilities",
-    ]
+    config_params = config.load()
     json_content = runner.stdout.read()
     parsed_output = []
 
@@ -80,7 +69,7 @@ def _process_json_output(runner: ansible_runner.Runner) -> list[dict[Any, Any]]:
                 task_result = task_output["event_data"]["res"]
 
                 #  Remove redundant ansible-related keys.
-                for remove in too_verbose_keys:
+                for remove in config_params.filtered_ansible_keys:
                     task_result.pop(remove, None)
 
                 #  Remove meta-steps that just copy some temporary files, and continue to the next event
