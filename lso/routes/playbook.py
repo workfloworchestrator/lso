@@ -58,7 +58,7 @@ class PlaybookRunParams(BaseModel):
     #: Extra variables that should get passed to the playbook. This includes any required configuration objects
     #: from the workflow orchestrator, commit comments, whether this execution should be a dry run, a trouble ticket
     #: number, etc. Which extra vars are required solely depends on what inputs the playbook requires.
-    extra_vars: dict
+    extra_vars: dict[str, Any] = {}
 
 
 @router.post("/")

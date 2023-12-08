@@ -32,6 +32,7 @@ def configuration_data() -> dict[str, str]:
     """Start the server with valid configuration data."""
     with tempfile.TemporaryDirectory() as tempdir:
         # Create required YAML files for the unit tests
+        (Path(tempdir) / "placeholder.yaml").touch()
         # TODO: remove once playbook-specific endpoints are deleted
         (Path(tempdir) / "base_config.yaml").touch()
         (Path(tempdir) / "iptrunks.yaml").touch()
