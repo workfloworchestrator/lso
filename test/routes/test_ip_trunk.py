@@ -168,7 +168,7 @@ def test_ip_trunk_provisioning(
     subscription_object: dict,
     mocked_ansible_runner_run: Callable,
 ) -> None:
-    responses.post(url=TEST_CALLBACK_URL, status=201)
+    responses.post(url=TEST_CALLBACK_URL, status=200)
 
     params = {
         "callback": TEST_CALLBACK_URL,
@@ -198,7 +198,7 @@ def test_ip_trunk_modification(
     subscription_object: dict,
     mocked_ansible_runner_run: Callable,
 ) -> None:
-    responses.post(url=TEST_CALLBACK_URL, status=201)
+    responses.post(url=TEST_CALLBACK_URL, status=200)
 
     params = {
         "callback": TEST_CALLBACK_URL,

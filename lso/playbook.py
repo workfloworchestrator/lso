@@ -147,7 +147,7 @@ def _run_playbook_proc(
     }
 
     request_result = requests.post(callback, json=payload, timeout=DEFAULT_REQUEST_TIMEOUT)
-    if request_result.status_code != status.HTTP_201_CREATED:
+    if request_result.status_code != status.HTTP_200_OK:
         msg = f"Callback failed: {request_result.text}"
         logger.error(msg)
 

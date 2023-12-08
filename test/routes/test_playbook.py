@@ -11,7 +11,7 @@ TEST_CALLBACK_URL = "https://fqdn.abc.xyz/api/resume"
 
 @responses.activate
 def test_playbook_endpoint_dict_inventory_success(client: TestClient, mocked_ansible_runner_run: Callable) -> None:
-    responses.put(url=TEST_CALLBACK_URL, status=201)
+    responses.put(url=TEST_CALLBACK_URL, status=200)
 
     params = {
         "playbook_name": "placeholder.yaml",
@@ -54,7 +54,7 @@ def test_playbook_endpoint_dict_inventory_success(client: TestClient, mocked_ans
 
 @responses.activate
 def test_playbook_endpoint_str_inventory_success(client: TestClient, mocked_ansible_runner_run: Callable) -> None:
-    responses.put(url=TEST_CALLBACK_URL, status=201)
+    responses.put(url=TEST_CALLBACK_URL, status=200)
 
     params = {
         "playbook_name": "placeholder.yaml",
