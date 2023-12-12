@@ -12,7 +12,7 @@ TEST_CALLBACK_URL = "https://fqdn.abc.xyz/api/resume"
 
 @responses.activate
 def test_router_provisioning(client: TestClient, faker: Faker, mocked_ansible_runner_run: Callable) -> None:
-    responses.post(url=TEST_CALLBACK_URL, status=200)
+    responses.post(url=TEST_CALLBACK_URL, status=status.HTTP_200_OK)
 
     params = {
         "callback": TEST_CALLBACK_URL,
