@@ -1,9 +1,10 @@
 """Routes for handling events related to the IP trunk service."""
 
 from fastapi import APIRouter
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, HttpUrl
 
-from lso.playbook import PlaybookLaunchResponse, get_playbook_path, run_playbook
+from lso.playbook import get_playbook_path, run_playbook
 
 router = APIRouter()
 
@@ -72,7 +73,7 @@ class IPTrunkDeleteParams(IPTrunkParams):
 
 
 @router.post("/")
-def provision_ip_trunk(params: IPTrunkProvisioningParams) -> PlaybookLaunchResponse:
+def provision_ip_trunk(params: IPTrunkProvisioningParams) -> JSONResponse:
     """Launch a playbook to provision a new IP trunk service.
 
     The response will contain either a job ID, or error information.
@@ -103,7 +104,7 @@ def provision_ip_trunk(params: IPTrunkProvisioningParams) -> PlaybookLaunchRespo
 
 
 @router.put("/")
-def modify_ip_trunk(params: IPTrunkModifyParams) -> PlaybookLaunchResponse:
+def modify_ip_trunk(params: IPTrunkModifyParams) -> JSONResponse:
     """Launch a playbook that modifies an existing IP trunk service.
 
     :param params: The parameters that define the change in configuration.
@@ -131,7 +132,7 @@ def modify_ip_trunk(params: IPTrunkModifyParams) -> PlaybookLaunchResponse:
 
 
 @router.delete("/")
-def delete_ip_trunk(params: IPTrunkDeleteParams) -> PlaybookLaunchResponse:
+def delete_ip_trunk(params: IPTrunkDeleteParams) -> JSONResponse:
     """Launch a playbook that deletes an existing IP trunk service.
 
     :param params: Parameters that define the subscription that should get
@@ -160,7 +161,7 @@ def delete_ip_trunk(params: IPTrunkDeleteParams) -> PlaybookLaunchResponse:
 
 
 @router.post("/perform_check")
-def check_ip_trunk(params: IPTrunkCheckParams) -> PlaybookLaunchResponse:
+def check_ip_trunk(params: IPTrunkCheckParams) -> JSONResponse:
     """Launch a playbook that performs a check on an IP trunk service instance.
 
     :param params: Parameters that define the check that is going to be
@@ -170,8 +171,7 @@ def check_ip_trunk(params: IPTrunkCheckParams) -> PlaybookLaunchResponse:
     :rtype: :class:`lso.playbook.PlaybookLaunchResponse`
     """
     extra_vars = {"wfo_ip_trunk_json": params.subscription, "check": params.check_name}
-    # FIXME: needs to be updated when checks become available, this includes
-    # writing tests.
+    # FIXME: needs to be updated when checks become available, this includes writing tests.
 
     return run_playbook(
         playbook_path=get_playbook_path("iptrunks_checks.yaml"),
@@ -182,7 +182,7 @@ def check_ip_trunk(params: IPTrunkCheckParams) -> PlaybookLaunchResponse:
 
 
 @router.post("/migrate")
-def migrate_ip_trunk(params: IPTrunkMigrationParams) -> PlaybookLaunchResponse:
+def migrate_ip_trunk(params: IPTrunkMigrationParams) -> JSONResponse:
     """Launch a playbook to provision a new IP trunk service.
 
     The response will contain either a job ID, or error information.

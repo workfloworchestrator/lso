@@ -2,14 +2,11 @@ import time
 from collections.abc import Callable
 from unittest.mock import patch
 
-import jsonschema
 import pytest
 import responses
 from faker import Faker
 from fastapi import status
 from starlette.testclient import TestClient
-
-from lso.playbook import PlaybookLaunchResponse
 
 TEST_CALLBACK_URL = "https://fqdn.abc.xyz/api/resume"
 
@@ -185,15 +182,14 @@ def test_ip_trunk_provisioning(
 
     with patch("lso.playbook.ansible_runner.run", new=mocked_ansible_runner_run) as _:
         rv = client.post("/api/ip_trunk/", json=params)
-        assert rv.status_code == status.HTTP_200_OK
+        assert rv.status_code == status.HTTP_201_CREATED
         response = rv.json()
         # wait a second for the run thread to finish
         time.sleep(1)
 
-    jsonschema.validate(response, PlaybookLaunchResponse.model_json_schema())
+    assert isinstance(response, dict)
+    assert isinstance(response["job_id"], str)
     responses.assert_call_count(TEST_CALLBACK_URL, 1)
-
-    assert response["status"] == "ok"
 
 
 @responses.activate
@@ -216,15 +212,14 @@ def test_ip_trunk_modification(
 
     with patch("lso.playbook.ansible_runner.run", new=mocked_ansible_runner_run) as _:
         rv = client.put("/api/ip_trunk/", json=params)
-        assert rv.status_code == status.HTTP_200_OK
+        assert rv.status_code == status.HTTP_201_CREATED
         response = rv.json()
         # wait a second for the run thread to finish
         time.sleep(1)
 
-    jsonschema.validate(response, PlaybookLaunchResponse.model_json_schema())
+    assert isinstance(response, dict)
+    assert isinstance(response["job_id"], str)
     responses.assert_call_count(TEST_CALLBACK_URL, 1)
-
-    assert response["status"] == "ok"
 
 
 @responses.activate
@@ -242,15 +237,14 @@ def test_ip_trunk_deletion(client: TestClient, subscription_object: dict, mocked
 
     with patch("lso.playbook.ansible_runner.run", new=mocked_ansible_runner_run) as _:
         rv = client.request(url="/api/ip_trunk/", method=responses.DELETE, json=params)
-        assert rv.status_code == status.HTTP_200_OK
+        assert rv.status_code == status.HTTP_201_CREATED
         response = rv.json()
         # wait a second for the run thread to finish
         time.sleep(1)
 
-    jsonschema.validate(response, PlaybookLaunchResponse.model_json_schema())
+    assert isinstance(response, dict)
+    assert isinstance(response["job_id"], str)
     responses.assert_call_count(TEST_CALLBACK_URL, 1)
-
-    assert response["status"] == "ok"
 
 
 @responses.activate
@@ -275,12 +269,11 @@ def test_ip_trunk_migration(
 
     with patch("lso.playbook.ansible_runner.run", new=mocked_ansible_runner_run) as _:
         rv = client.post(url="/api/ip_trunk/migrate", json=params)
-        assert rv.status_code == status.HTTP_200_OK
+        assert rv.status_code == status.HTTP_201_CREATED
         response = rv.json()
         #  Wait a second for the run to finish
         time.sleep(1)
 
-    jsonschema.validate(response, PlaybookLaunchResponse.model_json_schema())
+    assert isinstance(response, dict)
+    assert isinstance(response["job_id"], str)
     responses.assert_call_count(TEST_CALLBACK_URL, 1)
-
-    assert response["status"] == "ok"

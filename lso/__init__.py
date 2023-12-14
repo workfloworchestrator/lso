@@ -6,7 +6,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from lso import config, environment
-from lso.routes import default, ip_trunk, router
+from lso.routes.default import router as default_router
+from lso.routes.ip_trunk import router as ip_trunk_router
+from lso.routes.playbook import router as playbook_router
+from lso.routes.router import router as router_router
 
 
 def create_app() -> FastAPI:
@@ -24,15 +27,16 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    app.include_router(default.router, prefix="/api")
-    app.include_router(router.router, prefix="/api/router")
-    app.include_router(ip_trunk.router, prefix="/api/ip_trunk")
+    app.include_router(default_router, prefix="/api")
+    app.include_router(playbook_router, prefix="/api/playbook")
+    app.include_router(router_router, prefix="/api/router")
+    app.include_router(ip_trunk_router, prefix="/api/ip_trunk")
 
     # test that config params are loaded and available
     config.load()
 
-    logging.info("FastAPI app initialized")
-
     environment.setup_logging()
+
+    logging.info("FastAPI app initialized")
 
     return app

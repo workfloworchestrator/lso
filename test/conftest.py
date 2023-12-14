@@ -3,6 +3,7 @@ import os
 import tempfile
 from collections.abc import Callable, Generator
 from io import StringIO
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -29,7 +30,16 @@ def mocked_ansible_runner_run() -> Callable:
 @pytest.fixture(scope="session")
 def configuration_data() -> dict[str, str]:
     """Start the server with valid configuration data."""
-    return {"ansible_playbooks_root_dir": "/app/gap/collections/ansible_collections/geant/gap_ansible/playbooks"}
+    with tempfile.TemporaryDirectory() as tempdir:
+        # Create required YAML files for the unit tests
+        (Path(tempdir) / "placeholder.yaml").touch()
+        # TODO: remove once playbook-specific endpoints are deleted
+        (Path(tempdir) / "base_config.yaml").touch()
+        (Path(tempdir) / "iptrunks.yaml").touch()
+        (Path(tempdir) / "iptrunks_checks.yaml").touch()
+        (Path(tempdir) / "iptrunks_migration.yaml").touch()
+
+        yield {"ansible_playbooks_root_dir": tempdir}
 
 
 @pytest.fixture(scope="session")
