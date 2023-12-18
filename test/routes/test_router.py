@@ -5,7 +5,7 @@ from unittest.mock import patch
 import responses
 from faker import Faker
 from fastapi import status
-from starlette.testclient import TestClient
+from fastapi.testclient import TestClient
 
 TEST_CALLBACK_URL = "https://fqdn.abc.xyz/api/resume"
 
