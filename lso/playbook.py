@@ -9,8 +9,6 @@ from typing import Any
 
 import ansible_runner
 import requests
-import xmltodict
-from dictdiffer import diff
 from fastapi import status
 from fastapi.responses import JSONResponse
 from pydantic import HttpUrl
@@ -80,14 +78,6 @@ def _process_json_output(runner: ansible_runner.Runner) -> list[dict[Any, Any]]:
                     #  Juniper-specific
                     #  Prevent the diff from being displayed twice, and only keep the formatted version.
                     task_result.pop("diff", None)
-                elif "diff" in task_result and "before" in task_result["diff"] and "after" in task_result["diff"]:
-                    #  Nokia-specific
-                    #  This is a chunk of Nokia config, and the actual difference must be calculated now, instead of
-                    #  simply returning the before and after.
-                    before_parsed = xmltodict.parse(task_result["diff"]["before"])
-                    after_parsed = xmltodict.parse(task_result["diff"]["after"])
-                    #  Only leave the diff in the resulting output
-                    task_result["diff"] = next(iter(diff(before_parsed, after_parsed)))
 
                 if bool(task_result):
                     #  Only add the event if there are any relevant keys left.
