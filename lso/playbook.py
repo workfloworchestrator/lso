@@ -113,7 +113,7 @@ def _run_playbook_proc(
         playbook=playbook_path,
         inventory=inventory,
         extravars=extra_vars,
-        json_mode=True,
+        #json_mode=True,
     )
 
     parsed_output = _process_json_output(ansible_playbook_run)
