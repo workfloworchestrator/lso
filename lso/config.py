@@ -19,7 +19,7 @@ CONFIG_SCHEMA = {
         "ansible_playbooks_root_dir": {"type": "string"},
         "filtered_ansible_keys": {"type": "array", "items": {"type": "string"}},
     },
-    "required": ["ansible_playbooks_root_dir", "filtered_ansible_keys"],
+    "required": ["ansible_playbooks_root_dir"],
     "additionalProperties": False,
 }
 DEFAULT_REQUEST_TIMEOUT = 10
@@ -33,7 +33,9 @@ class Config(BaseModel):
     """
 
     ansible_playbooks_root_dir: str
-    filtered_ansible_keys: list[str]
+    #: .. deprecated:: 0.21
+    #:    Not used anymore, does not have to be present in config.
+    filtered_ansible_keys: list[str] | None = None
 
 
 def load_from_file(file: Path) -> Config:

@@ -39,10 +39,7 @@ def configuration_data() -> dict[str, str]:
         (Path(tempdir) / "iptrunks_checks.yaml").touch()
         (Path(tempdir) / "iptrunks_migration.yaml").touch()
 
-        yield {
-            "ansible_playbooks_root_dir": tempdir,
-            "filtered_ansible_keys": ["too_verbose_output_key"],
-        }
+        yield {"ansible_playbooks_root_dir": tempdir}
 
 
 @pytest.fixture(scope="session")

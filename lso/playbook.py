@@ -1,6 +1,5 @@
 """Module that gathers common API responses and data models."""
 
-import json
 import logging
 import threading
 import uuid
@@ -44,56 +43,6 @@ def playbook_launch_error(reason: str, status_code: int = status.HTTP_400_BAD_RE
     return JSONResponse(content={"error": reason}, status_code=status_code)
 
 
-def _process_json_output(runner: ansible_runner.Runner) -> list[dict[Any, Any]]:  # ignore: C901
-    """Handle Ansible runner output, and filter out redundant an overly verbose messages.
-
-    :param :class:`ansible_runner.Runner` runner: Ansible runner that has already executed a playbook.
-    :return: A filtered dictionary that contains only the relevant parts of the output from executing an Ansible
-             playbook.
-    :rtype: list[dict[Any, Any]]
-    """
-    config_params = config.load()
-    json_content = runner.stdout.read()
-    parsed_output = []
-
-    for line in json_content.strip().splitlines():
-        try:
-            task_output = json.loads(line)
-            if "res" in task_output["event_data"] and (
-                int(runner.rc) != 0 or task_output["event_data"]["res"]["changed"] is True
-            ):
-                #  The line contains result data, and must either consist of a change, or the playbook failed, and all
-                #  steps should be included, including those that didn't make changes.
-                task_result = task_output["event_data"]["res"]
-
-                #  Remove redundant ansible-related keys.
-                for remove in config_params.filtered_ansible_keys:
-                    task_result.pop(remove, None)
-
-                #  Remove meta-steps that just copy some temporary files, and continue to the next event
-                if "state" in task_result and (task_result["state"] == "directory" or task_result["state"] == "file"):
-                    continue
-
-                if "diff_lines" in task_result:
-                    #  Juniper-specific
-                    #  Prevent the diff from being displayed twice, and only keep the formatted version.
-                    task_result.pop("diff", None)
-
-                if bool(task_result):
-                    #  Only add the event if there are any relevant keys left.
-                    parsed_output.append({"host": task_output["event_data"]["host"]} | task_result)
-
-            elif "ok" in task_output["event_data"]:
-                #  Always include the final message that contains the playbook execution overview.
-                parsed_output.append(task_output["event_data"])
-
-        except json.JSONDecodeError:
-            #  If the line can't be decoded as JSON, include it in its entirety.
-            parsed_output.append({"invalid_json": line})
-
-    return parsed_output
-
-
 def _run_playbook_proc(
     job_id: str,
     playbook_path: str,
@@ -115,17 +64,15 @@ def _run_playbook_proc(
         extravars=extra_vars,
     )
 
-    parsed_output = _process_json_output(ansible_playbook_run)
-
     payload = {
         "status": ansible_playbook_run.status,
         "job_id": job_id,
-        "output": parsed_output,
+        "output": ansible_playbook_run.stdout.readlines(),
         "return_code": int(ansible_playbook_run.rc),
     }
 
     request_result = requests.post(callback, json=payload, timeout=DEFAULT_REQUEST_TIMEOUT)
-    if request_result.status_code != status.HTTP_200_OK:
+    if not status.HTTP_200_OK <= request_result.status_code < status.HTTP_300_MULTIPLE_CHOICES:
         msg = f"Callback failed: {request_result.text}"
         logger.error(msg)
 
