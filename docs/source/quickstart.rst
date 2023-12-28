@@ -25,7 +25,7 @@ An example Docker compose file is presented below:
          - "~/.ssh/id_ed25519:/root/.ssh/id_rsa:ro"
        restart: unless-stopped
 
-This will expose the API on port 8080. The container requires some additional files to be mounted:
+This will expose the API on port 8080. The container requires some more files to be mounted:
 
 * A ``config.json`` that references to the location where the Ansible playbooks are stored **inside the container**.
 * An Ansible inventory for all host and group variables that are used in the playbooks
@@ -34,7 +34,7 @@ This will expose the API on port 8080. The container requires some additional fi
 Install the module
 ------------------
 
-Alternatively, below are a set of instructions for installing and running LSO directly on a machine.
+As an alternative, below are a set of instructions for installing and running LSO directly on a machine.
 
 *One of these should be what you're looking for:*
 

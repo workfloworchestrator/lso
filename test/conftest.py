@@ -33,11 +33,6 @@ def configuration_data() -> dict[str, str]:
     with tempfile.TemporaryDirectory() as tempdir:
         # Create required YAML files for the unit tests
         (Path(tempdir) / "placeholder.yaml").touch()
-        # TODO: remove once playbook-specific endpoints are deleted
-        (Path(tempdir) / "base_config.yaml").touch()
-        (Path(tempdir) / "iptrunks.yaml").touch()
-        (Path(tempdir) / "iptrunks_checks.yaml").touch()
-        (Path(tempdir) / "iptrunks_migration.yaml").touch()
 
         yield {"ansible_playbooks_root_dir": tempdir}
 

@@ -1,7 +1,7 @@
 """A module for loading configuration data, including a config schema that data is validated against.
 
 Data is loaded from a file, the location of which may be specified when using :func:`load_from_file`.
-Config file location can also be loaded from environment variable `SETTINGS_FILENAME`, which is default behaviour in
+Config file location can also be loaded from environment variable ``$SETTINGS_FILENAME``, which is default behaviour in
 :func:`load`.
 """
 
@@ -17,7 +17,6 @@ CONFIG_SCHEMA = {
     "type": "object",
     "properties": {
         "ansible_playbooks_root_dir": {"type": "string"},
-        "filtered_ansible_keys": {"type": "array", "items": {"type": "string"}},
     },
     "required": ["ansible_playbooks_root_dir"],
     "additionalProperties": False,
@@ -28,14 +27,10 @@ DEFAULT_REQUEST_TIMEOUT = 10
 class Config(BaseModel):
     """Simple Config class.
 
-    Contains the root directory at which Ansible playbooks can be found, and a list of keys that should be filtered
-    from playbook execution output.
+    Contains the root directory at which Ansible playbooks are present.
     """
 
     ansible_playbooks_root_dir: str
-    #: .. deprecated:: 0.21
-    #:    Not used anymore, does not have to be present in config.
-    filtered_ansible_keys: list[str] | None = None
 
 
 def load_from_file(file: Path) -> Config:
@@ -54,7 +49,7 @@ def load_from_file(file: Path) -> Config:
 
 
 def load() -> Config:
-    """Load a config file, located at the path specified in the environment variable $SETTINGS_FILENAME.
+    """Load a config file, located at the path specified in the environment variable ``$SETTINGS_FILENAME``.
 
     Loading and validating the file is performed by :func:`load_from_file`.
 
