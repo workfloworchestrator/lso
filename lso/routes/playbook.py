@@ -67,9 +67,8 @@ def run_playbook_endpoint(params: PlaybookRunParams) -> JSONResponse:
 
     The response will contain either a job ID, or error information.
 
-    :param params :class:`PlaybookRunParams`: Parameters for executing a playbook.
-    :return: Response from the Ansible runner, including a run ID.
-    :rtype: :class:`fastapi.responses.JSONResponse`
+    :param PlaybookRunParams params: Parameters for executing a playbook.
+    :return JSONResponse: Response from the Ansible runner, including a run ID.
     """
     return run_playbook(
         playbook_path=get_playbook_path(params.playbook_name),

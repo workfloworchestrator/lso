@@ -88,9 +88,8 @@ def run_playbook(
     :param Path playbook_path: playbook to be executed.
     :param dict[str, Any] extra_vars: Any extra vars needed for the playbook to run.
     :param dict[str, Any] | str inventory: The inventory that the playbook is executed against.
-    :param :class:`HttpUrl` callback: Callback URL where the playbook should send a status update when execution is
-                                      completed. This is used for workflow-orchestrator to continue with the next step
-                                      in a workflow.
+    :param HttpUrl callback: Callback URL where the playbook should send a status update when execution is completed.
+                             This is used for workflow-orchestrator to continue with the next step in a workflow.
     :return: Result of playbook launch, this could either be successful or unsuccessful.
     :rtype: :class:`fastapi.responses.JSONResponse`
     """

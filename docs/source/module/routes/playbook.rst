@@ -1,6 +1,6 @@
-``lso.routes.ip_trunk``
+``lso.routes.playbook``
 =======================
 
-.. automodule:: lso.routes.ip_trunk
+.. automodule:: lso.routes.playbook
    :members:
    :show-inheritance:

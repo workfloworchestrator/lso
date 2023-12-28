@@ -13,5 +13,4 @@ Submodules
    :titlesonly:
 
    default
-   ip_trunk
-   router
+   playbook
