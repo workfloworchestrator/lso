@@ -7,10 +7,6 @@ COPY ./ansible-galaxy-requirements.yaml ./ansible-galaxy-requirements.yaml
 
 RUN apk add --update --no-cache gcc libc-dev libffi-dev curl vim bash openssh
 
-# Create ansible.cfg file and set custom paths for collections and roles
-RUN mkdir -p /app/gap/ansible /etc/ansible && \
-    printf "[defaults]\ncollections_paths = /app/gap/ansible\nroles_path = /app/gap/ansible\nhost_key_checking=false" > /etc/ansible/ansible.cfg
-
 RUN pip install \
         --pre \
         --trusted-host 150.254.211.2 \
