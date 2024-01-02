@@ -44,11 +44,7 @@ def playbook_launch_error(reason: str, status_code: int = status.HTTP_400_BAD_RE
 
 
 def _run_playbook_proc(
-    job_id: str,
-    playbook_path: str,
-    extra_vars: dict,
-    inventory: dict[str, Any] | str,
-    callback: str,
+    job_id: str, playbook_path: str, extra_vars: dict, inventory: dict[str, Any] | str, callback: str
 ) -> None:
     """Run a playbook, internal function.
 
@@ -58,11 +54,7 @@ def _run_playbook_proc(
     :param str callback: Callback URL to return output to when execution is completed.
     :param dict[str, Any] | str inventory: Ansible inventory to run the playbook against.
     """
-    ansible_playbook_run = ansible_runner.run(
-        playbook=playbook_path,
-        inventory=inventory,
-        extravars=extra_vars,
-    )
+    ansible_playbook_run = ansible_runner.run(playbook=playbook_path, inventory=inventory, extravars=extra_vars)
 
     payload = {
         "status": ansible_playbook_run.status,

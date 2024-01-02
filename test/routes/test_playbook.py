@@ -18,27 +18,10 @@ def test_playbook_endpoint_dict_inventory_success(client: TestClient, mocked_ans
         "playbook_name": "placeholder.yaml",
         "callback": TEST_CALLBACK_URL,
         "inventory": {
-            "_meta": {
-                "vars": {
-                    "host1.local": {
-                        "foo": "bar",
-                    },
-                    "host2.local": {
-                        "hello": "world",
-                    },
-                },
-            },
-            "all": {
-                "hosts": {
-                    "host1.local": None,
-                    "host2.local": None,
-                },
-            },
+            "_meta": {"vars": {"host1.local": {"foo": "bar"}, "host2.local": {"hello": "world"}}},
+            "all": {"hosts": {"host1.local": None, "host2.local": None}},
         },
-        "extra_vars": {
-            "dry_run": True,
-            "commit_comment": "I am a robot!",
-        },
+        "extra_vars": {"dry_run": True, "commit_comment": "I am a robot!"},
     }
 
     with patch("lso.playbook.ansible_runner.run", new=mocked_ansible_runner_run) as _:
@@ -60,11 +43,7 @@ def test_playbook_endpoint_str_inventory_success(client: TestClient, mocked_ansi
     params = {
         "playbook_name": "placeholder.yaml",
         "callback": TEST_CALLBACK_URL,
-        "inventory": {
-            "all": {
-                "hosts": "host1.local\nhost2.local\nhost3.local",
-            },
-        },
+        "inventory": {"all": {"hosts": "host1.local\nhost2.local\nhost3.local"}},
     }
 
     with patch("lso.playbook.ansible_runner.run", new=mocked_ansible_runner_run) as _:
@@ -85,19 +64,8 @@ def test_playbook_endpoint_invalid_host_vars(client: TestClient, mocked_ansible_
         "playbook_name": "placeholder.yaml",
         "callback": TEST_CALLBACK_URL,
         "inventory": {
-            "_meta": {
-                "host_vars": {
-                    "host1.local": {
-                        "foo": "bar",
-                    },
-                    "host2.local": {
-                        "hello": "world",
-                    },
-                },
-            },
-            "all": {
-                "hosts": "host1.local\nhost2.local\nhost3.local",
-            },
+            "_meta": {"host_vars": {"host1.local": {"foo": "bar"}, "host2.local": {"hello": "world"}}},
+            "all": {"hosts": "host1.local\nhost2.local\nhost3.local"},
         },
     }
 
@@ -122,16 +90,8 @@ def test_playbook_endpoint_invalid_hosts(client: TestClient, mocked_ansible_runn
         "playbook_name": "placeholder.yaml",
         "callback": TEST_CALLBACK_URL,
         "inventory": {
-            "_meta": {
-                "vars": {
-                    "host1.local": {
-                        "foo": "bar",
-                    },
-                },
-            },
-            "all": {
-                "hosts": ["host1.local", "host2.local", "host3.local"],
-            },
+            "_meta": {"vars": {"host1.local": {"foo": "bar"}}},
+            "all": {"hosts": ["host1.local", "host2.local", "host3.local"]},
         },
     }
 

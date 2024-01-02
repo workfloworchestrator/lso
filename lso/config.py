@@ -15,9 +15,7 @@ from pydantic import BaseModel
 CONFIG_SCHEMA = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
-    "properties": {
-        "ansible_playbooks_root_dir": {"type": "string"},
-    },
+    "properties": {"ansible_playbooks_root_dir": {"type": "string"}},
     "required": ["ansible_playbooks_root_dir"],
     "additionalProperties": False,
 }

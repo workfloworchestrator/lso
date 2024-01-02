@@ -15,15 +15,9 @@ LOGGING_DEFAULT_CONFIG = {
             "level": "DEBUG",
             "formatter": "simple",
             "stream": "ext://sys.stdout",
-        },
+        }
     },
-    "loggers": {
-        "resource_management": {
-            "level": "DEBUG",
-            "handlers": ["console"],
-            "propagate": False,
-        },
-    },
+    "loggers": {"resource_management": {"level": "DEBUG", "handlers": ["console"], "propagate": False}},
     "root": {"level": "INFO", "handlers": ["console"]},
 }
 

@@ -22,12 +22,7 @@ def test_validate_testenv_config(data_config_filename: str) -> None:
 
 
 @pytest.mark.parametrize(
-    "bad_config",
-    [
-        {"name": "bad version", "version": 123},
-        {"name": "missing version"},
-        {"version": "missing name"},
-    ],
+    "bad_config", [{"name": "bad version", "version": 123}, {"name": "missing version"}, {"version": "missing name"}]
 )
 def test_bad_config(bad_config: dict) -> None:
     with tempfile.NamedTemporaryFile(mode="w") as file:

@@ -6,9 +6,7 @@ import lso
 
 config_filename = os.path.join(os.path.dirname(__file__), "..", "config.json.example")
 
-output_filename = os.path.join(
-    os.path.dirname(__file__), "source", "_static", "openapi.json"
-)
+output_filename = os.path.join(os.path.dirname(__file__), "source", "_static", "openapi.json")
 
 os.environ["SETTINGS_FILENAME"] = config_filename
 app = lso.create_app()
