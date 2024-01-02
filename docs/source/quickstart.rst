@@ -18,6 +18,7 @@ An example Docker compose file is presented below:
        image: goat-lso:$LSO_VERSION_TAG
        environment:
          SETTINGS_FILENAME: /app/config.json
+         ANSIBLE_ROLES_PATH: /app/lso/ansible_roles
        volumes:
          - "/home/user/config.json:/app/config.json:ro"
          - "/home/user/ansible_inventory:/opt/ansible_inventory:ro"
@@ -30,6 +31,8 @@ This will expose the API on port 8080. The container requires some more files to
 * A ``config.json`` that references to the location where the Ansible playbooks are stored **inside the container**.
 * An Ansible inventory for all host and group variables that are used in the playbooks
 * A public/private key pair for SSH authentication on external machines that are targeted by Ansible playbooks.
+* Any Ansible-specific configuration (such as ``collections_path``, ``roles_path``, etc.) should be set using
+  environment variables. ``ANSIBLE_ROLES_PATH`` is given as an example in the Docker compose snippet above.
 
 Install the module
 ------------------
