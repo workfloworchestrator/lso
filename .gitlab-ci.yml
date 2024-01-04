@@ -2,6 +2,7 @@
 stages:
   - tox
   - documentation
+  - sonarqube
   - trigger_jenkins_build
 
 include:
@@ -41,6 +42,14 @@ run-tox-pipeline:
     paths:
       - htmlcov
       - docs/source/_static/openapi.json
+
+sonarqube:
+  stage: sonarqube
+  image: sonarsource/sonar-scanner-cli
+  script:
+    - sonar-scanner -Dsonar.login=$SONAR_TOKEN -Dproject.settings=./sonar.properties
+  tags:
+    - docker-executor
 
 trigger_jenkins_build:
   stage: trigger_jenkins_build
