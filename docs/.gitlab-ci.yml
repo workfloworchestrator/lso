@@ -3,7 +3,7 @@
 lint-documentation:
   stage: documentation
   image:
-    name: jdkato/vale:v2.30.0
+    name: jdkato/vale:latest
     entrypoint: [""]
 
   tags:
