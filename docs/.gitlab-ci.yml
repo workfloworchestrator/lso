@@ -12,7 +12,8 @@ lint-documentation:
     - job: run-tox-pipeline # Only run when tox has finished
 
   before_script:
-    - vale --config=docs/vale/.vale.ini sync
+    - cd $CI_PROJECT_DIR/docs/vale
+    - vale sync
 
   script:
-    - vale --config=docs/vale/.vale.ini docs/source/*.rst lso/*.py
+    - vale $CI_PROJECT_DIR/docs/source/*.rst $CI_PROJECT_DIR/lso/*.py
