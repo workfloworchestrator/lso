@@ -16,7 +16,7 @@ setup(
         "fastapi~=0.104.1",
         "GitPython~=3.1.40",
         "httpx~=0.25.1",
-        "jinja2==3.1.2",
+        "jinja2==3.1.3",
         "jmespath~=1.0.1",
         "jsonschema~=4.20.0",
         "junos-eznc~=2.6.8",
