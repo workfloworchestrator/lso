@@ -1,0 +1,29 @@
+name: "Sphinx: render docs"
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+      - name: Install requirements
+        run: |
+          python3 -m pip install -r requirements.txt
+          python3 -m pip install -e .
+      - name: Build documentation
+        run: TZ=UTC sphinx-build -b html docs/source docs/build
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/build/
+          enable_jekyll: false
