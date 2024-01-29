@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lso.playbook &mdash; Lightweight Service Orchestrator  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="lso.config" href="config.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: rgb(0 63 95)" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Lightweight Service Orchestrator
+              <img src="../_static/geant_logo_white.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick start</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../modules.html">Sub-packages and -modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../modules.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../modules.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="config.html"><code class="docutils literal notranslate"><span class="pre">lso.config</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">lso.playbook</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#lso.playbook._run_playbook_proc"><code class="docutils literal notranslate"><span class="pre">_run_playbook_proc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lso.playbook.get_playbook_path"><code class="docutils literal notranslate"><span class="pre">get_playbook_path()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lso.playbook.playbook_launch_error"><code class="docutils literal notranslate"><span class="pre">playbook_launch_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lso.playbook.playbook_launch_success"><code class="docutils literal notranslate"><span class="pre">playbook_launch_success()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lso.playbook.run_playbook"><code class="docutils literal notranslate"><span class="pre">run_playbook()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../modules.html#lso.create_app"><code class="docutils literal notranslate"><span class="pre">create_app()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: rgb(0 63 95)" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Lightweight Service Orchestrator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../modules.html">Sub-packages and -modules</a></li>
+      <li class="breadcrumb-item active"><code class="docutils literal notranslate"><span class="pre">lso.playbook</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/module/playbook.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-lso.playbook">
+<span id="lso-playbook"></span><h1><code class="docutils literal notranslate"><span class="pre">lso.playbook</span></code><a class="headerlink" href="#module-lso.playbook" title="Link to this heading"></a></h1>
+<p>Module that gathers common API responses and data models.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="lso.playbook._run_playbook_proc">
+<span class="sig-prename descclassname"><span class="pre">lso.playbook.</span></span><span class="sig-name descname"><span class="pre">_run_playbook_proc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">playbook_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inventory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.playbook._run_playbook_proc" title="Link to this definition"></a></dt>
+<dd><p>Run a playbook, internal function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>job_id</strong> (<em>str</em>) – Identifier of the job that’s executed.</p></li>
+<li><p><strong>playbook_path</strong> (<em>str</em>) – Ansible playbook to be executed.</p></li>
+<li><p><strong>extra_vars</strong> (<em>dict</em>) – Extra variables passed to the Ansible playbook.</p></li>
+<li><p><strong>callback</strong> (<em>str</em>) – Callback URL to return output to when execution is completed.</p></li>
+<li><p><strong>inventory</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>| </em><em>str</em>) – Ansible inventory to run the playbook against.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lso.playbook.get_playbook_path">
+<span class="sig-prename descclassname"><span class="pre">lso.playbook.</span></span><span class="sig-name descname"><span class="pre">get_playbook_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">playbook_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.playbook.get_playbook_path" title="Link to this definition"></a></dt>
+<dd><p>Get the path of a playbook on the local filesystem.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lso.playbook.playbook_launch_error">
+<span class="sig-prename descclassname"><span class="pre">lso.playbook.</span></span><span class="sig-name descname"><span class="pre">playbook_launch_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reason</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">400</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.playbook.playbook_launch_error" title="Link to this definition"></a></dt>
+<dd><p>Return a <code class="xref py py-class docutils literal notranslate"><span class="pre">PlaybookLaunchResponse</span></code> for the erroneous start of a playbook execution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reason</strong> (<em>str</em>) – The reason why a request has failed.</p></li>
+<li><p><strong>status_code</strong> (<em>status</em>) – The HTTP status code that should be associated with this request. Defaults to HTTP 400:
+Bad request.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return JSONResponse<span class="colon">:</span></dt>
+<dd class="field-even"><p>A playbook launch response that’s unsuccessful.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lso.playbook.playbook_launch_success">
+<span class="sig-prename descclassname"><span class="pre">lso.playbook.</span></span><span class="sig-name descname"><span class="pre">playbook_launch_success</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.playbook.playbook_launch_success" title="Link to this definition"></a></dt>
+<dd><p>Return a <code class="xref py py-class docutils literal notranslate"><span class="pre">PlaybookLaunchResponse</span></code> for the successful start of a playbook execution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return JSONResponse<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A playbook launch response that’s successful.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lso.playbook.run_playbook">
+<span class="sig-prename descclassname"><span class="pre">lso.playbook.</span></span><span class="sig-name descname"><span class="pre">run_playbook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">playbook_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inventory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.playbook.run_playbook" title="Link to this definition"></a></dt>
+<dd><p>Run an Ansible playbook against a specified inventory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>playbook_path</strong> (<em>Path</em>) – playbook to be executed.</p></li>
+<li><p><strong>extra_vars</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – Any extra vars needed for the playbook to run.</p></li>
+<li><p><strong>inventory</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>| </em><em>str</em>) – The inventory that the playbook is executed against.</p></li>
+<li><p><strong>callback</strong> (<em>HttpUrl</em>) – Callback URL where the playbook should send a status update when execution is completed.
+This is used for workflow-orchestrator to continue with the next step in a workflow.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Result of playbook launch, this could either be successful or unsuccessful.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">fastapi.responses.JSONResponse</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="config.html" class="btn btn-neutral float-left" title="lso.config" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, GÉANT Vereniging.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
