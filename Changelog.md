@@ -1,6 +1,8 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [1.2] - 2024-02-09
+Pinned to the latest GAP Ansible collection version 1.0.47
 ## [1.1] - 2024-02-09
 GEANT GAP Ansible collection is with version in galaxy requirements.
 ## [1.0] - 2024-01-03
