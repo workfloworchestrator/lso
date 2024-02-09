@@ -2,12 +2,12 @@
 
 LSO: an API that allows for remotely executing Ansible playbooks
 
-## Running locally
 
-### Standalone deployment
+## General documentation
 
-Build documentation using `build-docs.sh`, and check out the quickstart page.
+General documentation is available at <https://docs.gap.geant.org/>
 
-### Docker deployment
 
-Run the following from the root, then refer to the above documentation for usage.
+## Code documentation
+
+Code documentation can be found at <https://workfloworchestrator.org/lso>

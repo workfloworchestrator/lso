@@ -1,7 +1,8 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
-
+## [1.1] - 2024-02-09
+GEANT GAP Ansible collection is with version in galaxy requirements.
 ## [1.0] - 2024-01-03
 The very first major release of LSO is here! :tada: A transparent API for running Ansible playbooks on a remote machine.
 
