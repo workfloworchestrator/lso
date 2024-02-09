@@ -1,6 +1,8 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [1.3] - 2024-02-09
+Fixes to the GAP Ansible collection
 ## [1.2] - 2024-02-09
 Pinned to the latest GAP Ansible collection version 1.0.47
 ## [1.1] - 2024-02-09
