@@ -3,6 +3,6 @@ collections:
   - juniper.device
   - junipernetworks.junos
   - name: geant.gap_ansible
-    version: 1.0.48
+    version: 1.0.49
 roles:
   - Juniper.junos
