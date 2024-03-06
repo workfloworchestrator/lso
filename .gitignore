@@ -8,12 +8,10 @@ coverage.xml
 
 docs/build
 docs/source/_static/openapi.json
-docs/vale/styles/*
-!docs/vale/styles/config/
+.github/styles/*
+!.github/styles/config/
 venv/
 .venv/
 
 .DS_Store # macOS
 Thumbs.db # Windows
-
-config.json
