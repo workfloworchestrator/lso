@@ -13,6 +13,8 @@
 
 """Automatically invoked app factory."""
 
+__version__ = "1.0.0"
+
 import logging
 
 from fastapi import FastAPI

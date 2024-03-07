@@ -30,4 +30,4 @@ def test_ip_trunk_modification(client: TestClient) -> None:
     jsonschema.validate(response, Version.model_json_schema())
 
     assert response["api"] == API_VERSION, response["api"]
-    assert response["module"] == metadata.version("goat-lso"), response["module"]
+    assert response["module"] == metadata.version("lso"), response["module"]

@@ -3,21 +3,9 @@ FROM python:3.11-alpine
 ARG ARTIFACT_VERSION
 
 WORKDIR /app
-COPY ./ansible-galaxy-requirements.yaml ./ansible-galaxy-requirements.yaml
 
-RUN apk add --update --no-cache gcc libc-dev libffi-dev curl vim bash openssh
+RUN pip install --pre lso==${ARTIFACT_VERSION}
 
-RUN pip install \
-        --pre \
-        --trusted-host 150.254.211.2 \
-        --extra-index-url https://150.254.211.2/artifactory/api/pypi/geant-swd-pypi/simple \
-        goat-lso==${ARTIFACT_VERSION}
-RUN ansible-galaxy install \
-                   -r ansible-galaxy-requirements.yaml \
-                   -p /app/gap/ansible
-RUN ansible-galaxy collection install \
-                   -r ansible-galaxy-requirements.yaml \
-                   -p /app/gap/ansible
 EXPOSE 8000
 ENTRYPOINT []
 CMD ["python", "-m",  "uvicorn", "lso.app:app", "--host", "0.0.0.0", "--port", "8000"]
