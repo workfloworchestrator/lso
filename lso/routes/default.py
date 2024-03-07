@@ -28,7 +28,7 @@ router = APIRouter()
 
 
 class Version(BaseModel):
-    """Simple model for returning a version number of both the API and the `goat-lso` module."""
+    """Simple model for returning a version number of both the API and the `lso` module."""
 
     api: VersionString  # type: ignore[valid-type]
     module: VersionString  # type: ignore[valid-type]
@@ -38,6 +38,6 @@ class Version(BaseModel):
 def version() -> Version:
     """Return the version numbers of the API version, and the module version.
 
-    :return: Version object with both API and `goat-lso` versions numbers.
+    :return: Version object with both API and `lso` versions numbers.
     """
-    return Version(api=API_VERSION, module=metadata.version("goat-lso"))
+    return Version(api=API_VERSION, module=metadata.version("lso"))
