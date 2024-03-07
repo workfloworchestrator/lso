@@ -6,8 +6,7 @@ __pycache__
 coverage.xml
 *.egg-info
 
-docs/build
-docs/source/_static/openapi.json
+dist/
 .github/styles/*
 !.github/styles/config/
 venv/
