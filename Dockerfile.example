@@ -1,0 +1,27 @@
+FROM python:3.11-alpine
+
+ARG ARTIFACT_VERSION
+WORKDIR /app
+
+# Copy in requirements files
+COPY ./requirements.txt ./requirements.txt
+COPY ./ansible-galaxy-requirements.yaml ./ansible-galaxy-requirements.yaml
+
+# Install required system packages
+RUN apk add --update --no-cache gcc libc-dev libffi-dev openssh
+
+# Install the LSO python package, and additional requirements
+RUN pip install lso==${ARTIFACT_VERSION}
+RUN pip install -r requirements.txt
+
+# Install required Ansible Galaxy roles and collections
+RUN ansible-galaxy install \
+                   -r ansible-galaxy-requirements.yaml \
+                   -p /app/gap/ansible
+RUN ansible-galaxy collection install \
+                   -r ansible-galaxy-requirements.yaml \
+                   -p /app/gap/ansible
+
+EXPOSE 8000
+ENTRYPOINT []
+CMD ["python", "-m",  "uvicorn", "lso.app:app", "--host", "0.0.0.0", "--port", "8000"]
