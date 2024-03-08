@@ -67,7 +67,6 @@ html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
 html_theme_options = {"style_nav_header_background": "rgb(0 63 95)"}
 html_css_files = ["custom.css"]
-html_logo = "_static/geant_logo_white.svg"
 
 
 # Both the class' and the ``__init__`` method's docstring are concatenated and inserted.

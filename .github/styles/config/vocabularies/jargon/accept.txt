@@ -2,3 +2,7 @@
 [Ss]ubpackages
 Vereniging
 against
+BASIS
+ANY
+KIND
+LSO
