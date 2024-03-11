@@ -2,7 +2,6 @@ __pycache__
 .coverage
 .idea
 .vscode
-.tox
 coverage.xml
 *.egg-info
 

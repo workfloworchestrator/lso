@@ -15,7 +15,6 @@ from pathlib import Path
 
 import responses
 from starlette import status
-from starlette.testclient import TestClient
 
 from lso.playbook import run_playbook
 
@@ -23,7 +22,7 @@ TEST_CALLBACK_URL = "http://localhost/callback"
 
 
 @responses.activate
-def test_playbook_execution(client: TestClient) -> None:
+def test_playbook_execution() -> None:
     callback = responses.post(TEST_CALLBACK_URL)
     run_playbook(
         playbook_path=Path(__file__).parent / "test-playbook.yaml",
