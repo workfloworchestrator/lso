@@ -1,0 +1,9 @@
+---
+- name: Test Ansible functionality
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Print the Ansible host
+      ansible.builtin.debug:
+        msg: "{{ ansible_host }}"
