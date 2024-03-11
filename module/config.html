@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>lso.config &mdash; Lightweight Service Orchestrator  documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=1432c78b" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -34,7 +36,6 @@
           
           <a href="../index.html" class="icon icon-home">
             Lightweight Service Orchestrator
-              <img src="../_static/geant_logo_white.svg" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -46,7 +47,6 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick start</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../modules.html">Sub-packages and -modules</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../modules.html#subpackages">Subpackages</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../modules.html#submodules">Submodules</a><ul class="current">
@@ -91,26 +91,48 @@
              
   <section id="module-lso.config">
 <span id="lso-config"></span><h1><code class="docutils literal notranslate"><span class="pre">lso.config</span></code><a class="headerlink" href="#module-lso.config" title="Link to this heading"></a></h1>
-<p>A module for loading configuration data, including a config schema that data is validated against.</p>
+<p>A module for loading configuration data, including a configuration schema that data is validated against.</p>
 <p>Data is loaded from a file, the location of which may be specified when using <a class="reference internal" href="#lso.config.load_from_file" title="lso.config.load_from_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_from_file()</span></code></a>.
-Config file location can also be loaded from environment variable <code class="docutils literal notranslate"><span class="pre">$SETTINGS_FILENAME</span></code>, which is default behaviour in
-<a class="reference internal" href="#lso.config.load" title="lso.config.load"><code class="xref py py-func docutils literal notranslate"><span class="pre">load()</span></code></a>.</p>
+Configuration file location can also be loaded from environment variable <code class="docutils literal notranslate"><span class="pre">$SETTINGS_FILENAME</span></code>, which is default</p>
+<blockquote>
+<div><p>behaviour in <a class="reference internal" href="#lso.config.load" title="lso.config.load"><code class="xref py py-func docutils literal notranslate"><span class="pre">load()</span></code></a>.</p>
+</div></blockquote>
 <dl class="py class">
 <dt class="sig sig-object py" id="lso.config.Config">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lso.config.</span></span><span class="sig-name descname"><span class="pre">Config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ansible_playbooks_root_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.config.Config" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
-<p>Simple Config class.</p>
+<p>Simple Configuration class.</p>
 <p>Contains the root directory at which Ansible playbooks are present.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
-<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
-<p>Uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
-allow <cite>self</cite> as a field name.</p>
+<p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.</p>
+<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lso.config.Config.model_computed_fields">
+<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#lso.config.Config.model_computed_fields" title="Link to this definition"></a></dt>
+<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lso.config.Config.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#lso.config.Config.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lso.config.Config.model_fields">
+<span class="sig-name descname"><span class="pre">model_fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'ansible_playbooks_root_dir':</span> <span class="pre">FieldInfo(annotation=str,</span> <span class="pre">required=True)}</span></em><a class="headerlink" href="#lso.config.Config.model_fields" title="Link to this definition"></a></dt>
+<dd><p>Metadata about the fields defined on the model,
+mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</p>
+<p>This replaces <cite>Model.__fields__</cite> from Pydantic V1.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lso.config.load">
 <span class="sig-prename descclassname"><span class="pre">lso.config.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lso.config.load" title="Link to this definition"></a></dt>
-<dd><p>Load a config file, located at the path specified in the environment variable <code class="docutils literal notranslate"><span class="pre">$SETTINGS_FILENAME</span></code>.</p>
+<dd><p>Load a configuration file, located at the path specified in the environment variable <code class="docutils literal notranslate"><span class="pre">$SETTINGS_FILENAME</span></code>.</p>
 <p>Loading and validating the file is performed by <a class="reference internal" href="#lso.config.load_from_file" title="lso.config.load_from_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_from_file()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -123,7 +145,7 @@ allow <cite>self</cite> as a field name.</p>
 <dt class="sig sig-object py" id="lso.config.load_from_file">
 <span class="sig-prename descclassname"><span class="pre">lso.config.</span></span><span class="sig-name descname"><span class="pre">load_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.config.load_from_file" title="Link to this definition"></a></dt>
 <dd><p>Load, validate and return configuration parameters.</p>
-<p>Input is validated against this jsonschema:</p>
+<p>Input is validated against this JSON schema:</p>
 <span class="sig-name descname">CONFIG_SCHEMA</span><dd><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;$schema&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://json-schema.org/draft-07/schema#&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span>
@@ -141,7 +163,7 @@ allow <cite>self</cite> as a field name.</p>
 </div>
 </dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>file</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code> object that produces the config file.</p>
+<dd class="field-odd"><p><strong>file</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code> object that produces the configuration file.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a dict containing the parsed configuration parameters.</p>
