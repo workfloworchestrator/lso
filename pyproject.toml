@@ -3,11 +3,9 @@ build-backend = "flit_core.buildapi"
 requires = ["flit_core >=3.2,<4"]
 
 [project]
-name = "lso"
+name = "orchestrator-lso"
 dynamic = ['version', 'description']
-author = "GÉANT"
-author-email = "goat@geant.org"
-home-page = "https://github.com/workfloworchestrator/lso"
+authors = [{name = "GÉANT Orchestration and Automation Team", email = "goat@geant.org"}]
 classifiers = [
     "Intended Audience :: Information Technology",
     "Intended Audience :: System Administrators",
@@ -39,7 +37,7 @@ dependencies = [
     "uvicorn[standard]~=0.28.0",
 ]
 
-description-file = "README.md"
+readme = "README.md"
 requires-python = ">=3.11,<3.13"
 
 [project.urls]
