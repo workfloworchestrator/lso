@@ -2,7 +2,8 @@ FROM python:3.11-alpine
 
 WORKDIR /app
 
-# Copy in requirements files
+# Copy in requirements files, if needed
+# These could be for Ansible Galaxy, Poetry, or a requirements.txt file
 COPY ./requirements.txt ./requirements.txt
 COPY ./ansible-galaxy-requirements.yaml ./ansible-galaxy-requirements.yaml
 
