@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Automatically invoked app factory."""
+"""LSO, an API for remotely running Ansible playbooks."""
 
 __version__ = "1.0.0"
 
