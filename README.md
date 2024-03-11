@@ -54,13 +54,13 @@ As an alternative, below are a set of instructions for installing and running LS
   python3 -m venv my-venv-directory
   . my-venv-directory/bin/activate
 
-  pip install lso
+  pip install orchestrator-lso
 ```
 
 * Install the source code
 
 ```bash
-  git clone https://gitlab.software.geant.org/goat/gap/lso.git && cd lso
+  git clone https://github.com/workfloworchestrator/lso.git && cd lso
   python3 -m venv my-venv-directory
   . my-venv-directory/bin/activate
   
