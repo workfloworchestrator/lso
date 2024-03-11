@@ -1,8 +1,10 @@
-[LSO|lso]
+(LSO|lso)
 [Ss]ubpackages
 Vereniging
 against
 BASIS
-ANY
+A(NY|ny)
 KIND
-LSO
+Ansible
+[Uu]nprocessable
+[Hh]ostnames?

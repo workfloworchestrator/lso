@@ -11,11 +11,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""A module for loading configuration data, including a config schema that data is validated against.
+"""A module for loading configuration data, including a configuration schema that data is validated against.
 
 Data is loaded from a file, the location of which may be specified when using :func:`load_from_file`.
-Config file location can also be loaded from environment variable ``$SETTINGS_FILENAME``, which is default behaviour in
-:func:`load`.
+Configuration file location can also be loaded from environment variable ``$SETTINGS_FILENAME``, which is default
+ behaviour in :func:`load`.
 """
 
 import json
@@ -36,7 +36,7 @@ DEFAULT_REQUEST_TIMEOUT = 10
 
 
 class Config(BaseModel):
-    """Simple Config class.
+    """Simple Configuration class.
 
     Contains the root directory at which Ansible playbooks are present.
     """
@@ -47,11 +47,11 @@ class Config(BaseModel):
 def load_from_file(file: Path) -> Config:
     """Load, validate and return configuration parameters.
 
-    Input is validated against this jsonschema:
+    Input is validated against this JSON schema:
 
     .. asjson:: lso.config.CONFIG_SCHEMA
 
-    :param file: :class:`Path` object that produces the config file.
+    :param file: :class:`Path` object that produces the configuration file.
     :return: a dict containing the parsed configuration parameters.
     """
     config = json.loads(file.read_text())
@@ -60,7 +60,7 @@ def load_from_file(file: Path) -> Config:
 
 
 def load() -> Config:
-    """Load a config file, located at the path specified in the environment variable ``$SETTINGS_FILENAME``.
+    """Load a configuration file, located at the path specified in the environment variable ``$SETTINGS_FILENAME``.
 
     Loading and validating the file is performed by :func:`load_from_file`.
 

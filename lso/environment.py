@@ -38,7 +38,8 @@ LOGGING_DEFAULT_CONFIG = {
 def setup_logging() -> None:
     """Set up logging using the configured filename.
 
-    If LOGGING_CONFIG is defined in the environment, use this for the filename, otherwise use LOGGING_DEFAULT_CONFIG.
+    If ``LOGGING_CONFIG`` is defined in the environment, use this for the filename, otherwise use
+    ``LOGGING_DEFAULT_CONFIG``.
     """
     logging_config = LOGGING_DEFAULT_CONFIG
     if "LOGGING_CONFIG" in os.environ:

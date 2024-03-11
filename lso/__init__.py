@@ -39,7 +39,7 @@ def create_app() -> FastAPI:
     app.include_router(default_router, prefix="/api")
     app.include_router(playbook_router, prefix="/api/playbook")
 
-    # test that config params are loaded and available
+    # test that configuration parameters are loaded and available
     config.load()
 
     environment.setup_logging()

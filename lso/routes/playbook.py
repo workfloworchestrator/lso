@@ -33,7 +33,7 @@ router = APIRouter()
 def _inventory_validator(inventory: dict[str, Any] | str) -> dict[str, Any] | str:
     """Validate the format of the provided inventory by trying to parse it.
 
-    If an inventory cannot be parsed without warnings or errors, these are returned to the user by means of an HTTP
+    If an inventory can't be parsed without warnings or errors, these are returned to the user by means of an HTTP
     status 422 for 'unprocessable entity'.
     """
     loader = DataLoader()
@@ -59,7 +59,7 @@ PlaybookInventory = Annotated[dict[str, Any] | str, AfterValidator(_inventory_va
 class PlaybookRunParams(BaseModel):
     """Parameters for executing an Ansible playbook."""
 
-    #: The filename of a playbook that is executed. It should be present inside the directory defined in the
+    #: The filename of a playbook that's executed. It should be present inside the directory defined in the
     #: configuration option ``ansible_playbooks_root_dir``.
     playbook_name: str
     #: The address where LSO should call back to upon completion.
