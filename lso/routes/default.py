@@ -40,4 +40,4 @@ def version() -> Version:
 
     :return: Version object with both API and `lso` versions numbers.
     """
-    return Version(api=API_VERSION, module=metadata.version("lso"))
+    return Version(api=API_VERSION, module=metadata.version("orchestrator-lso"))
