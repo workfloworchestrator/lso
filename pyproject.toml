@@ -48,6 +48,7 @@ Source = "https://github.com/workfloworchestrator/lso"
 [project.optional-dependencies]
 test = [
     "pytest",
+    "pytest-cov",
     "Faker",
     "responses",
     "mypy",
