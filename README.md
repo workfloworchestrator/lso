@@ -1,4 +1,4 @@
-# Lightweight Service Orchestrator
+![Lightweight Service Orchestrator](./docs/LSO_banner.jpg)
 [![Supported python versions](https://img.shields.io/pypi/pyversions/orchestrator-lso.svg?color=%2334D058)](https://pypi.org/project/orchestrator-lso)
 [![Downloads](https://static.pepy.tech/badge/orchestrator-lso/month)](https://pepy.tech/project/orchestrator-lso)
 [![codecov](https://codecov.io/github/workfloworchestrator/lso/graph/badge.svg?token=NVFHBBU3AR)](https://codecov.io/github/workfloworchestrator/lso)
@@ -22,18 +22,17 @@ To run LSO as a Docker container, build an image using the `Dockerfile.example` 
 Use the Docker image to then spin up an environment. An example Docker compose file is presented below:
 
 ```yaml
-  version: "3.5"
-  services:
-   lso:
-     image: my-lso:latest
-     environment:
-       SETTINGS_FILENAME: /app/config.json
-       ANSIBLE_ROLES_PATH: /app/lso/ansible_roles
-     volumes:
-       - "/home/user/config.json:/app/config.json:ro"
-       - "/home/user/ansible_inventory:/opt/ansible_inventory:ro"
-       - "~/.ssh/id_ed25519.pub:/root/.ssh/id_ed25519.pub:ro"
-       - "~/.ssh/id_ed25519:/root/.ssh/id_ed25519:ro"
+services:
+  lso:
+    image: my-lso:latest
+    environment:
+      SETTINGS_FILENAME: /app/config.json
+      ANSIBLE_ROLES_PATH: /app/lso/ansible_roles
+    volumes:
+      - "/home/user/config.json:/app/config.json:ro"
+      - "/home/user/ansible_inventory:/opt/ansible_inventory:ro"
+      - "~/.ssh/id_ed25519.pub:/root/.ssh/id_ed25519.pub:ro"
+      - "~/.ssh/id_ed25519:/root/.ssh/id_ed25519:ro"
 ```
 
 This will expose the API on port 8000. The container requires some more files to be mounted:
