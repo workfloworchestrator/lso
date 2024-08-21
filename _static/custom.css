@@ -1,10 +1,10 @@
 .wy-menu > p > span {
-    color: rgb(237 21 86);
+    color: rgb(254 122 54);
 }
 
 section > dl > .sig-object {
     background: #e5e8e8 !important;
-    color: rgb(237 21 86) !important;
+    color: rgb(254 122 54) !important;
     border-top: 3px solid rgb(167 179 180) !important;
 }
 
