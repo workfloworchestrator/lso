@@ -26,7 +26,7 @@ from fastapi.testclient import TestClient
 import lso
 
 
-@pytest.fixture()
+@pytest.fixture
 def mocked_ansible_runner_run() -> Callable:
     class Runner:
         def __init__(self) -> None:
