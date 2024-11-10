@@ -10,7 +10,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import time
 from pathlib import Path
 
 import responses
@@ -31,6 +30,5 @@ def test_playbook_execution() -> None:
         callback=TEST_CALLBACK_URL,
     )
 
-    time.sleep(3)
     responses.assert_call_count(TEST_CALLBACK_URL, 1)
     assert callback.status == status.HTTP_200_OK

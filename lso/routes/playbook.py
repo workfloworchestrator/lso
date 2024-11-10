@@ -60,7 +60,7 @@ class PlaybookRunParams(BaseModel):
     """Parameters for executing an Ansible playbook."""
 
     #: The filename of a playbook that's executed. It should be present inside the directory defined in the
-    #: configuration option ``ansible_playbooks_root_dir``.
+    #: configuration option ``ANSIBLE_PLAYBOOKS_ROOT_DIR``.
     playbook_name: str
     #: The address where LSO should call back to upon completion.
     callback: HttpUrl

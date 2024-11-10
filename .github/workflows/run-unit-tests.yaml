@@ -26,8 +26,6 @@ jobs:
           FLIT_ROOT_INSTALL: 1
       - name: Run Unit tests
         run: pytest --cov-branch --cov=lso --cov-report=xml
-        env:
-          SETTINGS_FILENAME: dummy.json
       - name: "Upload coverage to Codecov"
         uses: codecov/codecov-action@v3
         with:

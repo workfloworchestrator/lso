@@ -20,16 +20,13 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from lso import config, environment
+from lso import environment
 from lso.routes.default import router as default_router
 from lso.routes.playbook import router as playbook_router
 
 
 def create_app() -> FastAPI:
-    """Override default settings with those found in the file read from environment variable `SETTINGS_FILENAME`.
-
-    :return: a new flask app instance
-    """
+    """Initialise the :term:`LSO` app."""
     app = FastAPI()
 
     app.add_middleware(
@@ -38,9 +35,6 @@ def create_app() -> FastAPI:
 
     app.include_router(default_router, prefix="/api")
     app.include_router(playbook_router, prefix="/api/playbook")
-
-    # test that configuration parameters are loaded and available
-    config.load()
 
     environment.setup_logging()
 
