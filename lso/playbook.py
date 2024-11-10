@@ -13,28 +13,39 @@
 
 """Module that gathers common API responses and data models."""
 
-import logging
-import threading
 import uuid
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any
 
 import ansible_runner
-import requests
 from fastapi import status
 from fastapi.responses import JSONResponse
 from pydantic import HttpUrl
 
-from lso import config
-from lso.config import DEFAULT_REQUEST_TIMEOUT
+from lso.config import ExecutorType, settings
+from lso.tasks import run_playbook_proc_task
 
-logger = logging.getLogger(__name__)
+_executor = None
+
+
+def get_thread_pool() -> ThreadPoolExecutor:
+    """Get and optionally initialise a ThreadPoolExecutor.
+
+    Returns:
+        ThreadPoolExecutor
+
+    """
+    global _executor  # noqa: PLW0603
+    if _executor is None:
+        _executor = ThreadPoolExecutor(max_workers=settings.MAX_THREAD_POOL_WORKERS)
+
+    return _executor
 
 
 def get_playbook_path(playbook_name: str) -> Path:
     """Get the path of a playbook on the local filesystem."""
-    config_params = config.load()
-    return Path(config_params.ansible_playbooks_root_dir) / playbook_name
+    return Path(settings.ANSIBLE_PLAYBOOKS_ROOT_DIR) / playbook_name
 
 
 def playbook_launch_success(job_id: str) -> JSONResponse:
@@ -54,32 +65,6 @@ def playbook_launch_error(reason: str, status_code: int = status.HTTP_400_BAD_RE
     :return JSONResponse: A playbook launch response that's unsuccessful.
     """
     return JSONResponse(content={"error": reason}, status_code=status_code)
-
-
-def _run_playbook_proc(
-    job_id: str, playbook_path: str, extra_vars: dict, inventory: dict[str, Any] | str, callback: str
-) -> None:
-    """Run a playbook, internal function.
-
-    :param str job_id: Identifier of the job that's executed.
-    :param str playbook_path: Ansible playbook to be executed.
-    :param dict extra_vars: Extra variables passed to the Ansible playbook.
-    :param str callback: Callback URL to return output to when execution is completed.
-    :param dict[str, Any] | str inventory: Ansible inventory to run the playbook against.
-    """
-    ansible_playbook_run = ansible_runner.run(playbook=playbook_path, inventory=inventory, extravars=extra_vars)
-
-    payload = {
-        "status": ansible_playbook_run.status,
-        "job_id": job_id,
-        "output": ansible_playbook_run.stdout.readlines(),
-        "return_code": int(ansible_playbook_run.rc),
-    }
-
-    request_result = requests.post(callback, json=payload, timeout=DEFAULT_REQUEST_TIMEOUT)
-    if not status.HTTP_200_OK <= request_result.status_code < status.HTTP_300_MULTIPLE_CHOICES:
-        msg = f"Callback failed: {request_result.text}"
-        logger.error(msg)
 
 
 def run_playbook(
@@ -107,16 +92,15 @@ def run_playbook(
         return playbook_launch_error(reason=msg, status_code=status.HTTP_400_BAD_REQUEST)
 
     job_id = str(uuid.uuid4())
-    thread = threading.Thread(
-        target=_run_playbook_proc,
-        kwargs={
-            "job_id": job_id,
-            "playbook_path": str(playbook_path),
-            "inventory": inventory,
-            "extra_vars": extra_vars,
-            "callback": callback,
-        },
-    )
-    thread.start()
+    if settings.EXECUTOR == ExecutorType.THREADPOOL:
+        executor = get_thread_pool()
+        executor_handle = executor.submit(
+            run_playbook_proc_task, job_id, str(playbook_path), extra_vars, inventory, str(callback)
+        )
+        if settings.TESTING:
+            executor_handle.result()
+
+    elif settings.EXECUTOR == ExecutorType.WORKER:
+        run_playbook_proc_task.delay(job_id, str(playbook_path), extra_vars, inventory, str(callback))
 
     return playbook_launch_success(job_id=job_id)

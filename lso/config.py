@@ -11,60 +11,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""A module for loading configuration data, including a configuration schema that data is validated against.
+"""Module for loading and managing configuration settings for the LSO app.
 
-Data is loaded from a file, the location of which may be specified when using :func:`load_from_file`.
-Configuration file location can also be loaded from environment variable ``$SETTINGS_FILENAME``, which is default
- behaviour in :func:`load`.
+Uses `pydantic`'s `BaseSettings` to load settings from environment variables.
 """
 
-import json
 import os
-from pathlib import Path
+from enum import Enum
 
-import jsonschema
-from pydantic import BaseModel
-
-CONFIG_SCHEMA = {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "type": "object",
-    "properties": {"ansible_playbooks_root_dir": {"type": "string"}},
-    "required": ["ansible_playbooks_root_dir"],
-    "additionalProperties": False,
-}
-DEFAULT_REQUEST_TIMEOUT = 10
+from pydantic_settings import BaseSettings
 
 
-class Config(BaseModel):
-    """Simple Configuration class.
+class ExecutorType(Enum):
+    """Enum representing the types of executors available for task execution."""
 
-    Contains the root directory at which Ansible playbooks are present.
-    """
-
-    ansible_playbooks_root_dir: str
+    WORKER = "celery"
+    THREADPOOL = "threadpool"
 
 
-def load_from_file(file: Path) -> Config:
-    """Load, validate and return configuration parameters.
+class Config(BaseSettings):
+    """The set of parameters required for running :term:`LSO`."""
 
-    Input is validated against this JSON schema:
+    TESTING: bool = False
+    ANSIBLE_PLAYBOOKS_ROOT_DIR: str = "/path/to/ansible/playbooks"
+    EXECUTOR: ExecutorType = ExecutorType.THREADPOOL
+    MAX_THREAD_POOL_WORKERS: int = min(32, (os.cpu_count() or 1) + 4)
+    REQUEST_TIMEOUT_SEC: int = 10
+    CELERY_BROKER_URL: str = "redis://localhost:6379/0"
+    CELERY_RESULT_BACKEND: str = "redis://localhost:6379/0"
+    CELERY_TIMEZONE: str = "Europe/Amsterdam"
+    CELERY_ENABLE_UTC: bool = True
+    CELERY_RESULT_EXPIRES: int = 3600
+    WORKER_QUEUE_NAME: str | None = None
 
-    .. asjson:: lso.config.CONFIG_SCHEMA
 
-    :param file: :class:`Path` object that produces the configuration file.
-    :return: a dict containing the parsed configuration parameters.
-    """
-    config = json.loads(file.read_text())
-    jsonschema.validate(config, CONFIG_SCHEMA)
-    return Config(**config)
-
-
-def load() -> Config:
-    """Load a configuration file, located at the path specified in the environment variable ``$SETTINGS_FILENAME``.
-
-    Loading and validating the file is performed by :func:`load_from_file`.
-
-    :return: a dict containing the parsed configuration parameters
-    """
-    assert "SETTINGS_FILENAME" in os.environ, "Environment variable SETTINGS_FILENAME not set"  # noqa: S101
-    return load_from_file(Path(os.environ["SETTINGS_FILENAME"]))
+settings = Config()

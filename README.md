@@ -25,11 +25,11 @@ Use the Docker image to then spin up an environment. An example Docker compose f
 services:
   lso:
     image: my-lso:latest
+    env_file: 
+      .env  # Load default environment variables from the .env file
     environment:
-      SETTINGS_FILENAME: /app/config.json
-      ANSIBLE_ROLES_PATH: /app/lso/ansible_roles
+      ANSIBLE_ROLES_PATH: /app/lso/ansible_roles  # Set specific Ansible roles path
     volumes:
-      - "/home/user/config.json:/app/config.json:ro"
       - "/home/user/ansible_inventory:/opt/ansible_inventory:ro"
       - "~/.ssh/id_ed25519.pub:/root/.ssh/id_ed25519.pub:ro"
       - "~/.ssh/id_ed25519:/root/.ssh/id_ed25519:ro"
@@ -37,7 +37,8 @@ services:
 
 This will expose the API on port 8000. The container requires some more files to be mounted:
 
-* A `config.json` that references to the location where the Ansible playbooks are stored **inside the container**.
+* An .env file: Sets default environment variables, like ANSIBLE_PLAYBOOKS_ROOT_DIR for the location of Ansible playbooks **inside the container**.
+* Environment variables: Specific configurations, such as ANSIBLE_ROLES_PATH, can be directly set in the environment section. This is ideal for values you may want to override without modifying the .env file.
 * An Ansible inventory for all host and group variables that are used in the playbooks
 * A public/private key pair for SSH authentication on external machines that are targeted by Ansible playbooks.
 * Any Ansible-specific configuration (such as `collections_path`, `roles_path`, etc.) should be set using
@@ -75,10 +76,30 @@ As an alternative, below are a set of instructions for installing and running LS
 
 ### Running the app
 
-* Create a settings file, see `config.json.example` for an example.
+* Set required environment variables; see `env.example` for reference.
 * If necessary, set the environment variable `ANSIBLE_HOME` to a custom path.
 * Run the app like this (`app.py` starts the server on port 44444):
 
 ```bash
-  SETTINGS_FILENAME=/absolute/path/to/config.json python -m lso.app
+  source .env && python -m lso.app
 ```
+
+### Task Execution Options
+1. Celery (Distributed Execution)
+
+  - For distributed task execution, set `EXECUTOR=celery`.
+  - Add Celery config in your environment variables:
+
+```bash
+CELERY_BROKER_URL=redis://localhost:6379/0
+CELERY_RESULT_BACKEND=redis://localhost:6379/0
+WORKER_QUEUE_NAME=lso-worker-queue # default value is None so you don't need this by default.
+```
+  - Start a Celery worker:
+
+```bash
+celery -A lso.worker worker --loglevel=info -Q lso-worker-queue
+```
+2. ThreadPoolExecutor (Local Execution)
+
+For local concurrent tasks, set `EXECUTOR=threadpool` and configure `MAX_THREAD_POOL_WORKERS`.
