@@ -27,7 +27,7 @@ from lso.routes.playbook import router as playbook_router
 
 def create_app() -> FastAPI:
     """Initialise the :term:`LSO` app."""
-    app = FastAPI()
+    app = FastAPI(docs_url="/api/doc", redoc_url="/api/redoc", openapi_url="/api/openapi.json")
 
     app.add_middleware(
         CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"]
