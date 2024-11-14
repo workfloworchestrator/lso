@@ -47,7 +47,7 @@ def run_playbook_proc_task(
     :param HttpUrl callback: Callback URL for status updates.
     :return: None
     """
-    msg = f"playbook_path: {playbook_path}"
+    msg = f"playbook_path: {playbook_path}, callback: {callback}"
     logger.info(msg)
     ansible_playbook_run = ansible_runner.run(playbook=playbook_path, inventory=inventory, extravars=extra_vars)
 
@@ -61,5 +61,4 @@ def run_playbook_proc_task(
     request_result = requests.post(str(callback), json=payload, timeout=settings.REQUEST_TIMEOUT_SEC)
     if not status.HTTP_200_OK <= request_result.status_code < status.HTTP_300_MULTIPLE_CHOICES:
         msg = f"Callback failed: {request_result.text}, url: {callback}"
-        logger.error(msg)
         raise CallbackFailedError(msg)
