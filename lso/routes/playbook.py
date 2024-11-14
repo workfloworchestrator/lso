@@ -15,14 +15,16 @@
 
 import json
 import tempfile
+import uuid
 from contextlib import redirect_stderr
 from io import StringIO
+from pathlib import Path
 from typing import Annotated, Any
 
+import ansible_runner
 from ansible.inventory.manager import InventoryManager
 from ansible.parsing.dataloader import DataLoader
 from fastapi import APIRouter, HTTPException, status
-from fastapi.responses import JSONResponse
 from pydantic import AfterValidator, BaseModel, HttpUrl
 
 from lso.playbook import get_playbook_path, run_playbook
@@ -31,11 +33,19 @@ router = APIRouter()
 
 
 def _inventory_validator(inventory: dict[str, Any] | str) -> dict[str, Any] | str:
-    """Validate the format of the provided inventory by trying to parse it.
+    """Validate the provided inventory format.
 
-    If an inventory can't be parsed without warnings or errors, these are returned to the user by means of an HTTP
-    status 422 for 'unprocessable entity'.
+    Attempts to parse the inventory to verify its validity. If the inventory cannot be parsed or the inventory
+    format is incorrect an HTTP 422 error is raised.
+
+    :param inventory: The inventory to validate, can be a dictionary or a string.
+    :return: The validated inventory if no errors are found.
+    :raises HTTPException: If parsing fails or the format is incorrect.
     """
+    if not ansible_runner.utils.isinventory(inventory):
+        detail = "Invalid inventory provided. Should be a string, or JSON object."
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=detail)
+
     loader = DataLoader()
     output = StringIO()
     with tempfile.NamedTemporaryFile(mode="w+") as temp_inv, redirect_stderr(output):
@@ -53,7 +63,23 @@ def _inventory_validator(inventory: dict[str, Any] | str) -> dict[str, Any] | st
     return inventory
 
 
+def _playbook_path_validator(playbook_name: Path) -> Path:
+    playbook_path = get_playbook_path(playbook_name)
+    if not Path.exists(playbook_path):
+        msg = f"Filename '{playbook_path}' does not exist."
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=msg)
+
+    return playbook_path
+
+
 PlaybookInventory = Annotated[dict[str, Any] | str, AfterValidator(_inventory_validator)]
+PlaybookName = Annotated[Path, AfterValidator(_playbook_path_validator)]
+
+
+class PlaybookRunResponse(BaseModel):
+    """PlaybookRunResponse domain model schema."""
+
+    job_id: uuid.UUID
 
 
 class PlaybookRunParams(BaseModel):
@@ -61,7 +87,7 @@ class PlaybookRunParams(BaseModel):
 
     #: The filename of a playbook that's executed. It should be present inside the directory defined in the
     #: configuration option ``ANSIBLE_PLAYBOOKS_ROOT_DIR``.
-    playbook_name: str
+    playbook_name: PlaybookName
     #: The address where LSO should call back to upon completion.
     callback: HttpUrl
     #: The inventory to run the playbook against. This inventory can also include any host vars, if needed. When
@@ -74,8 +100,8 @@ class PlaybookRunParams(BaseModel):
     extra_vars: dict[str, Any] = {}
 
 
-@router.post("/")
-def run_playbook_endpoint(params: PlaybookRunParams) -> JSONResponse:
+@router.post("/", response_model=PlaybookRunResponse, status_code=status.HTTP_201_CREATED)
+def run_playbook_endpoint(params: PlaybookRunParams) -> PlaybookRunResponse:
     """Launch an Ansible playbook to modify or deploy a subscription instance.
 
     The response will contain either a job ID, or error information.
@@ -83,9 +109,11 @@ def run_playbook_endpoint(params: PlaybookRunParams) -> JSONResponse:
     :param PlaybookRunParams params: Parameters for executing a playbook.
     :return JSONResponse: Response from the Ansible runner, including a run ID.
     """
-    return run_playbook(
-        playbook_path=get_playbook_path(params.playbook_name),
+    job_id = run_playbook(
+        playbook_path=params.playbook_name,
         extra_vars=params.extra_vars,
         inventory=params.inventory,
         callback=params.callback,
     )
+
+    return PlaybookRunResponse(job_id=job_id)

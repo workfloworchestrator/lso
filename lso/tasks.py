@@ -30,6 +30,10 @@ from lso.worker import RUN_PLAYBOOK, celery
 logger = logging.getLogger(__name__)
 
 
+class CallbackFailedError(Exception):
+    """Exception raised when a callback url can't be reached."""
+
+
 @celery.task(name=RUN_PLAYBOOK)  # type: ignore[misc]
 def run_playbook_proc_task(
     job_id: str, playbook_path: str, extra_vars: dict[str, Any], inventory: dict[str, Any] | str, callback: str
@@ -58,3 +62,4 @@ def run_playbook_proc_task(
     if not status.HTTP_200_OK <= request_result.status_code < status.HTTP_300_MULTIPLE_CHOICES:
         msg = f"Callback failed: {request_result.text}, url: {callback}"
         logger.error(msg)
+        raise CallbackFailedError(msg)

@@ -13,6 +13,7 @@
 import re
 from collections.abc import Callable
 from contextlib import contextmanager
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -21,6 +22,7 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 from lso.config import ExecutorType, settings
+from lso.playbook import get_playbook_path
 
 TEST_CALLBACK_URL = "https://fqdn.abc.xyz/api/resume"
 
@@ -49,7 +51,7 @@ def test_playbook_endpoint_dict_inventory_success(client: TestClient, mocked_ans
         "extra_vars": {"dry_run": True, "commit_comment": "I am a robot!"},
     }
 
-    with patch("lso.playbook.ansible_runner.run", new=mocked_ansible_runner_run) as _:
+    with patch("lso.routes.playbook.ansible_runner.run", new=mocked_ansible_runner_run):
         rv = client.post("/api/playbook/", json=params)
         assert rv.status_code == status.HTTP_201_CREATED
         response = rv.json()
@@ -69,7 +71,7 @@ def test_playbook_endpoint_str_inventory_success(client: TestClient, mocked_ansi
         "inventory": {"all": {"hosts": "host1.local\nhost2.local\nhost3.local"}},
     }
 
-    with patch("lso.playbook.ansible_runner.run", new=mocked_ansible_runner_run) as _:
+    with patch("lso.routes.playbook.ansible_runner.run", new=mocked_ansible_runner_run):
         rv = client.post("/api/playbook/", json=params)
         assert rv.status_code == status.HTTP_201_CREATED
         response = rv.json()
@@ -90,7 +92,7 @@ def test_playbook_endpoint_invalid_host_vars(client: TestClient, mocked_ansible_
         },
     }
 
-    with patch("lso.playbook.ansible_runner.run", new=mocked_ansible_runner_run) as _:
+    with patch("lso.routes.playbook.ansible_runner.run", new=mocked_ansible_runner_run) as _:
         rv = client.post("/api/playbook/", json=params)
         assert rv.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
         response = rv.json()
@@ -114,7 +116,7 @@ def test_playbook_endpoint_invalid_hosts(client: TestClient, mocked_ansible_runn
         },
     }
 
-    with patch("lso.playbook.ansible_runner.run", new=mocked_ansible_runner_run) as _:
+    with patch("lso.routes.playbook.ansible_runner.run", new=mocked_ansible_runner_run):
         rv = client.post("/api/playbook/", json=params)
         assert rv.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
         response = rv.json()
@@ -198,3 +200,25 @@ def test_run_playbook_invalid_inventory(client: TestClient, executor_type: Execu
 
         rv = client.post("/api/playbook/", json=params)
         assert rv.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
+
+@responses.activate
+def test_run_playbook_invalid_playbook_path(client: TestClient) -> None:
+    """Test that the playbook runs fails with invalid playbook name/path."""
+    responses.post(url=TEST_CALLBACK_URL, status=status.HTTP_200_OK)
+
+    params = {
+        "playbook_name": "invalid.yaml",
+        "callback": TEST_CALLBACK_URL,
+        "inventory": {
+            "_meta": {"vars": {"host1.local": {"foo": "bar"}}},
+            "all": {"hosts": {"host1.local": None}},
+        },
+        "extra_vars": {"dry_run": True},
+    }
+
+    with patch("lso.tasks.run_playbook_proc_task.delay"):
+        rv = client.post("/api/playbook/", json=params)
+        assert rv.status_code == status.HTTP_404_NOT_FOUND
+        response = rv.json()
+        assert response["detail"] == f"Filename '{get_playbook_path(Path('invalid.yaml'))}' does not exist."

@@ -27,8 +27,6 @@ services:
     image: my-lso:latest
     env_file: 
       .env  # Load default environment variables from the .env file
-    environment:
-      ANSIBLE_ROLES_PATH: /app/lso/ansible_roles  # Set specific Ansible roles path
     volumes:
       - "/home/user/ansible_inventory:/opt/ansible_inventory:ro"
       - "~/.ssh/id_ed25519.pub:/root/.ssh/id_ed25519.pub:ro"
