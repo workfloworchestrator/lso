@@ -24,6 +24,8 @@ from lso import environment
 from lso.routes.default import router as default_router
 from lso.routes.playbook import router as playbook_router
 
+logger = logging.getLogger(__name__)
+
 
 def create_app() -> FastAPI:
     """Initialise the :term:`LSO` app."""
@@ -38,6 +40,6 @@ def create_app() -> FastAPI:
 
     environment.setup_logging()
 
-    logging.info("FastAPI app initialized")
+    logger.info("FastAPI app initialized")
 
     return app
