@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lightweight Service Orchestrator &mdash; Lightweight Service Orchestrator  documentation</title>
+  <title>Lightweight Service Orchestrator (LSO) Documentation &mdash; Lightweight Service Orchestrator  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=40ed084b" />
@@ -62,7 +62,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Lightweight Service Orchestrator</li>
+      <li class="breadcrumb-item active">Lightweight Service Orchestrator (LSO) Documentation</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -72,15 +72,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="lightweight-service-orchestrator">
-<h1>Lightweight Service Orchestrator<a class="headerlink" href="#lightweight-service-orchestrator" title="Link to this heading"></a></h1>
-<p>Code documentation for LSO (Lightweight Service Orchestrator).</p>
+  <section id="lightweight-service-orchestrator-lso-documentation">
+<h1>Lightweight Service Orchestrator (LSO) Documentation<a class="headerlink" href="#lightweight-service-orchestrator-lso-documentation" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>The Lightweight Service Orchestrator (LSO) is a simple tool designed to run Ansible playbooks remotely.
+It provides a straightforward way to send instructions, like inventory and variables, to Ansible through
+a REST API, making automation easier and more flexible.</p>
+</section>
+<section id="why-lso">
+<h2>Why LSO?<a class="headerlink" href="#why-lso" title="Link to this heading"></a></h2>
+<p>LSO was built to solve a common problem: running Ansible playbooks from a remote machine without setting
+up a complicated system. Many tools, like AWX, are powerful but require complex setups, like Kubernetes,
+and are tied to specific ecosystems.</p>
+<p>We wanted a lightweight, easy-to-use solution that works without extra layers. That’s why we created LSO.</p>
+</section>
+<section id="what-lso-does">
+<h2>What LSO Does<a class="headerlink" href="#what-lso-does" title="Link to this heading"></a></h2>
+<p>LSO is a small FastAPI server that receives requests from remote services and uses <cite>ansible-runner</cite> to execute playbooks.</p>
+<p>It:
+- Accepts the playbook name, inventory details, and extra variables as input.
+- Runs the playbook on Ansible using this information.
+- Sends the results back, including the output and execution status.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Sub-packages and -modules</a></li>
 </ul>
 </div>
+</section>
 </section>
 
 
