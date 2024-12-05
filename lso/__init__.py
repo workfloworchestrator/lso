@@ -13,7 +13,7 @@
 
 """LSO, an API for remotely running Ansible playbooks."""
 
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 
 import logging
 
