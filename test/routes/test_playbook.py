@@ -122,7 +122,7 @@ def test_playbook_endpoint_invalid_hosts(client: TestClient, mocked_ansible_runn
         response = rv.json()
 
     assert isinstance(response, dict)
-    assert 'Invalid "hosts" entry for "all" group' in re.sub("\n", " ", "".join(response["detail"]))
+    assert 'Invalid "hosts" entry for "all" group' in re.sub(r"\n", " ", "".join(response["detail"]))
     responses.assert_call_count(TEST_CALLBACK_URL, 0)
 
 
