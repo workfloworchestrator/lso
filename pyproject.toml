@@ -32,7 +32,7 @@ dependencies = [
     "ansible-runner==2.4.0",
     "ansible==10.6.0",
     "fastapi==0.115.5",
-    "httpx==0.28.0",
+    "httpx==0.28.1",
     "uvicorn[standard]==0.32.1",
     "requests==2.32.3",
     "pydantic-settings==2.7.1",
