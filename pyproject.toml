@@ -37,7 +37,7 @@ dependencies = [
     "requests==2.32.3",
     "pydantic-settings==2.6.1",
     "celery==5.4.0",
-    "redis==5.2.0",
+    "redis==5.2.1",
 ]
 
 readme = "README.md"
