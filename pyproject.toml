@@ -30,14 +30,14 @@ classifiers = [
 ]
 dependencies = [
     "ansible-runner==2.4.0",
-    "ansible==10.6.0",
+    "ansible==10.7.0",
     "fastapi==0.115.6",
-    "httpx==0.28.0",
+    "httpx==0.28.1",
     "uvicorn[standard]==0.32.1",
     "requests==2.32.3",
-    "pydantic-settings==2.6.1",
+    "pydantic-settings==2.7.1",
     "celery==5.4.0",
-    "redis==5.2.0",
+    "redis==5.2.1",
 ]
 
 readme = "README.md"
