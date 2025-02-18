@@ -39,8 +39,6 @@ class Config(BaseSettings):
     REQUEST_TIMEOUT_SEC: int = 10
     CELERY_BROKER_URL: str = "redis://localhost:6379/0"
     CELERY_RESULT_BACKEND: str = "redis://localhost:6379/0"
-    CELERY_TIMEZONE: str = "Europe/Amsterdam"
-    CELERY_ENABLE_UTC: bool = True
     CELERY_RESULT_EXPIRES: int = 3600
     WORKER_QUEUE_NAME: str | None = None
 
