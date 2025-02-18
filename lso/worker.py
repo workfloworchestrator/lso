@@ -26,11 +26,6 @@ celery = Celery(
     backend=settings.CELERY_RESULT_BACKEND,
 )
 
-if settings.TESTING:
-    celery.conf.update(backend=settings.CELERY_RESULT_BACKEND, task_ignore_result=False)
-else:
-    celery.conf.update(task_ignore_result=True)
-
 celery.conf.update(
     result_expires=settings.CELERY_RESULT_EXPIRES,
     worker_prefetch_multiplier=1,
@@ -38,6 +33,7 @@ celery.conf.update(
     task_send_sent_event=True,
     redbeat_redis_url=settings.CELERY_BROKER_URL,
     broker_connection_retry_on_startup=True,
+    task_ignore_result=not settings.TESTING,
 )
 
 if settings.WORKER_QUEUE_NAME:
