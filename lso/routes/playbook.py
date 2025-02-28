@@ -36,7 +36,7 @@ def _inventory_validator(inventory: dict[str, Any] | str) -> dict[str, Any] | st
     """Validate the provided inventory format.
 
     Attempts to parse the inventory to verify its validity. If the inventory cannot be parsed or the inventory
-    format is incorrect an HTTP 422 error is raised.
+    format is incorrect, an HTTP 422 error is raised.
 
     :param inventory: The inventory to validate, can be a dictionary or a string.
     :return: The validated inventory if no errors are found.

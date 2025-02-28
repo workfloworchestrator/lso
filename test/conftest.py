@@ -68,3 +68,12 @@ def client() -> TestClient:
 @pytest.fixture(scope="session")
 def faker() -> Faker:
     return Faker(locale="en_GB")
+
+
+@pytest.fixture
+def temp_executable(tmp_path: Path) -> Path:
+    # Create a temporary executable that echoes a message.
+    exe_file = tmp_path / "test_executable.sh"
+    exe_file.write_text("#!/bin/sh\necho 'Executable Test'\n")
+    exe_file.chmod(0o755)
+    return exe_file
