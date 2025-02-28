@@ -34,6 +34,7 @@ class Config(BaseSettings):
 
     TESTING: bool = False
     ANSIBLE_PLAYBOOKS_ROOT_DIR: str = "/path/to/ansible/playbooks"
+    EXECUTABLES_ROOT_DIR: str = "/path/to/executables"
     EXECUTOR: ExecutorType = ExecutorType.THREADPOOL
     MAX_THREAD_POOL_WORKERS: int = min(32, (os.cpu_count() or 1) + 4)
     REQUEST_TIMEOUT_SEC: int = 10
@@ -41,6 +42,7 @@ class Config(BaseSettings):
     CELERY_RESULT_BACKEND: str = "redis://localhost:6379/0"
     CELERY_RESULT_EXPIRES: int = 3600
     WORKER_QUEUE_NAME: str | None = None
+    EXECUTABLE_TIMEOUT_SEC: int = 300
 
 
 settings = Config()

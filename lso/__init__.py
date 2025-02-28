@@ -22,6 +22,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from lso import environment
 from lso.routes.default import router as default_router
+from lso.routes.execute import router as executable_router
 from lso.routes.playbook import router as playbook_router
 
 logger = logging.getLogger(__name__)
@@ -37,6 +38,7 @@ def create_app() -> FastAPI:
 
     app.include_router(default_router, prefix="/api")
     app.include_router(playbook_router, prefix="/api/playbook")
+    app.include_router(executable_router, prefix="/api/execute")
 
     environment.setup_logging()
 

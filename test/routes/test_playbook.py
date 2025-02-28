@@ -12,7 +12,6 @@
 # limitations under the License.
 import re
 from collections.abc import Callable
-from contextlib import contextmanager
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -21,20 +20,11 @@ import responses
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from lso.config import ExecutorType, settings
+from lso.config import ExecutorType
 from lso.playbook import get_playbook_path
+from test.utils import temporary_executor
 
 TEST_CALLBACK_URL = "https://fqdn.abc.xyz/api/resume"
-
-
-@contextmanager
-def temporary_executor(executor_type: ExecutorType):
-    original_executor = settings.EXECUTOR
-    settings.EXECUTOR = executor_type
-    try:
-        yield
-    finally:
-        settings.EXECUTOR = original_executor
 
 
 @responses.activate
@@ -130,6 +120,7 @@ def test_playbook_endpoint_invalid_hosts(client: TestClient, mocked_ansible_runn
 def test_run_playbook_threadpool_execution(client: TestClient, mocked_ansible_runner_run: Callable) -> None:
     """Test that the playbook runs with ThreadPoolExecutor when ExecutorType is THREADPOOL."""
     with temporary_executor(ExecutorType.THREADPOOL):
+        # Simulate a successful callback.
         responses.post(url=TEST_CALLBACK_URL, status=status.HTTP_200_OK)
 
         params = {

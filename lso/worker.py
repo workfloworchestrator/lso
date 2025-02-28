@@ -19,6 +19,7 @@ from celery.signals import worker_shutting_down
 from lso.config import settings
 
 RUN_PLAYBOOK = "lso.tasks.run_playbook_proc_task"
+RUN_EXECUTABLE = "lso.tasks.run_executable_proc_task"
 
 celery = Celery(
     "lso-worker",
@@ -39,6 +40,7 @@ celery.conf.update(
 if settings.WORKER_QUEUE_NAME:
     celery.conf.task_routes = {
         RUN_PLAYBOOK: {"queue": settings.WORKER_QUEUE_NAME},
+        RUN_EXECUTABLE: {"queue": settings.WORKER_QUEUE_NAME},
     }
 
 

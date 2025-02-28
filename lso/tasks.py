@@ -18,6 +18,8 @@ the results to a specified callback URL.
 """
 
 import logging
+import subprocess  # noqa: S404
+from enum import StrEnum
 from typing import Any
 
 import ansible_runner
@@ -25,13 +27,20 @@ import requests
 from starlette import status
 
 from lso.config import settings
-from lso.worker import RUN_PLAYBOOK, celery
+from lso.worker import RUN_EXECUTABLE, RUN_PLAYBOOK, celery
 
 logger = logging.getLogger(__name__)
 
 
 class CallbackFailedError(Exception):
     """Exception raised when a callback url can't be reached."""
+
+
+class JobStatus(StrEnum):
+    """Enumeration of possible job statuses."""
+
+    SUCCESSFUL = "successful"
+    FAILED = "failed"
 
 
 @celery.task(name=RUN_PLAYBOOK)  # type: ignore[misc]
@@ -58,7 +67,55 @@ def run_playbook_proc_task(
         "return_code": int(ansible_playbook_run.rc),
     }
 
-    request_result = requests.post(str(callback), json=payload, timeout=settings.REQUEST_TIMEOUT_SEC)
-    if not status.HTTP_200_OK <= request_result.status_code < status.HTTP_300_MULTIPLE_CHOICES:
-        msg = f"Callback failed: {request_result.text}, url: {callback}"
+    response = requests.post(str(callback), json=payload, timeout=settings.REQUEST_TIMEOUT_SEC)
+    if not (status.HTTP_200_OK <= response.status_code < status.HTTP_300_MULTIPLE_CHOICES):
+        msg = f"Callback failed: {response.text}, url: {callback}"
         raise CallbackFailedError(msg)
+
+
+@celery.task(name=RUN_EXECUTABLE)  # type: ignore[misc]
+def run_executable_proc_task(job_id: str, executable_path: str, args: list[str], callback: str) -> None:
+    """Celery task to run an arbitrary executable and notify via callback.
+
+    Executes the executable with the provided arguments and posts back the output and status.
+    """
+    msg = f"Executing executable: {executable_path} with args: {args}, callback: {callback}"
+    logger.info(msg)
+    try:
+        result = subprocess.run(  # noqa: S603
+            [executable_path, *args],
+            text=True,
+            capture_output=True,
+            timeout=settings.EXECUTABLE_TIMEOUT_SEC,
+            check=False,
+        )
+        output = result.stdout + result.stderr
+        return_code = result.returncode
+    except subprocess.TimeoutExpired:
+        output = "Execution timed out."
+        return_code = -1
+    except Exception as e:  # noqa: BLE001
+        output = str(e)
+        return_code = -1
+
+    payload = {
+        "job_id": job_id,
+        "output": output,
+        "return_code": return_code,
+        "status": JobStatus.SUCCESSFUL if return_code == 0 else JobStatus.FAILED,
+    }
+
+    def _raise_callback_error(message: str, error: Exception | None = None) -> None:
+        if error:
+            raise CallbackFailedError(message) from error
+        raise CallbackFailedError(message)
+
+    try:
+        response = requests.post(str(callback), json=payload, timeout=settings.REQUEST_TIMEOUT_SEC)
+        if not (status.HTTP_200_OK <= response.status_code < status.HTTP_300_MULTIPLE_CHOICES):
+            msg = f"Callback failed: {response.text}, url: {callback}"
+            _raise_callback_error(msg)
+    except Exception as e:
+        error_msg = f"Callback error: {e}"
+        logger.exception(error_msg)
+        _raise_callback_error(error_msg, e)
