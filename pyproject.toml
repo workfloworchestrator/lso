@@ -35,7 +35,7 @@ dependencies = [
     "httpx==0.28.1",
     "uvicorn[standard]==0.34.0",
     "requests==2.32.3",
-    "pydantic-settings==2.7.1",
+    "pydantic-settings==2.8.1",
     "celery==5.4.0",
     "redis==5.2.1",
 ]
