@@ -51,7 +51,6 @@
 <li class="toctree-l3"><a class="reference internal" href="config.html"><code class="docutils literal notranslate"><span class="pre">lso.config</span></code></a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">lso.playbook</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#lso.playbook.get_playbook_path"><code class="docutils literal notranslate"><span class="pre">get_playbook_path()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#lso.playbook.get_thread_pool"><code class="docutils literal notranslate"><span class="pre">get_thread_pool()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#lso.playbook.run_playbook"><code class="docutils literal notranslate"><span class="pre">run_playbook()</span></code></a></li>
 </ul>
 </li>
@@ -97,23 +96,13 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="lso.playbook.get_thread_pool">
-<span class="sig-prename descclassname"><span class="pre">lso.playbook.</span></span><span class="sig-name descname"><span class="pre">get_thread_pool</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lso.playbook.get_thread_pool" title="Link to this definition"></a></dt>
-<dd><p>Get and optionally initialise a ThreadPoolExecutor.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>ThreadPoolExecutor</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="lso.playbook.run_playbook">
 <span class="sig-prename descclassname"><span class="pre">lso.playbook.</span></span><span class="sig-name descname"><span class="pre">run_playbook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">playbook_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inventory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.playbook.run_playbook" title="Link to this definition"></a></dt>
 <dd><p>Run an Ansible playbook against a specified inventory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>playbook_path</strong> (<em>Path</em>) – playbook to be executed.</p></li>
+<li><p><strong>playbook_path</strong> (<em>Path</em>) – Playbook to be executed.</p></li>
 <li><p><strong>extra_vars</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – Any extra vars needed for the playbook to run.</p></li>
 <li><p><strong>inventory</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>| </em><em>str</em>) – The inventory that the playbook is executed against.</p></li>
 <li><p><strong>callback</strong> (<em>HttpUrl</em>) – Callback URL where the playbook should send a status update when execution is completed.
