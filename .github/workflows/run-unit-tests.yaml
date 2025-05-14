@@ -26,9 +26,3 @@ jobs:
           FLIT_ROOT_INSTALL: 1
       - name: Run Unit tests
         run: pytest --cov-branch --cov=lso --cov-report=xml
-      - name: "Upload coverage to Codecov"
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true
-          files: ./coverage.xml
