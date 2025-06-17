@@ -33,7 +33,7 @@ dependencies = [
     "ansible==10.7.0",
     "fastapi==0.115.12",
     "httpx==0.28.1",
-    "uvicorn[standard]==0.34.2",
+    "uvicorn[standard]==0.34.3",
     "requests==2.32.4",
     "pydantic-settings==2.9.1",
     "celery==5.5.3",
