@@ -1,4 +1,4 @@
-# Copyright 2023-2024 GÉANT Vereniging.
+# Copyright 2024-2025 GÉANT Vereniging.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -18,15 +18,16 @@ the results to a specified callback URL.
 """
 
 import logging
-import subprocess  # noqa: S404
-from enum import StrEnum
 from typing import Any
+from uuid import UUID
 
 import ansible_runner
 import requests
 from starlette import status
 
 from lso.config import settings
+from lso.schema import ExecutableRunResponse
+from lso.utils import run_executable_sync
 from lso.worker import RUN_EXECUTABLE, RUN_PLAYBOOK, celery
 
 logger = logging.getLogger(__name__)
@@ -34,13 +35,6 @@ logger = logging.getLogger(__name__)
 
 class CallbackFailedError(Exception):
     """Exception raised when a callback url can't be reached."""
-
-
-class JobStatus(StrEnum):
-    """Enumeration of possible job statuses."""
-
-    SUCCESSFUL = "successful"
-    FAILED = "failed"
 
 
 @celery.task(name=RUN_PLAYBOOK)  # type: ignore[misc]
@@ -81,29 +75,12 @@ def run_executable_proc_task(job_id: str, executable_path: str, args: list[str],
     """
     msg = f"Executing executable: {executable_path} with args: {args}, callback: {callback}"
     logger.info(msg)
-    try:
-        result = subprocess.run(  # noqa: S603
-            [executable_path, *args],
-            text=True,
-            capture_output=True,
-            timeout=settings.EXECUTABLE_TIMEOUT_SEC,
-            check=False,
-        )
-        output = result.stdout + result.stderr
-        return_code = result.returncode
-    except subprocess.TimeoutExpired:
-        output = "Execution timed out."
-        return_code = -1
-    except Exception as e:  # noqa: BLE001
-        output = str(e)
-        return_code = -1
+    result = run_executable_sync(executable_path, args)
 
-    payload = {
-        "job_id": job_id,
-        "output": output,
-        "return_code": return_code,
-        "status": JobStatus.SUCCESSFUL if return_code == 0 else JobStatus.FAILED,
-    }
+    payload = ExecutableRunResponse(
+        job_id=UUID(job_id),
+        result=result,
+    ).model_dump(mode="json")
 
     def _raise_callback_error(message: str, error: Exception | None = None) -> None:
         if error:
