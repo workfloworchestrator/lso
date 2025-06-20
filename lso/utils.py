@@ -13,11 +13,9 @@
 
 """Utility functions for the LSO package."""
 
-import subprocess  # noqa: S404
 from concurrent.futures import ThreadPoolExecutor
 
 from lso.config import settings
-from lso.schema import ExecutionResult
 
 _executor = None
 
@@ -29,28 +27,3 @@ def get_thread_pool() -> ThreadPoolExecutor:
         _executor = ThreadPoolExecutor(max_workers=settings.MAX_THREAD_POOL_WORKERS)
 
     return _executor
-
-
-def run_executable_sync(executable_path: str, args: list[str]) -> ExecutionResult:
-    """Run the given executable synchronously and return the result."""
-    try:
-        result = subprocess.run(  # noqa: S603
-            [executable_path, *args],
-            text=True,
-            capture_output=True,
-            timeout=settings.EXECUTABLE_TIMEOUT_SEC,
-            check=False,
-        )
-        output = result.stdout + result.stderr
-        return_code = result.returncode
-    except subprocess.TimeoutExpired:
-        output = "Execution timed out."
-        return_code = -1
-    except Exception as e:  # noqa: BLE001
-        output = str(e)
-        return_code = -1
-
-    return ExecutionResult(  # type: ignore[call-arg]
-        output=output,
-        return_code=return_code,
-    )

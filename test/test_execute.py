@@ -6,10 +6,9 @@ import pytest
 import responses
 
 from lso.config import ExecutorType
-from lso.execute import get_executable_path, run_executable_async
+from lso.execute import get_executable_path, run_executable_async, run_executable_sync
 from lso.schema import JobStatus
 from lso.tasks import CallbackFailedError
-from lso.utils import run_executable_sync
 from test.utils import temp_executable_env
 
 TEST_CALLBACK_URL = "http://localhost/callback"
