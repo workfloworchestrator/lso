@@ -1,5 +1,6 @@
 """FastAPI route for running arbitrary executables."""
 
+import asyncio
 import uuid
 from pathlib import Path
 from typing import Annotated
@@ -48,5 +49,5 @@ async def run_executable_endpoint(params: ExecutableRunParams) -> ExecutableRunR
         return ExecutableRunResponse(job_id=job_id)
 
     job_id = uuid.uuid4()
-    result = run_executable_sync(str(params.executable_name), params.args)
+    result = await asyncio.to_thread(run_executable_sync, str(params.executable_name), params.args)
     return ExecutableRunResponse(job_id=job_id, result=result)
