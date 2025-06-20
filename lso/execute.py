@@ -15,7 +15,7 @@ def get_executable_path(executable_name: Path) -> Path:
     return Path(settings.EXECUTABLES_ROOT_DIR) / executable_name
 
 
-def run_executable(executable_path: Path, args: list[str], callback: HttpUrl) -> uuid.UUID:
+def run_executable_async(executable_path: Path, args: list[str], callback: HttpUrl) -> uuid.UUID:
     """Dispatch the task for executing an arbitrary executable remotely.
 
     Uses a ThreadPoolExecutor (for local execution) or a Celery worker (for distributed tasks).
