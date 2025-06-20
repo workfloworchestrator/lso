@@ -132,17 +132,20 @@ def test_execute_endpoint_async_and_sync(client: TestClient, temp_executable: Pa
         target_exe.write_text(temp_executable.read_text())
         target_exe.chmod(0o755)
 
+        responses.add(responses.POST, TEST_CALLBACK_URL, status=200)
+
         # async without callback
         r1 = client.post("/api/execute/", json={"executable_name": temp_executable.name})
-        assert r1.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert r1.status_code == status.HTTP_201_CREATED
+        responses.assert_call_count(TEST_CALLBACK_URL, 0)
 
         # async with callback
-        responses.add(responses.POST, TEST_CALLBACK_URL, status=200)
         r2 = client.post("/api/execute/", json={"executable_name": temp_executable.name, "callback": TEST_CALLBACK_URL})
         assert r2.status_code == status.HTTP_201_CREATED
         d2 = r2.json()
         assert "job_id" in d2
         assert d2.get("result") is None
+        responses.assert_call_count(TEST_CALLBACK_URL, 1)
 
         # sync path
         r3 = client.post("/api/execute/", json={"executable_name": temp_executable.name, "args": [], "is_async": False})
@@ -154,6 +157,7 @@ def test_execute_endpoint_async_and_sync(client: TestClient, temp_executable: Pa
         assert res["return_code"] == 0
         assert res["status"] == JobStatus.SUCCESSFUL
         assert "Executable Test" in res["output"]
+        responses.assert_call_count(TEST_CALLBACK_URL, 1)
 
 
 @responses.activate
