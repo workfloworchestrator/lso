@@ -3,8 +3,10 @@ build-backend = "flit_core.buildapi"
 requires = ["flit_core >=3.2,<4"]
 
 [project]
-name = "orchestrator-lso"
-dynamic = ['version', 'description']
+name = "lso"
+dynamic = ['version']
+description = "Lightweight Service Orchestrator"
+readme = "README.md"
 authors = [{name = "GÉANT Orchestration and Automation Team", email = "goat@geant.org"}]
 classifiers = [
     "Intended Audience :: Information Technology",
@@ -39,9 +41,7 @@ dependencies = [
     "celery==5.5.3",
     "redis==5.2.1",
 ]
-
-readme = "README.md"
-requires-python = ">=3.11,<3.13"
+requires-python = ">=3.11,<3.14"
 
 [project.urls]
 Documentation = "https://workfloworchestrator.org/lso/"
@@ -74,8 +74,6 @@ dev = [
     "pre-commit",
 ]
 
-[tool.flit.module]
-name = "lso"
 
 [tool.mypy]
 exclude = [
@@ -176,7 +174,7 @@ ban-relative-imports = "all"
 
 [tool.ruff.lint.per-file-ignores]
 "test/*" = ["D", "S101"]
-"setup.py" = ["D100"]
+
 
 [tool.ruff.lint.isort]
 known-third-party = []
