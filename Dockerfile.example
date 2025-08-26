@@ -11,7 +11,7 @@ COPY ./ansible-galaxy-requirements.yaml ./ansible-galaxy-requirements.yaml
 RUN apk add --update --no-cache gcc libc-dev libffi-dev openssh
 
 # Install the LSO python package, and additional requirements
-RUN pip install orchestrator-lso=="2.1.1"
+RUN pip install orchestrator-lso=="2.3.0"
 RUN pip install -r requirements.txt
 
 # Install required Ansible Galaxy roles and collections
