@@ -3,11 +3,15 @@ build-backend = "flit_core.buildapi"
 requires = ["flit_core >=3.2,<4"]
 
 [project]
-name = "lso"
-dynamic = ['version']
-description = "Lightweight Service Orchestrator"
+name = "orchestrator-lso"
+dynamic = ["version"]
+description = "LSO, an API for remotely running Ansible playbooks."
 readme = "README.md"
-authors = [{name = "GÉANT Orchestration and Automation Team", email = "goat@geant.org"}]
+license = "Apache-2.0"
+requires-python = ">=3.11,<3.14"
+authors = [
+    {name = "GÉANT Orchestration and Automation Team", email = "goat@geant.org"}
+]
 classifiers = [
     "Intended Audience :: Information Technology",
     "Intended Audience :: System Administrators",
@@ -25,7 +29,6 @@ classifiers = [
     "Framework :: FastAPI",
     "Intended Audience :: Developers",
     "Intended Audience :: Telecommunications Industry",
-    "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -41,7 +44,6 @@ dependencies = [
     "celery==5.5.3",
     "redis==5.2.1",
 ]
-requires-python = ">=3.11,<3.14"
 
 [project.urls]
 Documentation = "https://workfloworchestrator.org/lso/"
@@ -179,3 +181,7 @@ ban-relative-imports = "all"
 [tool.ruff.lint.isort]
 known-third-party = []
 known-first-party = ["test", "docs"]
+
+[tool.flit.module]
+name = "lso"
+
