@@ -34,7 +34,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-    "ansible-runner==2.4.1",
+    "ansible-runner==2.4.2",
     "ansible==10.7.0",
     "fastapi==0.118.0",
     "httpx==0.28.1",
