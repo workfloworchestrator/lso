@@ -1,10 +1,6 @@
-[build-system]
-build-backend = "flit_core.buildapi"
-requires = ["flit_core >=3.2,<4"]
-
 [project]
 name = "orchestrator-lso"
-dynamic = ["version"]
+version = "2.3.0"
 description = "LSO, an API for remotely running Ansible playbooks."
 readme = "README.md"
 license = "Apache-2.0"
@@ -46,10 +42,11 @@ dependencies = [
 ]
 
 [project.urls]
-Documentation = "https://workfloworchestrator.org/lso/"
+Homepage = "https://workfloworchestrator.org/lso/"
+Documentation = "https://docs.gap.geant.org"
 Source = "https://github.com/workfloworchestrator/lso"
 
-[project.optional-dependencies]
+[dependency-groups]
 test = [
     "pytest",
     "pytest-cov",
@@ -76,6 +73,16 @@ dev = [
     "pre-commit",
 ]
 
+[build-system]
+build-backend = "uv_build"
+requires = ["uv_build >=0.9.3,<0.10.0"]
+
+[tool.uv]
+prerelease = "if-necessary"
+
+[tool.uv.build-backend]
+module-name = "lso"
+module-root = ""
 
 [tool.mypy]
 exclude = [
@@ -181,7 +188,3 @@ ban-relative-imports = "all"
 [tool.ruff.lint.isort]
 known-third-party = []
 known-first-party = ["test", "docs"]
-
-[tool.flit.module]
-name = "lso"
-
