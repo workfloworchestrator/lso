@@ -5,10 +5,6 @@
 
 LSO: an API that allows for remotely executing Ansible playbooks.
 
-## Code documentation
-
-Code documentation can be found at <https://workfloworchestrator.org/lso>
-
 ## Quick start
 
 This is a quick setup guide for running on your local machine.
@@ -44,7 +40,6 @@ This will expose the API on port 8000. The container requires some more files to
 
 ### Install the module
 
-
 As an alternative, below are a set of instructions for installing and running LSO directly on a machine.
 
 *One of these should be what you're looking for:*
@@ -52,24 +47,18 @@ As an alternative, below are a set of instructions for installing and running LS
 * Install the latest release
 
 ```bash
-  python3 -m venv my-venv-directory
-  . my-venv-directory/bin/activate
-
-  pip install orchestrator-lso
+  uv venv --python 3.12
+  uv add orchestrator-lso
 ```
 
 * Install the source code
 
 ```bash
   git clone https://github.com/workfloworchestrator/lso.git && cd lso
-  python3 -m venv my-venv-directory
-  . my-venv-directory/bin/activate
+  uv venv --python 3.12
+  . .venv/bin/activate
   
-  pip install flit
-  flit install --deps production
-  
-  # Or, for the full development environment
-  flit install --deps develop
+  uv sync --all-extras --dev
 ```
 
 ### Running the app
@@ -101,3 +90,13 @@ celery -A lso.worker worker --loglevel=info -Q lso-worker-queue
 2. ThreadPoolExecutor (Local Execution)
 
 For local concurrent tasks, set `EXECUTOR=threadpool` and configure `MAX_THREAD_POOL_WORKERS`.
+
+## Contributing
+
+We use [uv](https://docs.astral.sh/uv/getting-started/installation/) to manage dependencies.
+
+To get started, run `uv sync`
+
+## Code documentation
+
+Code documentation can be found at <https://workfloworchestrator.org/lso>
