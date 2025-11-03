@@ -47,7 +47,7 @@ Documentation = "https://docs.gap.geant.org"
 Source = "https://github.com/workfloworchestrator/lso"
 
 [dependency-groups]
-test = [
+dev = [
     "pytest",
     "pytest-cov",
     "Faker",
@@ -56,21 +56,17 @@ test = [
     "ruff",
     "jsonschema",
     "starlette",
+    "types-setuptools",
+    "types-requests",
+    "toml",
+    "types-toml",
+    "mypy_extensions",
 ]
 
 doc = [
     "sphinx",
     "sphinx-rtd-theme",
     "docutils",
-]
-
-dev = [
-    "types-setuptools",
-    "types-requests",
-    "toml",
-    "types-toml",
-    "mypy_extensions",
-    "pre-commit",
 ]
 
 [build-system]
