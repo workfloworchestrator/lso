@@ -1,0 +1,25 @@
+default_language_version:
+  python: python3
+repos:
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    # uv version.
+    rev: 0.8.13
+    hooks:
+      # Update the uv lockfile
+      - id: uv-lock
+        files: ^uv\.lock$
+        always_run: true
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.12.1
+    hooks:
+      # Run the linter.
+      - id: ruff-check
+        args:
+          - --preview
+          - --respect-gitignore
+      # Run the formatter.
+      - id: ruff-format
+        args:
+          - --preview
+          - --respect-gitignore

@@ -95,7 +95,12 @@ For local concurrent tasks, set `EXECUTOR=threadpool` and configure `MAX_THREAD_
 
 We use [uv](https://docs.astral.sh/uv/getting-started/installation/) to manage dependencies.
 
-To get started, run `uv sync`
+To get started, run:
+
+```
+uv sync --all-extras --dev
+pre-commit install
+```
 
 ## Code documentation
 

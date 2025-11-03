@@ -62,6 +62,7 @@ dev = [
     "toml",
     "types-toml",
     "mypy_extensions",
+    "pre-commit>=4.3.0",
 ]
 
 doc = [
