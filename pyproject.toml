@@ -48,6 +48,7 @@ Source = "https://github.com/workfloworchestrator/lso"
 
 [dependency-groups]
 dev = [
+    "bumpversion",
     "pytest",
     "pytest-cov",
     "Faker",
