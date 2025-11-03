@@ -36,7 +36,7 @@ classifiers = [
 dependencies = [
     "ansible-runner==2.4.2",
     "ansible==10.7.0",
-    "fastapi==0.118.0",
+    "fastapi==0.120.4",
     "httpx==0.28.1",
     "uvicorn[standard]==0.38.0",
     "requests==2.32.5",
