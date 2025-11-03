@@ -20,13 +20,15 @@ jobs:
         with:
           python-version: 3.12
       - name: Install requirements
-        run: uv sync --no-dev --group docs
+        run: |
+          uv sync --no-dev --group doc
+          sudo apt-get install -y docutils
       - name: Build documentation
-        run: TZ=UTC sphinx-build -b html docs/source docs/build
+        run: TZ=UTC uv run sphinx-build -b html docs/source docs/build
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.3'
-      - uses: errata-ai/vale-action@reviewdog
+      - uses: errata-ai/vale-action@v2.1.1
         with:
           files: "docs/source/,lso/"
           separator: ','
