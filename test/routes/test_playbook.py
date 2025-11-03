@@ -84,7 +84,7 @@ def test_playbook_endpoint_invalid_host_vars(client: TestClient, mocked_ansible_
 
     with patch("lso.routes.playbook.ansible_runner.run", new=mocked_ansible_runner_run) as _:
         rv = client.post("/api/playbook/", json=params)
-        assert rv.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert rv.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
         response = rv.json()
 
     assert isinstance(response, dict)
@@ -108,7 +108,7 @@ def test_playbook_endpoint_invalid_hosts(client: TestClient, mocked_ansible_runn
 
     with patch("lso.routes.playbook.ansible_runner.run", new=mocked_ansible_runner_run):
         rv = client.post("/api/playbook/", json=params)
-        assert rv.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert rv.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
         response = rv.json()
 
     assert isinstance(response, dict)
@@ -190,7 +190,7 @@ def test_run_playbook_invalid_inventory(client: TestClient, executor_type: Execu
         }
 
         rv = client.post("/api/playbook/", json=params)
-        assert rv.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert rv.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
 
 
 @responses.activate

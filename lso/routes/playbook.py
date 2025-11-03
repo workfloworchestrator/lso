@@ -44,7 +44,7 @@ def _inventory_validator(inventory: dict[str, Any] | str) -> dict[str, Any] | st
     """
     if not ansible_runner.utils.isinventory(inventory):
         detail = "Invalid inventory provided. Should be a string, or JSON object."
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=detail)
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=detail)
 
     loader = DataLoader()
     output = StringIO()
@@ -58,7 +58,7 @@ def _inventory_validator(inventory: dict[str, Any] | str) -> dict[str, Any] | st
     output.seek(0)
     error_messages = output.readlines()
     if error_messages:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=error_messages)
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=error_messages)
 
     return inventory
 
