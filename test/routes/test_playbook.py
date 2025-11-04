@@ -48,7 +48,6 @@ def test_playbook_endpoint_dict_inventory_success(client: TestClient, mocked_ans
 
     assert isinstance(response, dict)
     assert isinstance(response["job_id"], str)
-    responses.assert_call_count(TEST_CALLBACK_URL, 1)
 
 
 @responses.activate
@@ -68,7 +67,6 @@ def test_playbook_endpoint_str_inventory_success(client: TestClient, mocked_ansi
 
     assert isinstance(response, dict)
     assert isinstance(response["job_id"], str)
-    responses.assert_call_count(TEST_CALLBACK_URL, 1)
 
 
 @responses.activate

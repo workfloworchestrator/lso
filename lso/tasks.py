@@ -18,11 +18,12 @@ the results to a specified callback URL.
 """
 
 import logging
+from collections.abc import Callable
 from typing import Any
 from uuid import UUID
 
-import ansible_runner
 import requests
+from ansible_runner import Runner, run
 from starlette import status
 
 from lso.config import settings
@@ -36,13 +37,65 @@ class CallbackFailedError(Exception):
     """Exception raised when a callback url can't be reached."""
 
 
+def playbook_event_handler_factory(callback: str) -> Callable:
+    """Create an event handler for Ansible playbook runs.
+
+    This is used to send incremental progress updates to the external system that called for this playbook to be run.
+
+    :param str callback: The callback URL where the external system expects to receive updates.
+    """
+    events_stdout = []
+
+    def _playbook_event_handler(event: dict) -> bool:
+        if settings.ANSIBLE_PLAYBOOKS_EMIT_IS_INCREMENTAL:
+            events_stdout.append(event["stdout"].strip())
+            emit_body = events_stdout
+        else:
+            emit_body = event["stdout"].strip()
+
+        requests.post(
+            str(callback + settings.ANSIBLE_PLAYBOOKS_PROGRESS_ENDPOINT),
+            json={"progress": emit_body},
+            timeout=settings.REQUEST_TIMEOUT_SEC,
+        )
+        return True
+
+    return _playbook_event_handler
+
+
+def playbook_finished_handler_factory(callback: str, job_id: UUID) -> Callable[[Runner], None]:
+    """Create an event handler for finished Ansible playbook runs.
+
+    Once Ansible runner is finished, it will call the handler method created by this factory before teardown.
+
+    :param str callback: The callback URL that ansible runner should report to.
+    :param UUID job_id: The job ID of this playbook run, used for reporting.
+    :return Callable: A handler method that sends one request to the callback URL.
+    """
+
+    def _playbook_finished_handler(runner: Runner) -> None:
+        payload = {
+            "status": runner.status,
+            "job_id": str(job_id),
+            "output": runner.stdout.readlines(),
+            "return_code": int(runner.rc),
+        }
+
+        response = requests.post(str(callback), json=payload, timeout=settings.REQUEST_TIMEOUT_SEC)
+        if not (status.HTTP_200_OK <= response.status_code < status.HTTP_300_MULTIPLE_CHOICES):
+            msg = f"Callback failed: {response.text}, url: {callback}"
+            raise CallbackFailedError(msg)
+
+    return _playbook_finished_handler
+
+
 @celery.task(name=RUN_PLAYBOOK)  # type: ignore[misc]
 def run_playbook_proc_task(
-    job_id: str, playbook_path: str, extra_vars: dict[str, Any], inventory: dict[str, Any] | str, callback: str
+    job_id: UUID, playbook_path: str, extra_vars: dict[str, Any], inventory: dict[str, Any] | str, callback: str
 ) -> None:
     """Celery task to run a playbook.
 
-    :param str job_id: Identifier of the job being executed.
+    :param UUID job_id: Identifier of the job being executed.
     :param str playbook_path: Path to the playbook to be executed.
     :param dict[str, Any] extra_vars: Extra variables to pass to the playbook.
     :param dict[str, Any] | str inventory: Inventory to run the playbook against.
@@ -51,23 +104,17 @@ def run_playbook_proc_task(
     """
     msg = f"playbook_path: {playbook_path}, callback: {callback}"
     logger.info(msg)
-    ansible_playbook_run = ansible_runner.run(playbook=playbook_path, inventory=inventory, extravars=extra_vars)
-
-    payload = {
-        "status": ansible_playbook_run.status,
-        "job_id": job_id,
-        "output": ansible_playbook_run.stdout.readlines(),
-        "return_code": int(ansible_playbook_run.rc),
-    }
-
-    response = requests.post(str(callback), json=payload, timeout=settings.REQUEST_TIMEOUT_SEC)
-    if not (status.HTTP_200_OK <= response.status_code < status.HTTP_300_MULTIPLE_CHOICES):
-        msg = f"Callback failed: {response.text}, url: {callback}"
-        raise CallbackFailedError(msg)
+    run(
+        playbook=playbook_path,
+        inventory=inventory,
+        extravars=extra_vars,
+        event_handler=playbook_event_handler_factory(callback) if settings.ANSIBLE_PLAYBOOKS_EMIT_PROGRESS else None,
+        finished_callback=playbook_finished_handler_factory(callback, job_id),
+    )
 
 
 @celery.task(name=RUN_EXECUTABLE)  # type: ignore[misc]
-def run_executable_proc_task(job_id: str, executable_path: str, args: list[str], callback: str | None) -> None:
+def run_executable_proc_task(job_id: UUID, executable_path: str, args: list[str], callback: str | None) -> None:
     """Celery task to run an arbitrary executable and notify via callback.
 
     Executes the executable with the provided arguments and posts back the result if a callback URL is provided.
@@ -80,7 +127,7 @@ def run_executable_proc_task(job_id: str, executable_path: str, args: list[str],
 
     if callback:
         payload = ExecutableRunResponse(
-            job_id=UUID(job_id),
+            job_id=job_id,
             result=result,
         ).model_dump(mode="json")
 
