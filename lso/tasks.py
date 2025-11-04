@@ -63,20 +63,20 @@ def playbook_event_handler_factory(callback: str) -> Callable:
     return _playbook_event_handler
 
 
-def playbook_finished_handler_factory(callback: str, job_id: UUID) -> Callable[[Runner], None]:
+def playbook_finished_handler_factory(callback: str, job_id: str) -> Callable[[Runner], None]:
     """Create an event handler for finished Ansible playbook runs.
 
     Once Ansible runner is finished, it will call the handler method created by this factory before teardown.
 
     :param str callback: The callback URL that ansible runner should report to.
-    :param UUID job_id: The job ID of this playbook run, used for reporting.
+    :param str job_id: The job ID of this playbook run, used for reporting.
     :return Callable: A handler method that sends one request to the callback URL.
     """
 
     def _playbook_finished_handler(runner: Runner) -> None:
         payload = {
             "status": runner.status,
-            "job_id": str(job_id),
+            "job_id": job_id,
             "output": runner.stdout.readlines(),
             "return_code": int(runner.rc),
         }
@@ -91,11 +91,11 @@ def playbook_finished_handler_factory(callback: str, job_id: UUID) -> Callable[[
 
 @celery.task(name=RUN_PLAYBOOK)  # type: ignore[misc]
 def run_playbook_proc_task(
-    job_id: UUID, playbook_path: str, extra_vars: dict[str, Any], inventory: dict[str, Any] | str, callback: str
+    job_id: str, playbook_path: str, extra_vars: dict[str, Any], inventory: dict[str, Any] | str, callback: str
 ) -> None:
     """Celery task to run a playbook.
 
-    :param UUID job_id: Identifier of the job being executed.
+    :param str job_id: Identifier of the job being executed.
     :param str playbook_path: Path to the playbook to be executed.
     :param dict[str, Any] extra_vars: Extra variables to pass to the playbook.
     :param dict[str, Any] | str inventory: Inventory to run the playbook against.
@@ -114,7 +114,7 @@ def run_playbook_proc_task(
 
 
 @celery.task(name=RUN_EXECUTABLE)  # type: ignore[misc]
-def run_executable_proc_task(job_id: UUID, executable_path: str, args: list[str], callback: str | None) -> None:
+def run_executable_proc_task(job_id: str, executable_path: str, args: list[str], callback: str | None) -> None:
     """Celery task to run an arbitrary executable and notify via callback.
 
     Executes the executable with the provided arguments and posts back the result if a callback URL is provided.
@@ -127,7 +127,7 @@ def run_executable_proc_task(job_id: UUID, executable_path: str, args: list[str]
 
     if callback:
         payload = ExecutableRunResponse(
-            job_id=job_id,
+            job_id=UUID(job_id),
             result=result,
         ).model_dump(mode="json")
 

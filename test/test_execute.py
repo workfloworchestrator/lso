@@ -64,7 +64,7 @@ def test_run_executable_async_worker_delay(monkeypatch, temp_executable: Path):
         job_id = run_executable_async(target_exe, ["a", "b"], TEST_CALLBACK_URL)
         assert len(calls) == 1
         called_job_id, called_path, called_args, called_callback = calls[0]
-        assert called_job_id == job_id
+        assert called_job_id == str(job_id)
         assert called_path == str(target_exe)
         assert called_args == ["a", "b"]
         assert called_callback == TEST_CALLBACK_URL

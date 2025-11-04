@@ -39,11 +39,11 @@ def run_executable_async(executable_path: Path, args: list[str], callback: HttpU
     callback_url = str(callback) if callback else None
     if settings.EXECUTOR == ExecutorType.THREADPOOL:
         executor = get_thread_pool()
-        future = executor.submit(run_executable_proc_task, job_id, str(executable_path), args, callback_url)
+        future = executor.submit(run_executable_proc_task, str(job_id), str(executable_path), args, callback_url)
         if settings.TESTING:
             future.result()
     elif settings.EXECUTOR == ExecutorType.WORKER:
-        run_executable_proc_task.delay(job_id, str(executable_path), args, callback_url)
+        run_executable_proc_task.delay(str(job_id), str(executable_path), args, callback_url)
     return job_id
 
 

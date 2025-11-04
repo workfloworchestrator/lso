@@ -48,7 +48,7 @@ def run_playbook(
     if settings.EXECUTOR == ExecutorType.THREADPOOL:
         executor = get_thread_pool()
         executor_handle = executor.submit(
-            run_playbook_proc_task, job_id, str(playbook_path), extra_vars, inventory, str(callback)
+            run_playbook_proc_task, str(job_id), str(playbook_path), extra_vars, inventory, str(callback)
         )
         if settings.TESTING:
             executor_handle.result()
