@@ -13,9 +13,9 @@
 
 """Module that gathers common API responses and data models."""
 
-import uuid
 from pathlib import Path
 from typing import Any
+from uuid import UUID, uuid4
 
 from pydantic import HttpUrl
 
@@ -34,7 +34,7 @@ def run_playbook(
     extra_vars: dict[str, Any],
     inventory: dict[str, Any] | str,
     callback: HttpUrl,
-) -> uuid.UUID:
+) -> UUID:
     """Run an Ansible playbook against a specified inventory.
 
     :param Path playbook_path: Playbook to be executed.
@@ -42,19 +42,18 @@ def run_playbook(
     :param dict[str, Any] | str inventory: The inventory that the playbook is executed against.
     :param HttpUrl callback: Callback URL where the playbook should send a status update when execution is completed.
                              This is used for workflow-orchestrator to continue with the next step in a workflow.
-    :return: Result of playbook launch, this could either be successful or unsuccessful.
-    :rtype: :class:`fastapi.responses.JSONResponse`
+    :return UUID: Job ID of the launched playbook.
     """
-    job_id = uuid.uuid4()
+    job_id = uuid4()
     if settings.EXECUTOR == ExecutorType.THREADPOOL:
         executor = get_thread_pool()
         executor_handle = executor.submit(
-            run_playbook_proc_task, str(job_id), str(playbook_path), extra_vars, inventory, str(callback)
+            run_playbook_proc_task, job_id, str(playbook_path), extra_vars, inventory, str(callback)
         )
         if settings.TESTING:
             executor_handle.result()
 
     elif settings.EXECUTOR == ExecutorType.WORKER:
-        run_playbook_proc_task.delay(str(job_id), str(playbook_path), extra_vars, inventory, str(callback))
+        run_playbook_proc_task.delay(job_id, str(playbook_path), extra_vars, inventory, str(callback))
 
     return job_id

@@ -15,11 +15,11 @@
 
 import json
 import tempfile
-import uuid
 from contextlib import redirect_stderr
 from io import StringIO
 from pathlib import Path
 from typing import Annotated, Any
+from uuid import UUID
 
 import ansible_runner
 from ansible.inventory.manager import InventoryManager
@@ -79,7 +79,7 @@ PlaybookName = Annotated[Path, AfterValidator(_playbook_path_validator)]
 class PlaybookRunResponse(BaseModel):
     """PlaybookRunResponse domain model schema."""
 
-    job_id: uuid.UUID
+    job_id: UUID
 
 
 class PlaybookRunParams(BaseModel):

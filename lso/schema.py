@@ -13,8 +13,8 @@
 
 """Module for defining the schema for running arbitrary executables."""
 
-import uuid
 from enum import StrEnum
+from uuid import UUID
 
 from pydantic import BaseModel, model_validator
 
@@ -46,5 +46,5 @@ class ExecutionResult(BaseModel):
 class ExecutableRunResponse(BaseModel):
     """Response for running an arbitrary executable."""
 
-    job_id: uuid.UUID
+    job_id: UUID
     result: ExecutionResult | None = None

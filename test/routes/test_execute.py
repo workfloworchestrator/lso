@@ -1,6 +1,6 @@
-import uuid
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+from uuid import UUID
 
 import responses
 from fastapi import status
@@ -40,7 +40,7 @@ def test_execute_endpoint_threadpool_success(client: TestClient, temp_executable
             response = rv.json()
 
         assert isinstance(response, dict)
-        uuid.UUID(response["job_id"])  # Validate job_id format.
+        UUID(response["job_id"])  # Validate job_id format.
         mock_executor.submit.assert_called_once()
         assert mock_run_executable_proc_task.call_count == 0
 
@@ -66,7 +66,7 @@ def test_execute_endpoint_worker_success(client: TestClient, temp_executable: Pa
             response = rv.json()
 
         assert isinstance(response, dict)
-        uuid.UUID(response["job_id"])  # Validate job_id format.
+        UUID(response["job_id"])  # Validate job_id format.
         mock_celery_delay.assert_called_once()
 
 

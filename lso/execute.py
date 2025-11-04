@@ -14,8 +14,8 @@
 """Module for handling the execution of arbitrary executables."""
 
 import subprocess  # noqa: S404
-import uuid
 from pathlib import Path
+from uuid import UUID, uuid4
 
 from pydantic import HttpUrl
 
@@ -30,20 +30,20 @@ def get_executable_path(executable_name: Path) -> Path:
     return Path(settings.EXECUTABLES_ROOT_DIR) / executable_name
 
 
-def run_executable_async(executable_path: Path, args: list[str], callback: HttpUrl | None) -> uuid.UUID:
+def run_executable_async(executable_path: Path, args: list[str], callback: HttpUrl | None) -> UUID:
     """Dispatch the task for executing an arbitrary executable remotely.
 
     Uses a ThreadPoolExecutor (for local execution) or a Celery worker (for distributed tasks).
     """
-    job_id = uuid.uuid4()
+    job_id = uuid4()
     callback_url = str(callback) if callback else None
     if settings.EXECUTOR == ExecutorType.THREADPOOL:
         executor = get_thread_pool()
-        future = executor.submit(run_executable_proc_task, str(job_id), str(executable_path), args, callback_url)
+        future = executor.submit(run_executable_proc_task, job_id, str(executable_path), args, callback_url)
         if settings.TESTING:
             future.result()
     elif settings.EXECUTOR == ExecutorType.WORKER:
-        run_executable_proc_task.delay(str(job_id), str(executable_path), args, callback_url)
+        run_executable_proc_task.delay(job_id, str(executable_path), args, callback_url)
     return job_id
 
 
