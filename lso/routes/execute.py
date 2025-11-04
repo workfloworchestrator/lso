@@ -14,9 +14,9 @@
 """FastAPI route for running arbitrary executables."""
 
 import asyncio
-import uuid
 from pathlib import Path
 from typing import Annotated
+from uuid import uuid4
 
 from fastapi import APIRouter, HTTPException, status
 from pydantic import AfterValidator, BaseModel, HttpUrl
@@ -61,6 +61,6 @@ async def run_executable_endpoint(params: ExecutableRunParams) -> ExecutableRunR
         job_id = run_executable_async(params.executable_name, params.args, params.callback)
         return ExecutableRunResponse(job_id=job_id)
 
-    job_id = uuid.uuid4()
+    job_id = uuid4()
     result = await asyncio.to_thread(run_executable_sync, str(params.executable_name), params.args)
     return ExecutableRunResponse(job_id=job_id, result=result)

@@ -1,6 +1,6 @@
 import subprocess  # noqa: S404
-import uuid
 from pathlib import Path
+from uuid import UUID
 
 import pytest
 import responses
@@ -25,7 +25,7 @@ def test_run_executable_async_threadpool_success(temp_executable: Path):
         responses.add(responses.POST, TEST_CALLBACK_URL, status=200)
 
         job_id = run_executable_async(target_exe, ["--version"], TEST_CALLBACK_URL)
-        assert isinstance(job_id, uuid.UUID)
+        assert isinstance(job_id, UUID)
         responses.assert_call_count(TEST_CALLBACK_URL, 1)
 
 
@@ -62,10 +62,9 @@ def test_run_executable_async_worker_delay(monkeypatch, temp_executable: Path):
         )
 
         job_id = run_executable_async(target_exe, ["a", "b"], TEST_CALLBACK_URL)
-        assert isinstance(job_id, uuid.UUID)
         assert len(calls) == 1
         called_job_id, called_path, called_args, called_callback = calls[0]
-        assert called_job_id == str(job_id)
+        assert called_job_id == job_id
         assert called_path == str(target_exe)
         assert called_args == ["a", "b"]
         assert called_callback == TEST_CALLBACK_URL
