@@ -33,7 +33,10 @@ def run_playbook(
     playbook_path: Path,
     extra_vars: dict[str, Any],
     inventory: dict[str, Any] | str,
-    callback: HttpUrl,
+    callback: HttpUrl | None,
+    progress: HttpUrl | None,
+    *,
+    progress_is_incremental: bool,
 ) -> UUID:
     """Run an Ansible playbook against a specified inventory.
 
@@ -45,15 +48,37 @@ def run_playbook(
     :return UUID: Job ID of the launched playbook.
     """
     job_id = uuid4()
+    callback_str = None
+    progress_str = None
+    if callback:
+        callback_str = str(callback)
+    if progress:
+        progress_str = str(progress)
+
     if settings.EXECUTOR == ExecutorType.THREADPOOL:
         executor = get_thread_pool()
         executor_handle = executor.submit(
-            run_playbook_proc_task, str(job_id), str(playbook_path), extra_vars, inventory, str(callback)
+            run_playbook_proc_task,
+            str(job_id),
+            str(playbook_path),
+            extra_vars,
+            inventory,
+            callback_str,
+            progress_str,
+            progress_is_incremental=progress_is_incremental,
         )
         if settings.TESTING:
             executor_handle.result()
 
     elif settings.EXECUTOR == ExecutorType.WORKER:
-        run_playbook_proc_task.delay(job_id, str(playbook_path), extra_vars, inventory, str(callback))
+        run_playbook_proc_task.delay(
+            str(job_id),
+            str(playbook_path),
+            extra_vars,
+            inventory,
+            callback_str,
+            progress_str,
+            progress_is_incremental=progress_is_incremental,
+        )
 
     return job_id

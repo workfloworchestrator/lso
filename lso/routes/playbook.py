@@ -89,7 +89,11 @@ class PlaybookRunParams(BaseModel):
     #: configuration option ``ANSIBLE_PLAYBOOKS_ROOT_DIR``.
     playbook_name: PlaybookName
     #: The address where LSO should call back to upon completion.
-    callback: HttpUrl
+    callback: HttpUrl | None = None
+    #: Optionally, the address where LSO should send progress updates as the playbook executes.
+    progress: HttpUrl | None = None
+    #: Optionally, whether progress updates should be incremental or not.
+    progress_is_incremental: bool = True
     #: The inventory to run the playbook against. This inventory can also include any host vars, if needed. When
     #: including host vars, it should be a dictionary. Can be a simple string containing hostnames when no host vars are
     #: needed. In the latter case, multiple hosts should be separated with a ``\n`` newline character only.
@@ -114,6 +118,8 @@ def run_playbook_endpoint(params: PlaybookRunParams) -> PlaybookRunResponse:
         extra_vars=params.extra_vars,
         inventory=params.inventory,
         callback=params.callback,
+        progress=params.progress,
+        progress_is_incremental=params.progress_is_incremental,
     )
 
     return PlaybookRunResponse(job_id=job_id)

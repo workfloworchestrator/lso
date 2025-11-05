@@ -37,33 +37,35 @@ class CallbackFailedError(Exception):
     """Exception raised when a callback url can't be reached."""
 
 
-def playbook_event_handler_factory(callback: str) -> Callable:
+def playbook_event_handler_factory(
+    progress: str | None, *, progress_is_incremental: bool
+) -> Callable[[dict], bool] | None:
     """Create an event handler for Ansible playbook runs.
 
     This is used to send incremental progress updates to the external system that called for this playbook to be run.
 
-    :param str callback: The callback URL where the external system expects to receive updates.
+    :param str progress: The progress URL where the external system expects to receive updates.
+    :param bool progress_is_incremental: Whether progress updates are sent incrementally, or only contain the latest
+                                         event data.
     """
     events_stdout = []
 
     def _playbook_event_handler(event: dict) -> bool:
-        if settings.ANSIBLE_PLAYBOOKS_EMIT_IS_INCREMENTAL:
+        if progress_is_incremental:
+            emit_body = event["stdout"].strip()
+        else:
             events_stdout.append(event["stdout"].strip())
             emit_body = events_stdout
-        else:
-            emit_body = event["stdout"].strip()
 
-        requests.post(
-            str(callback + settings.ANSIBLE_PLAYBOOKS_PROGRESS_ENDPOINT),
-            json={"progress": emit_body},
-            timeout=settings.REQUEST_TIMEOUT_SEC,
-        )
+        requests.post(str(progress), json={"progress": emit_body}, timeout=settings.REQUEST_TIMEOUT_SEC)
         return True
 
-    return _playbook_event_handler
+    if progress:
+        return _playbook_event_handler
+    return None
 
 
-def playbook_finished_handler_factory(callback: str, job_id: str) -> Callable[[Runner], None]:
+def playbook_finished_handler_factory(callback: str | None, job_id: str) -> Callable[[Runner], None] | None:
     """Create an event handler for finished Ansible playbook runs.
 
     Once Ansible runner is finished, it will call the handler method created by this factory before teardown.
@@ -86,12 +88,21 @@ def playbook_finished_handler_factory(callback: str, job_id: str) -> Callable[[R
             msg = f"Callback failed: {response.text}, url: {callback}"
             raise CallbackFailedError(msg)
 
-    return _playbook_finished_handler
+    if callback:
+        return _playbook_finished_handler
+    return None
 
 
 @celery.task(name=RUN_PLAYBOOK)  # type: ignore[misc]
 def run_playbook_proc_task(
-    job_id: str, playbook_path: str, extra_vars: dict[str, Any], inventory: dict[str, Any] | str, callback: str
+    job_id: str,
+    playbook_path: str,
+    extra_vars: dict[str, Any],
+    inventory: dict[str, Any] | str,
+    callback: str | None,
+    progress: str | None,
+    *,
+    progress_is_incremental: bool,
 ) -> None:
     """Celery task to run a playbook.
 
@@ -99,7 +110,9 @@ def run_playbook_proc_task(
     :param str playbook_path: Path to the playbook to be executed.
     :param dict[str, Any] extra_vars: Extra variables to pass to the playbook.
     :param dict[str, Any] | str inventory: Inventory to run the playbook against.
-    :param HttpUrl callback: Callback URL for status updates.
+    :param str callback: Callback URL for status updates.
+    :param str progress: URL for sending progress updates.
+    :param bool progress_is_incremental: Whether progress updates include all past progress.
     :return: None
     """
     msg = f"playbook_path: {playbook_path}, callback: {callback}"
@@ -108,7 +121,7 @@ def run_playbook_proc_task(
         playbook=playbook_path,
         inventory=inventory,
         extravars=extra_vars,
-        event_handler=playbook_event_handler_factory(callback) if settings.ANSIBLE_PLAYBOOKS_EMIT_PROGRESS else None,
+        event_handler=playbook_event_handler_factory(progress, progress_is_incremental=progress_is_incremental),
         finished_callback=playbook_finished_handler_factory(callback, job_id),
     )
 

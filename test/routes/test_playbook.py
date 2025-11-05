@@ -25,21 +25,30 @@ from lso.playbook import get_playbook_path
 from test.utils import temporary_executor
 
 TEST_CALLBACK_URL = "https://fqdn.abc.xyz/api/resume"
+TEST_PROGRESS_URL = "https://fqdn.abc.xyz/api/progress"
 
 
 @responses.activate
-def test_playbook_endpoint_dict_inventory_success(client: TestClient, mocked_ansible_runner_run: Callable) -> None:
-    responses.post(url=TEST_CALLBACK_URL, status=status.HTTP_200_OK)
-
+@pytest.mark.parametrize("callback", [TEST_CALLBACK_URL, None])
+@pytest.mark.parametrize("progress", [TEST_PROGRESS_URL, None])
+def test_playbook_endpoint_dict_inventory_success(
+    client: TestClient, mocked_ansible_runner_run: Callable, callback: str | None, progress: str | None
+) -> None:
     params = {
         "playbook_name": "placeholder.yaml",
-        "callback": TEST_CALLBACK_URL,
         "inventory": {
             "_meta": {"vars": {"host1.local": {"foo": "bar"}, "host2.local": {"hello": "world"}}},
             "all": {"hosts": {"host1.local": None, "host2.local": None}},
         },
         "extra_vars": {"dry_run": True, "commit_comment": "I am a robot!"},
     }
+
+    if callback:
+        responses.post(url=callback, status=status.HTTP_200_OK)
+        params["callback"] = callback
+    if progress:
+        responses.post(url=progress, status=status.HTTP_200_OK)
+        params["progress"] = progress
 
     with patch("lso.routes.playbook.ansible_runner.run", new=mocked_ansible_runner_run):
         rv = client.post("/api/playbook/", json=params)

@@ -34,9 +34,6 @@ class Config(BaseSettings):
 
     TESTING: bool = False
     ANSIBLE_PLAYBOOKS_ROOT_DIR: str = "/path/to/ansible/playbooks"
-    ANSIBLE_PLAYBOOKS_EMIT_PROGRESS: bool = False
-    ANSIBLE_PLAYBOOKS_PROGRESS_ENDPOINT: str = "/progress"
-    ANSIBLE_PLAYBOOKS_EMIT_IS_INCREMENTAL: bool = True
     EXECUTABLES_ROOT_DIR: str = "/path/to/executables"
     EXECUTOR: ExecutorType = ExecutorType.THREADPOOL
     MAX_THREAD_POOL_WORKERS: int = min(32, (os.cpu_count() or 1) + 4)

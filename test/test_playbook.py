@@ -18,6 +18,7 @@ from starlette import status
 from lso.playbook import run_playbook
 
 TEST_CALLBACK_URL = "http://localhost/callback"
+TEST_PROGRESS_URL = "http://localhost/progress"
 
 
 @responses.activate
@@ -28,6 +29,8 @@ def test_playbook_execution() -> None:
         extra_vars={},
         inventory="127.0.0.1",
         callback=TEST_CALLBACK_URL,
+        progress=TEST_PROGRESS_URL,
+        progress_is_incremental=True,
     )
 
     responses.assert_call_count(TEST_CALLBACK_URL, 1)
