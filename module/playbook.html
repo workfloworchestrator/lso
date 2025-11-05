@@ -51,8 +51,6 @@
 <li class="toctree-l3"><a class="reference internal" href="config.html"><code class="docutils literal notranslate"><span class="pre">lso.config</span></code></a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">lso.playbook</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#lso.playbook.get_playbook_path"><code class="docutils literal notranslate"><span class="pre">get_playbook_path()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#lso.playbook.playbook_event_handler_factory"><code class="docutils literal notranslate"><span class="pre">playbook_event_handler_factory()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#lso.playbook.playbook_finished_handler_factory"><code class="docutils literal notranslate"><span class="pre">playbook_finished_handler_factory()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#lso.playbook.run_playbook"><code class="docutils literal notranslate"><span class="pre">run_playbook()</span></code></a></li>
 </ul>
 </li>
@@ -95,43 +93,6 @@
 <dt class="sig sig-object py" id="lso.playbook.get_playbook_path">
 <span class="sig-prename descclassname"><span class="pre">lso.playbook.</span></span><span class="sig-name descname"><span class="pre">get_playbook_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">playbook_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.playbook.get_playbook_path" title="Link to this definition"></a></dt>
 <dd><p>Get the path of a playbook on the local filesystem.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="lso.playbook.playbook_event_handler_factory">
-<span class="sig-prename descclassname"><span class="pre">lso.playbook.</span></span><span class="sig-name descname"><span class="pre">playbook_event_handler_factory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">progress</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_is_incremental</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.playbook.playbook_event_handler_factory" title="Link to this definition"></a></dt>
-<dd><p>Create an event handler for Ansible playbook runs.</p>
-<p>This is used to send incremental progress updates to the external system that called for this playbook to be run.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>progress</strong> (<em>str</em>) – The progress URL where the external system expects to receive updates.</p></li>
-<li><p><strong>progress_is_incremental</strong> (<em>bool</em>) – Whether progress updates are sent incrementally, or only contain the latest
-event data.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return Callable[[dict], bool]]<span class="colon">:</span></dt>
-<dd class="field-even"><p>A handler method that processes every Ansible playbook event.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="lso.playbook.playbook_finished_handler_factory">
-<span class="sig-prename descclassname"><span class="pre">lso.playbook.</span></span><span class="sig-name descname"><span class="pre">playbook_finished_handler_factory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">job_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.playbook.playbook_finished_handler_factory" title="Link to this definition"></a></dt>
-<dd><p>Create an event handler for finished Ansible playbook runs.</p>
-<p>Once Ansible runner is finished, it will call the handler method created by this factory before teardown.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>callback</strong> (<em>str</em>) – The callback URL that ansible runner should report to.</p></li>
-<li><p><strong>job_id</strong> (<em>UUID</em>) – The job ID of this playbook run, used for reporting.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return Callable[[Runner], None]<span class="colon">:</span></dt>
-<dd class="field-even"><p>A handler method that sends one request to the callback URL.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
