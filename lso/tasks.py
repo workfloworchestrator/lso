@@ -28,101 +28,37 @@ from starlette import status
 
 from lso.config import settings
 from lso.schema import ExecutableRunResponse
+from lso.utils import CallbackFailedError
 from lso.worker import RUN_EXECUTABLE, RUN_PLAYBOOK, celery
 
 logger = logging.getLogger(__name__)
 
 
-class CallbackFailedError(Exception):
-    """Exception raised when a callback url can't be reached."""
-
-
-def playbook_event_handler_factory(
-    progress: str | None, *, progress_is_incremental: bool
-) -> Callable[[dict], bool] | None:
-    """Create an event handler for Ansible playbook runs.
-
-    This is used to send incremental progress updates to the external system that called for this playbook to be run.
-
-    :param str progress: The progress URL where the external system expects to receive updates.
-    :param bool progress_is_incremental: Whether progress updates are sent incrementally, or only contain the latest
-                                         event data.
-    """
-    events_stdout = []
-
-    def _playbook_event_handler(event: dict) -> bool:
-        if progress_is_incremental:
-            emit_body = event["stdout"].strip()
-        else:
-            events_stdout.append(event["stdout"].strip())
-            emit_body = events_stdout
-
-        requests.post(str(progress), json={"progress": emit_body}, timeout=settings.REQUEST_TIMEOUT_SEC)
-        return True
-
-    if progress:
-        return _playbook_event_handler
-    return None
-
-
-def playbook_finished_handler_factory(callback: str | None, job_id: str) -> Callable[[Runner], None] | None:
-    """Create an event handler for finished Ansible playbook runs.
-
-    Once Ansible runner is finished, it will call the handler method created by this factory before teardown.
-
-    :param str callback: The callback URL that ansible runner should report to.
-    :param str job_id: The job ID of this playbook run, used for reporting.
-    :return Callable: A handler method that sends one request to the callback URL.
-    """
-
-    def _playbook_finished_handler(runner: Runner) -> None:
-        payload = {
-            "status": runner.status,
-            "job_id": job_id,
-            "output": runner.stdout.readlines(),
-            "return_code": int(runner.rc),
-        }
-
-        response = requests.post(str(callback), json=payload, timeout=settings.REQUEST_TIMEOUT_SEC)
-        if not (status.HTTP_200_OK <= response.status_code < status.HTTP_300_MULTIPLE_CHOICES):
-            msg = f"Callback failed: {response.text}, url: {callback}"
-            raise CallbackFailedError(msg)
-
-    if callback:
-        return _playbook_finished_handler
-    return None
-
-
 @celery.task(name=RUN_PLAYBOOK)  # type: ignore[misc]
 def run_playbook_proc_task(
-    job_id: str,
     playbook_path: str,
     extra_vars: dict[str, Any],
     inventory: dict[str, Any] | str,
-    callback: str | None,
-    progress: str | None,
-    *,
-    progress_is_incremental: bool,
+    event_handler: Callable[[dict], bool] | None = None,
+    finished_callback: Callable[[Runner], None] | None = None,
 ) -> None:
     """Celery task to run a playbook.
 
-    :param str job_id: Identifier of the job being executed.
     :param str playbook_path: Path to the playbook to be executed.
     :param dict[str, Any] extra_vars: Extra variables to pass to the playbook.
     :param dict[str, Any] | str inventory: Inventory to run the playbook against.
-    :param str callback: Callback URL for status updates.
-    :param str progress: URL for sending progress updates.
-    :param bool progress_is_incremental: Whether progress updates include all past progress.
+    :param Callable[[dict], bool] event_handler: Event handler method that is executed on every event while the playbook
+                                                 runs.
+    :param Callable[[Runner], None] finished_callback: Callback handler method that is executed once the playbook run is
+                                                       completed.
     :return: None
     """
-    msg = f"playbook_path: {playbook_path}, callback: {callback}"
-    logger.info(msg)
     run(
         playbook=playbook_path,
         inventory=inventory,
         extravars=extra_vars,
-        event_handler=playbook_event_handler_factory(progress, progress_is_incremental=progress_is_incremental),
-        finished_callback=playbook_finished_handler_factory(callback, job_id),
+        event_handler=event_handler,
+        finished_callback=finished_callback,
     )
 
 
