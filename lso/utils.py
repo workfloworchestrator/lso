@@ -20,6 +20,10 @@ from lso.config import settings
 _executor = None
 
 
+class CallbackFailedError(Exception):
+    """Exception raised when a callback url can't be reached."""
+
+
 def get_thread_pool() -> ThreadPoolExecutor:
     """Initialize or return a cached ThreadPoolExecutor for local asynchronous execution."""
     global _executor  # noqa: PLW0603
