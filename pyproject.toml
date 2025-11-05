@@ -1,6 +1,6 @@
 [project]
 name = "orchestrator-lso"
-version = "2.3.1"
+version = "2.4.0"
 description = "LSO, an API for remotely running Ansible playbooks."
 readme = "README.md"
 license = "Apache-2.0"
