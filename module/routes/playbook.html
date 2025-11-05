@@ -90,7 +90,7 @@
 <p>The API endpoint from which Ansible playbooks can be executed.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="lso.routes.playbook.PlaybookRunParams">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lso.routes.playbook.</span></span><span class="sig-name descname"><span class="pre">PlaybookRunParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">playbook_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inventory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.routes.playbook.PlaybookRunParams" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lso.routes.playbook.</span></span><span class="sig-name descname"><span class="pre">PlaybookRunParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">playbook_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_is_incremental</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inventory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.routes.playbook.PlaybookRunParams" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
 <p>Parameters for executing an Ansible playbook.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
@@ -130,6 +130,18 @@ needed. In the latter case, multiple hosts should be separated with a <code clas
 <span class="sig-name descname"><span class="pre">playbook_name</span></span><a class="headerlink" href="#lso.routes.playbook.PlaybookRunParams.playbook_name" title="Link to this definition"></a></dt>
 <dd><p>The filename of a playbook that’s executed. It should be present inside the directory defined in the
 configuration option <code class="docutils literal notranslate"><span class="pre">ANSIBLE_PLAYBOOKS_ROOT_DIR</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lso.routes.playbook.PlaybookRunParams.progress">
+<span class="sig-name descname"><span class="pre">progress</span></span><a class="headerlink" href="#lso.routes.playbook.PlaybookRunParams.progress" title="Link to this definition"></a></dt>
+<dd><p>Optionally, the address where LSO should send progress updates as the playbook executes.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lso.routes.playbook.PlaybookRunParams.progress_is_incremental">
+<span class="sig-name descname"><span class="pre">progress_is_incremental</span></span><a class="headerlink" href="#lso.routes.playbook.PlaybookRunParams.progress_is_incremental" title="Link to this definition"></a></dt>
+<dd><p>Optionally, whether progress updates should be incremental or not.</p>
 </dd></dl>
 
 </dd></dl>
