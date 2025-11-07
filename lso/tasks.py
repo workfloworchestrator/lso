@@ -45,16 +45,21 @@ def playbook_event_handler_factory(
     This is used to send incremental progress updates to the external system that called for this playbook to be run.
 
     :param str progress: The progress URL where the external system expects to receive updates.
-    :param bool progress_is_incremental: Whether progress updates are sent incrementally, or only contain the latest
-                                         event data.
+    :param bool progress_is_incremental: Whether progress updates are sent incrementally, or contain the whole history
+                                         of event data.
     """
     events_stdout = []
 
     def _playbook_event_handler(event: dict) -> bool:
+        event_data = event["stdout"].strip()
+        if not event_data:
+            return False
+
+        event_data_lines = event_data.split("\r\n")
         if progress_is_incremental:
-            emit_body = event["stdout"].strip()
+            emit_body = event_data_lines
         else:
-            events_stdout.append(event["stdout"].strip())
+            events_stdout.extend(event_data_lines)
             emit_body = events_stdout
 
         requests.post(str(progress), json={"progress": emit_body}, timeout=settings.REQUEST_TIMEOUT_SEC)
