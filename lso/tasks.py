@@ -81,10 +81,13 @@ def playbook_finished_handler_factory(callback: str | None, job_id: str) -> Call
     """
 
     def _playbook_finished_handler(runner: Runner) -> None:
+        playbook_output = runner.stdout.read().split("\n")
+        playbook_output = [line for line in playbook_output if line.strip()]
+
         payload = {
             "status": runner.status,
             "job_id": job_id,
-            "output": runner.stdout.readlines(),
+            "output": playbook_output,
             "return_code": int(runner.rc),
         }
 
