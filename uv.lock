@@ -850,7 +850,7 @@ wheels = [
 
 [[package]]
 name = "orchestrator-lso"
-version = "2.4.4"
+version = "2.4.5"
 source = { editable = "." }
 dependencies = [
     { name = "ansible" },
