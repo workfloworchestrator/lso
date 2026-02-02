@@ -21,6 +21,7 @@ Submodules
    :titlesonly:
 
    module/config
+   module/execute
    module/playbook
 
 
