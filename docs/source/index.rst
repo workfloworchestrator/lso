@@ -21,6 +21,7 @@ What LSO Does
 -------------
 
 LSO is a small FastAPI server that receives requests from remote services and uses `ansible-runner` to execute playbooks.
+It can also execute Python scripts directly, without Ansible.
 
 It:
 - Accepts the playbook name, inventory details, and extra variables as input.
