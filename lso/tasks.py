@@ -101,7 +101,7 @@ def playbook_finished_handler_factory(callback: str | None, job_id: str) -> Call
     return None
 
 
-@celery.task(name=RUN_PLAYBOOK)  # type: ignore[misc]
+@celery.task(name=RUN_PLAYBOOK)  # type: ignore[untyped-decorator]
 def run_playbook_proc_task(
     job_id: str,
     playbook_path: str,
@@ -134,7 +134,7 @@ def run_playbook_proc_task(
     )
 
 
-@celery.task(name=RUN_EXECUTABLE)  # type: ignore[misc]
+@celery.task(name=RUN_EXECUTABLE)  # type: ignore[untyped-decorator]
 def run_executable_proc_task(job_id: str, executable_path: str, args: list[str], callback: str | None) -> None:
     """Celery task to run an arbitrary executable and notify via callback.
 
