@@ -44,7 +44,7 @@ if settings.WORKER_QUEUE_NAME:
     }
 
 
-@worker_shutting_down.connect  # type: ignore[misc]
-def worker_shutting_down_handler(sig, how, exitcode, **kwargs) -> None:  # type: ignore[no-untyped-def]  # noqa: ARG001
+@worker_shutting_down.connect  # type: ignore[untyped-decorator]
+def worker_shutting_down_handler(sig, how, exitcode, **kwargs) -> None:  # type: ignore[no-untyped-def] # noqa: ARG001
     """Handle the Celery worker shutdown event."""
     celery.close()
