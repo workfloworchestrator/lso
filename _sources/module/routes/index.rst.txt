@@ -13,4 +13,5 @@ Submodules
    :titlesonly:
 
    default
+   execute
    playbook

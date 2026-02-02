@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>lso.routes.default &mdash; Lightweight Service Orchestrator  documentation</title>
+  <title>lso.routes.execute &mdash; Lightweight Service Orchestrator  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=40ed084b" />
@@ -20,8 +20,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="lso.routes.execute" href="execute.html" />
-    <link rel="prev" title="lso.routes" href="index.html" /> 
+    <link rel="next" title="lso.routes.playbook" href="playbook.html" />
+    <link rel="prev" title="lso.routes.default" href="default.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -75,9 +75,9 @@
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../modules.html">Sub-packages and -modules</a></li>
           <li class="breadcrumb-item"><a href="index.html"><code class="docutils literal notranslate"><span class="pre">lso.routes</span></code></a></li>
-      <li class="breadcrumb-item active"><code class="docutils literal notranslate"><span class="pre">lso.routes.default</span></code></li>
+      <li class="breadcrumb-item active"><code class="docutils literal notranslate"><span class="pre">lso.routes.execute</span></code></li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/module/routes/default.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/module/routes/execute.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -85,36 +85,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-lso.routes.default">
-<span id="lso-routes-default"></span><h1><code class="docutils literal notranslate"><span class="pre">lso.routes.default</span></code><a class="headerlink" href="#module-lso.routes.default" title="Link to this heading"></a></h1>
-<p>Default route located at the root URL /.</p>
-<p>For now only includes a single endpoint that responds with the current version of the API and LSO.</p>
+  <section id="module-lso.routes.execute">
+<span id="lso-routes-execute"></span><h1><code class="docutils literal notranslate"><span class="pre">lso.routes.execute</span></code><a class="headerlink" href="#module-lso.routes.execute" title="Link to this heading"></a></h1>
+<p>FastAPI route for running arbitrary executables.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="lso.routes.default.Version">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lso.routes.default.</span></span><span class="sig-name descname"><span class="pre">Version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">api</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.routes.default.Version" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="lso.routes.execute.ExecutableRunParams">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lso.routes.execute.</span></span><span class="sig-name descname"><span class="pre">ExecutableRunParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">executable_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_async</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.routes.execute.ExecutableRunParams" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
-<p>Simple model for returning a version number of both the API and the <cite>lso</cite> module.</p>
+<p>Request parameters for running an arbitrary executable.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
 <p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="lso.routes.default.Version.model_config">
-<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#lso.routes.default.Version.model_config" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="lso.routes.execute.ExecutableRunParams.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#lso.routes.execute.ExecutableRunParams.model_config" title="Link to this definition"></a></dt>
 <dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="lso.routes.default.version">
-<span class="sig-prename descclassname"><span class="pre">lso.routes.default.</span></span><span class="sig-name descname"><span class="pre">version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lso.routes.default.version" title="Link to this definition"></a></dt>
-<dd><p>Return the version numbers of the API version, and the module version.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Version object with both API and <cite>lso</cite> versions numbers.</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="lso.routes.execute.run_executable_endpoint">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lso.routes.execute.</span></span><span class="sig-name descname"><span class="pre">run_executable_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.routes.execute.run_executable_endpoint" title="Link to this definition"></a></dt>
+<dd><p>Dispatch a task to run an arbitrary executable.</p>
 </dd></dl>
 
 </section>
@@ -123,8 +117,8 @@ validated to form a valid model.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="lso.routes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="execute.html" class="btn btn-neutral float-right" title="lso.routes.execute" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="default.html" class="btn btn-neutral float-left" title="lso.routes.default" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="playbook.html" class="btn btn-neutral float-right" title="lso.routes.playbook" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

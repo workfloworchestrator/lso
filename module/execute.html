@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>lso.playbook &mdash; Lightweight Service Orchestrator  documentation</title>
+  <title>lso.execute &mdash; Lightweight Service Orchestrator  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=40ed084b" />
@@ -20,7 +20,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="lso.execute" href="execute.html" /> 
+    <link rel="next" title="lso.playbook" href="playbook.html" />
+    <link rel="prev" title="lso.config" href="config.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,12 +50,13 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules.html#subpackages">Subpackages</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../modules.html#submodules">Submodules</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="config.html"><code class="docutils literal notranslate"><span class="pre">lso.config</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="execute.html"><code class="docutils literal notranslate"><span class="pre">lso.execute</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">lso.playbook</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#lso.playbook.get_playbook_path"><code class="docutils literal notranslate"><span class="pre">get_playbook_path()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#lso.playbook.run_playbook"><code class="docutils literal notranslate"><span class="pre">run_playbook()</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">lso.execute</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#lso.execute.get_executable_path"><code class="docutils literal notranslate"><span class="pre">get_executable_path()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lso.execute.run_executable_async"><code class="docutils literal notranslate"><span class="pre">run_executable_async()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lso.execute.run_executable_sync"><code class="docutils literal notranslate"><span class="pre">run_executable_sync()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="playbook.html"><code class="docutils literal notranslate"><span class="pre">lso.playbook</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../modules.html#lso.create_app"><code class="docutils literal notranslate"><span class="pre">create_app()</span></code></a></li>
 </ul>
 </li>
@@ -77,9 +79,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../modules.html">Sub-packages and -modules</a></li>
-      <li class="breadcrumb-item active"><code class="docutils literal notranslate"><span class="pre">lso.playbook</span></code></li>
+      <li class="breadcrumb-item active"><code class="docutils literal notranslate"><span class="pre">lso.execute</span></code></li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/module/playbook.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/module/execute.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -87,33 +89,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-lso.playbook">
-<span id="lso-playbook"></span><h1><code class="docutils literal notranslate"><span class="pre">lso.playbook</span></code><a class="headerlink" href="#module-lso.playbook" title="Link to this heading"></a></h1>
-<p>Module that gathers common API responses and data models.</p>
+  <section id="module-lso.execute">
+<span id="lso-execute"></span><h1><code class="docutils literal notranslate"><span class="pre">lso.execute</span></code><a class="headerlink" href="#module-lso.execute" title="Link to this heading"></a></h1>
+<p>Module for handling the execution of arbitrary executables.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="lso.playbook.get_playbook_path">
-<span class="sig-prename descclassname"><span class="pre">lso.playbook.</span></span><span class="sig-name descname"><span class="pre">get_playbook_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">playbook_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.playbook.get_playbook_path" title="Link to this definition"></a></dt>
-<dd><p>Get the path of a playbook on the local filesystem.</p>
+<dt class="sig sig-object py" id="lso.execute.get_executable_path">
+<span class="sig-prename descclassname"><span class="pre">lso.execute.</span></span><span class="sig-name descname"><span class="pre">get_executable_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">executable_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.execute.get_executable_path" title="Link to this definition"></a></dt>
+<dd><p>Return the full path of an executable, based on the configured EXECUTABLES_ROOT_DIR.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="lso.playbook.run_playbook">
-<span class="sig-prename descclassname"><span class="pre">lso.playbook.</span></span><span class="sig-name descname"><span class="pre">run_playbook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">playbook_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inventory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_is_incremental</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.playbook.run_playbook" title="Link to this definition"></a></dt>
-<dd><p>Run an Ansible playbook against a specified inventory.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>playbook_path</strong> (<em>Path</em>) – Playbook to be executed.</p></li>
-<li><p><strong>extra_vars</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – Any extra vars needed for the playbook to run.</p></li>
-<li><p><strong>inventory</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>| </em><em>str</em>) – The inventory that the playbook is executed against.</p></li>
-<li><p><strong>callback</strong> (<em>HttpUrl</em>) – Callback URL where the playbook should send a status update when execution is completed.
-This is used for workflow-orchestrator to continue with the next step in a workflow.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return UUID<span class="colon">:</span></dt>
-<dd class="field-even"><p>Job ID of the launched playbook.</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="lso.execute.run_executable_async">
+<span class="sig-prename descclassname"><span class="pre">lso.execute.</span></span><span class="sig-name descname"><span class="pre">run_executable_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">executable_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.execute.run_executable_async" title="Link to this definition"></a></dt>
+<dd><p>Dispatch the task for executing an arbitrary executable remotely.</p>
+<p>Uses a ThreadPoolExecutor (for local execution) or a Celery worker (for distributed tasks).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lso.execute.run_executable_sync">
+<span class="sig-prename descclassname"><span class="pre">lso.execute.</span></span><span class="sig-name descname"><span class="pre">run_executable_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">executable_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lso.execute.run_executable_sync" title="Link to this definition"></a></dt>
+<dd><p>Run the given executable synchronously and return the result.</p>
 </dd></dl>
 
 </section>
@@ -122,7 +117,8 @@ This is used for workflow-orchestrator to continue with the next step in a workf
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="execute.html" class="btn btn-neutral float-left" title="lso.execute" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="config.html" class="btn btn-neutral float-left" title="lso.config" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="playbook.html" class="btn btn-neutral float-right" title="lso.playbook" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
