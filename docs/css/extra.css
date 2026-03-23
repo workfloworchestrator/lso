@@ -1,0 +1,9 @@
+.md-header {
+    background: var(--md-accent-fg-color--transparent);
+}
+
+[data-md-color-scheme="slate"] .md-logo > img {
+    filter: drop-shadow(0 -10px 30px var(--md-accent-fg-color))
+        drop-shadow(0 -10px 40px var(--md-accent-fg-color))
+        drop-shadow(0 -10px 40px white);
+}

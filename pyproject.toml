@@ -65,10 +65,8 @@ dev = [
     "pre-commit>=4.3.0",
 ]
 
-doc = [
-    "sphinx",
-    "sphinx-rtd-theme",
-    "docutils",
+docs = [
+    "zensical>=0.0.28",
 ]
 
 [build-system]
