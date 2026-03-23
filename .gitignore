@@ -4,7 +4,7 @@ __pycache__
 .vscode
 coverage.xml
 *.egg-info
-
+site/
 dist/
 .github/styles/*
 !.github/styles/config/
