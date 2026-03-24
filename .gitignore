@@ -13,3 +13,9 @@ venv/
 
 .DS_Store # macOS
 Thumbs.db # Windows
+
+.ruff_cache/
+.mypy_cache/
+.ty_cache/
+.pytest_cache/
+.cache/
