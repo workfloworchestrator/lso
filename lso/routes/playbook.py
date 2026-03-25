@@ -1,4 +1,4 @@
-# Copyright 2023-2025 GÉANT Vereniging.
+# Copyright 2023-2026 GÉANT Vereniging.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -35,12 +35,18 @@ router = APIRouter()
 def _inventory_validator(inventory: dict[str, Any] | str) -> dict[str, Any] | str:
     """Validate the provided inventory format.
 
-    Attempts to parse the inventory to verify its validity. If the inventory cannot be parsed or the inventory
-    format is incorrect, an HTTP 422 error is raised.
+    Attempts to parse the inventory to verify its validity.
 
-    :param inventory: The inventory to validate, can be a dictionary or a string.
-    :return: The validated inventory if no errors are found.
-    :raises HTTPException: If parsing fails or the format is incorrect.
+    Args:
+        inventory (dict[str, Any] | str): The inventory to validate, can be a dictionary or a string.
+
+    Returns:
+        The validated inventory, if no errors are found.
+
+    Raises:
+        HTTPException: Raises HTTP error 422 (unprocessable content) if the inventory cannot be parsed or the inventory
+        format is incorrect.
+
     """
     if not ansible_runner.utils.isinventory(inventory):
         detail = "Invalid inventory provided. Should be a string, or JSON object."
@@ -64,6 +70,15 @@ def _inventory_validator(inventory: dict[str, Any] | str) -> dict[str, Any] | st
 
 
 def _playbook_path_validator(playbook_name: Path) -> Path:
+    """Validate the provided path to an Ansible playbook.
+
+    Returns:
+        A `Path` object, if the path is valid.
+
+    Raises:
+        HTTPException: Raises HTTP 404 not found if the file does not exist.
+
+    """
     playbook_path = get_playbook_path(playbook_name)
     if not Path.exists(playbook_path):
         msg = f"Filename '{playbook_path}' does not exist."
@@ -77,30 +92,41 @@ PlaybookName = Annotated[Path, AfterValidator(_playbook_path_validator)]
 
 
 class PlaybookRunResponse(BaseModel):
-    """PlaybookRunResponse domain model schema."""
+    """`PlaybookRunResponse` domain model schema.
+
+    Attributes:
+        job_id (UUID): The UUID generated for a Playbook execution.
+
+    """
 
     job_id: UUID
 
 
 class PlaybookRunParams(BaseModel):
-    """Parameters for executing an Ansible playbook."""
+    r"""Parameters for executing an Ansible playbook.
 
-    #: The filename of a playbook that's executed. It should be present inside the directory defined in the
-    #: configuration option ``ANSIBLE_PLAYBOOKS_ROOT_DIR``.
+    Attributes:
+        playbook_name (PlaybookName): The filename of a playbook that's executed. It should be present inside the
+            directory defined in the configuration option ``ANSIBLE_PLAYBOOKS_ROOT_DIR``.
+        callback (HttpUrl, optional): The address where LSO should call back to upon completion.
+        progress (HttpUrl, optional): The address where LSO should send progress updates as the playbook executes.
+        progress_is_incremental (bool, optional): Whether progress updates should be incremental or not.
+        inventory (PlaybookInventory): The inventory to run the playbook against. This inventory can also include any
+            host vars, if needed. When including host vars, it should be a dictionary. Can be a simple string containing
+            hostnames when no host vars are needed. In the latter case, multiple hosts should be separated with a `\\n`
+            newline character only.
+        extra_vars (dict[str, Any]): Extra variables that should get passed to the playbook.
+            This includes any required configuration objects from the workflow orchestrator, commit comments, whether
+            this execution should be a dry run, a trouble ticket number, etc. Which extra vars are required solely
+            depends on what inputs the playbook requires.
+
+    """
+
     playbook_name: PlaybookName
-    #: The address where LSO should call back to upon completion.
     callback: HttpUrl | None = None
-    #: Optionally, the address where LSO should send progress updates as the playbook executes.
     progress: HttpUrl | None = None
-    #: Optionally, whether progress updates should be incremental or not.
     progress_is_incremental: bool = True
-    #: The inventory to run the playbook against. This inventory can also include any host vars, if needed. When
-    #: including host vars, it should be a dictionary. Can be a simple string containing hostnames when no host vars are
-    #: needed. In the latter case, multiple hosts should be separated with a ``\n`` newline character only.
     inventory: PlaybookInventory
-    #: Extra variables that should get passed to the playbook. This includes any required configuration objects
-    #: from the workflow orchestrator, commit comments, whether this execution should be a dry run, a trouble ticket
-    #: number, etc. Which extra vars are required solely depends on what inputs the playbook requires.
     extra_vars: dict[str, Any] = {}
 
 
@@ -110,8 +136,12 @@ def run_playbook_endpoint(params: PlaybookRunParams) -> PlaybookRunResponse:
 
     The response will contain either a job ID, or error information.
 
-    :param PlaybookRunParams params: Parameters for executing a playbook.
-    :return JSONResponse: Response from the Ansible runner, including a run ID.
+    Args:
+        params: Parameters for executing a playbook.
+
+    Returns:
+        Response from the Ansible runner, including a run ID.
+
     """
     job_id = run_playbook(
         playbook_path=params.playbook_name,

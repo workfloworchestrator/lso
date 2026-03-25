@@ -26,7 +26,7 @@ from lso.utils import get_thread_pool
 
 
 def get_executable_path(executable_name: Path) -> Path:
-    """Return the full path of an executable, based on the configured EXECUTABLES_ROOT_DIR."""
+    """Return the full path of an executable, based on the configured `EXECUTABLES_ROOT_DIR`."""
     return Path(settings.EXECUTABLES_ROOT_DIR) / executable_name
 
 

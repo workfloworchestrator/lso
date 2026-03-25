@@ -1,4 +1,4 @@
-# Copyright 2023-2025 GÉANT Vereniging.
+# Copyright 2023-2026 GÉANT Vereniging.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -40,12 +40,17 @@ def run_playbook(
 ) -> UUID:
     """Run an Ansible playbook against a specified inventory.
 
-    :param Path playbook_path: Playbook to be executed.
-    :param dict[str, Any] extra_vars: Any extra vars needed for the playbook to run.
-    :param dict[str, Any] | str inventory: The inventory that the playbook is executed against.
-    :param HttpUrl callback: Callback URL where the playbook should send a status update when execution is completed.
-                             This is used for workflow-orchestrator to continue with the next step in a workflow.
-    :return UUID: Job ID of the launched playbook.
+    Args:
+        playbook_path (Path): Path to the playbook to be executed.
+        extra_vars (dict[str, Any]): Any extra vars needed for the playbook to run.
+        inventory (dict[str, Any] | str): The inventory that the playbook is executed against.
+        callback (HttpUrl, optional): Callback URL where the playbook should send a status update when execution is
+            completed. This is used e.g. for Workflow Orchestrator to continue with the next step in a workflow.
+        progress (HttpUrl, optional): URL where the playbook should send periodical status updates as the execution
+            progresses.
+        progress_is_incremental (bool): `True` if the progress updates should only contain the latest info. `False` if
+            the progress update should contain the complete history of the playbook execution.
+
     """
     job_id = uuid4()
     callback_str = None

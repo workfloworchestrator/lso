@@ -1,4 +1,4 @@
-# Copyright 2023-2025 GÉANT Vereniging.
+# Copyright 2023-2026 GÉANT Vereniging.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 
 def create_app() -> FastAPI:
-    """Initialise the :term:`LSO` app."""
+    """Initialise the LSO app."""
     app = FastAPI(docs_url="/api/doc", redoc_url="/api/redoc", openapi_url="/api/openapi.json")
 
     app.add_middleware(

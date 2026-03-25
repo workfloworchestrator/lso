@@ -1,4 +1,4 @@
-# Copyright 2023-2025 GÉANT Vereniging.
+# Copyright 2023-2026 GÉANT Vereniging.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -30,9 +30,24 @@ class ExecutorType(Enum):
 
 
 class Config(BaseSettings):
-    """The set of parameters required for running :term:`LSO`."""
+    """The set of parameters required for running :term:`LSO`.
 
-    TESTING: bool = False
+    Attributes:
+        TESTING (bool, optional): `True` if running in a testing environment, `False` otherwise.
+        ANSIBLE_PLAYBOOKS_ROOT_DIR (str): Absolute path to the location where Ansible playbooks are stored.
+        EXECUTABLES_ROOT_DIR (str): Absolute path to the location where executables are stored.
+        EXECUTOR (ExecutorType, optional): The executor type that LSO uses.
+        MAX_THREAD_POOL_WORKERS (int, optional): The amount of threads in the pool, if using the thread pool executor.
+        REQUEST_TIMEOUT_SEC (int, optional): HTTP Timeout, in seconds.
+        CELERY_BROKER_URL (str, optional): Celery broker URL, required when using the Celery executor.
+        CELERY_RESULT_BACKEND (str, optional): Celery result backend URL, required when using the Celery executor.
+        CELERY_RESULT_EXPIRES (int, optional): Celery result expiration timeout, in seconds.
+        WORKER_QUEUE_NAME (str, optional): Celery worker queue name.
+        EXECUTABLE_TIMEOUT_SEC (int, optional): Timeout period for an executable, in seconds.
+
+    """
+
+    TESTING: bool = True
     ANSIBLE_PLAYBOOKS_ROOT_DIR: str = "/path/to/ansible/playbooks"
     EXECUTABLES_ROOT_DIR: str = "/path/to/executables"
     EXECUTOR: ExecutorType = ExecutorType.THREADPOOL
