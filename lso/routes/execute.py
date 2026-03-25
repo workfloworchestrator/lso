@@ -1,4 +1,4 @@
-# Copyright 2023-2025 GÉANT Vereniging.
+# Copyright 2023-2026 GÉANT Vereniging.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -28,7 +28,16 @@ router = APIRouter()
 
 
 def _executable_path_validator(executable_name: Path) -> Path:
-    """Validate that the executable exists, is a file, and is marked as executable."""
+    """Validate that the executable exists, is a file, and is marked as executable.
+
+    Returns:
+        A Path object that points to the executable.
+
+    Raises:
+        HTTPException: Raises a 404 if the executable is not found, or not a valid file.
+        HTTPException: Raises a 403 if the file is not marked as executable by the OS.
+
+    """
     executable_path = get_executable_path(executable_name)
     if not executable_path.exists():
         msg = f"Executable '{executable_path}' does not exist."
@@ -46,7 +55,15 @@ ExecutableName = Annotated[Path, AfterValidator(_executable_path_validator)]
 
 
 class ExecutableRunParams(BaseModel):
-    """Request parameters for running an arbitrary executable."""
+    """Request parameters for running an arbitrary executable.
+
+    Attributes:
+        executable_name (ExecutableName): The absolute path to the executable.
+        args (list[str], optional): A list of arguments that is provided to the script.
+        callback (HttpUrl, optional): A callback URL where the execution result of the script is posted to.
+        is_async (bool, optional): Whether this script should be executed asynchronously.
+
+    """
 
     executable_name: ExecutableName
     args: list[str] = []

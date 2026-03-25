@@ -1,4 +1,4 @@
-# Copyright 2024-2025 GÉANT Vereniging.
+# Copyright 2024-2026 GÉANT Vereniging.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -27,7 +27,14 @@ class JobStatus(StrEnum):
 
 
 class ExecutionResult(BaseModel):
-    """Model for capturing the result of an executable run."""
+    """Model for capturing the result of an executable run.
+
+    Attributes:
+        output (str): Captured executable output from `stdout`.
+        return_code (int): Return code of the executable.
+        status (JobStatus): `SUCCESSFUL` if return code is 0, `FAILED` otherwise.
+
+    """
 
     output: str
     return_code: int
@@ -44,7 +51,14 @@ class ExecutionResult(BaseModel):
 
 
 class ExecutableRunResponse(BaseModel):
-    """Response for running an arbitrary executable."""
+    """Response for running an arbitrary executable.
+
+    Attributes:
+        job_id (UUID): Unique identifier for the executable run.
+        result (ExecutionResult, optional): Executable result if the request was made with `is_async` set to `False`,
+            `None` otherwise.
+
+    """
 
     job_id: UUID
     result: ExecutionResult | None = None

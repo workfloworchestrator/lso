@@ -1,4 +1,4 @@
-# Copyright 2024-2025 GÉANT Vereniging.
+# Copyright 2024-2026 GÉANT Vereniging.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -44,9 +44,11 @@ def playbook_event_handler_factory(
 
     This is used to send incremental progress updates to the external system that called for this playbook to be run.
 
-    :param str progress: The progress URL where the external system expects to receive updates.
-    :param bool progress_is_incremental: Whether progress updates are sent incrementally, or contain the whole history
-                                         of event data.
+    Args:
+        progress (str, optional): The progress URL where the external system expects to receive updates.
+        progress_is_incremental (bool): Whether progress updates are sent incrementally, or contain the whole history
+            of event data.
+
     """
     events_stdout = []
 
@@ -75,9 +77,16 @@ def playbook_finished_handler_factory(callback: str | None, job_id: str) -> Call
 
     Once Ansible runner is finished, it will call the handler method created by this factory before teardown.
 
-    :param str callback: The callback URL that ansible runner should report to.
-    :param str job_id: The job ID of this playbook run, used for reporting.
-    :return Callable: A handler method that sends one request to the callback URL.
+    Args:
+        callback (str, optional): The callback URL that the Ansible runner should report to.
+        job_id (str): The job ID of this playbook run, used for reporting.
+
+    Returns:
+        A handler method that sends one request to the callback URL.
+
+    Raises:
+        CallbackFailedError: If the callback to the external system has failed.
+
     """
 
     def _playbook_finished_handler(runner: Runner) -> None:
@@ -114,14 +123,15 @@ def run_playbook_proc_task(
 ) -> None:
     """Celery task to run a playbook.
 
-    :param str job_id: Identifier of the job being executed.
-    :param str playbook_path: Path to the playbook to be executed.
-    :param dict[str, Any] extra_vars: Extra variables to pass to the playbook.
-    :param dict[str, Any] | str inventory: Inventory to run the playbook against.
-    :param str callback: Callback URL for status updates.
-    :param str progress: URL for sending progress updates.
-    :param bool progress_is_incremental: Whether progress updates include all past progress.
-    :return: None
+    Args:
+        job_id (str): Identifier of the job being executed.
+        playbook_path (str): Path to the playbook to be exectuted.
+        extra_vars (dict[str, Any]): Extra variables to pass to the playbook.
+        inventory (dict[str, Any] | str): Inventory to run the playbook against.
+        callback (str, optional): Callback URL for status update.
+        progress (str, optional): URL for sending progress updates.
+        progress_is_incremental (bool): Whether progress updates include all past progress.
+
     """
     msg = f"playbook_path: {playbook_path}, callback: {callback}"
     logger.info(msg)
@@ -139,6 +149,16 @@ def run_executable_proc_task(job_id: str, executable_path: str, args: list[str],
     """Celery task to run an arbitrary executable and notify via callback.
 
     Executes the executable with the provided arguments and posts back the result if a callback URL is provided.
+
+    Args:
+        job_id (str): Identifier of the job being executed.
+        executable_path (str): Path to the executable to be executed.
+        args (list[str]): Arguments that are passed to the executable.
+        callback (str, optional): Callback URL for status update.
+
+    Raises:
+        CallbackFailedError: If the callback to the external system has failed.
+
     """
     from lso.execute import run_executable_sync  # noqa: PLC0415
 

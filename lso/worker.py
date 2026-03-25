@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Module that sets up :term:`LSO` as a Celery worker."""
+"""Module that sets up LSO as a Celery worker."""
 
 from celery import Celery
 from celery.signals import worker_shutting_down

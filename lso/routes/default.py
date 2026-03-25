@@ -1,4 +1,4 @@
-# Copyright 2023-2025 GÉANT Vereniging.
+# Copyright 2023-2026 GÉANT Vereniging.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -31,13 +31,17 @@ class Version(BaseModel):
     """Simple model for returning a version number of both the API and the `lso` module."""
 
     api: VersionString  # type: ignore[valid-type]
+    """The current version of the API."""
     module: VersionString  # type: ignore[valid-type]
+    """The current version of the LSO module."""
 
 
 @router.get("/version")
 def version() -> Version:
     """Return the version numbers of the API version, and the module version.
 
-    :return: Version object with both API and `lso` versions numbers.
+    Returns:
+        Version object with both API and `lso` versions numbers.
+
     """
     return Version(api=API_VERSION, module=metadata.version("orchestrator-lso"))
