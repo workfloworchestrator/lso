@@ -1,0 +1,27 @@
+name: "Lint documentation"
+
+on:
+  push:
+  pull_request:
+    branches: [main]
+  workflow_call:
+
+env:
+  UV_LOCKED: true
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+      - uses: errata-ai/vale-action@v2.1.1
+        with:
+          files: "docs/source/,lso/"
+          separator: ","
+          fail_on_error: true
+          vale_flags: "--glob=*.{md,py}"

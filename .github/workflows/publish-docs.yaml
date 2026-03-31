@@ -1,0 +1,32 @@
+name: "Render documentation"
+
+on:
+   push:
+      branches:
+         - main
+
+env:
+  UV_LOCKED: true
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv and set python version
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: 3.12
+      - name: Install requirements
+        run: uv sync --no-dev --group docs
+      - name: Build documentation
+        run: TZ=UTC uv run zensical build --clean
+      - uses: peaceiris/actions-gh-pages@v3
+        if: ${{ !env.ACT }}
+        with:
+          publish_branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: site/
+          enable_jekyll: false
