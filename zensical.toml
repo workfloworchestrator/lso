@@ -3,31 +3,41 @@ site_name = "Lightweight Service Orchestrator"
 site_description = "A Lightweight Service Orchestrator for remotely executing Ansible playbooks and (Python) scripts."
 site_author = "GÉANT Orchestration and Automation Team"
 site_url = "https://workfloworchestrator.org/lso"
-copyright = "Copyright &copy; 2023 - 2026 GÉANT Vereniging"
+copyright = "&copy; 2023 - 2026 GÉANT Vereniging"
 docs_dir = "docs"
 repo_url = "https://github.com/workfloworchestrator/lso"
 repo_name = "workfloworchestrator/lso"
 extra_css = ["css/extra.css"]
 
-# Read more: https://zensical.org/docs/setup/navigation/
-# nav = [
-#   { "Get started" = "index.md" },
-#   { "Markdown in 5min" = "markdown.md" },
-# ]
+nav = [
+  "index.md",
+  "installation.md",
+  "docker.md",
+  "executors.md",
+  { "Playbooks" = [
+    "playbooks/index.md",
+    "playbooks/parameters.md",
+    "playbooks/callback.md",
+    "playbooks/updates.md",
+  ]},
+  { "Executables" = [
+    "executables/index.md",
+    "executables/callback.md",
+    "executables/parameters.md",
+  ]},
+  "contributing.md",
+]
 
 [project.theme]
 favicon = "img/favicon.png"
 language = "en"
 features = [
-    "announce.dismiss",
     "content.code.annotate",
     "content.code.copy",
     "content.code.select",
     "content.footnote.tooltips",
     "content.tabs.link",
     "content.tooltips",
-    "header.autohide",
-    "navigation.expand",
     "navigation.footer",
     "navigation.indexes",
     "navigation.instant",
@@ -35,12 +45,8 @@ features = [
     "navigation.path",
     "navigation.prune",
     "navigation.sections",
-    #"navigation.tabs",
-    #"navigation.tabs.sticky",
     "navigation.top",
-    "search.highlight",
     "toc.follow",
-    "toc.integrate",
 ]
 
 logo = "img/logo.png"
@@ -63,6 +69,10 @@ paths = ["lso"]
 docstring_style = "google"
 inherited_members = true
 show_source = false
+show_root_toc_entry = false
+show_symbol_type_heading = true
+show_symbol_type_toc = true
+parameter_headings = true
 
 [[project.theme.palette]]
 media = "(prefers-color-scheme)"
