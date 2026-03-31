@@ -21,7 +21,7 @@ jobs:
           ruby-version: "3.3"
       - uses: errata-ai/vale-action@v2.1.1
         with:
-          files: "docs/source/,lso/"
+          files: "docs/,lso/"
           separator: ","
           fail_on_error: true
           vale_flags: "--glob=*.{md,py}"
