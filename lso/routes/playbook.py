@@ -113,12 +113,46 @@ class PlaybookRunParams(BaseModel):
         progress_is_incremental (bool, optional): Whether progress updates should be incremental or not.
         inventory (PlaybookInventory): The inventory to run the playbook against. This inventory can also include any
             host vars, if needed. When including host vars, it should be a dictionary. Can be a simple string containing
-            hostnames when no host vars are needed. In the latter case, multiple hosts should be separated with a `\\n`
+            hostnames when no host vars are needed. In the latter case, multiple hosts should be separated with a `\n`
             newline character only.
         extra_vars (dict[str, Any]): Extra variables that should get passed to the playbook.
             This includes any required configuration objects from the workflow orchestrator, commit comments, whether
             this execution should be a dry run, a trouble ticket number, etc. Which extra vars are required solely
             depends on what inputs the playbook requires.
+
+    !!! danger "Inventory format"
+        Note the fact if the collection of all hosts is a dictionary, and not a list of strings, Ansible expects each
+        host to be a key-value pair. The key is the FQDN of a host, and the value always `null`. This is not the case
+        when providing the inventory as a list of strings.
+
+    ??? example
+        ```JSON
+        {
+            "playbook_name": "hello_world.yaml",
+            "callback": "https://wfo.company.cool:8080/api/resume-workflow/",
+            "progress": "https://logging.awesome.yeah:8080/playbooks/",
+            "progress_is_incremental": False,
+            "inventory": {
+                "all": {
+                    "hosts": {
+                        "host1.local": {
+                            "foo": "bar"
+                        },
+                        "host2.local": {
+                            "key": "value"
+                        },
+                        "host3.local": None
+                    }
+                }
+            },
+            "extra_vars": {
+                "weather": {
+                    "today": "Sunny",
+                    "tomorrow": "Overcast"
+                }
+            }
+        }
+        ```
 
     """
 

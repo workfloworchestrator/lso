@@ -12,7 +12,7 @@ Installing LSO in a virtual environment is _highly_ recommended, and there are m
     [PEP 668](https://peps.python.org/pep-0668/), and [PEP 704](https://peps.python.org/pep-0704/). While not all of
     these standards are active, their motivations still hold. For example:
 
-    !!! Quote "Quote from PEP 668"
+    !!! Quote "PEP 668"
 
         "_A long-standing practical problem for Python users has been conflicts between OS package managers and
         Python-specific package management tools like pip. These conflicts include both Python-level API
@@ -26,4 +26,3 @@ To install LSO in your `uv` virtual environment, use:
 uv init
 uv add orchestrator-lso==2.4.5
 ```
-

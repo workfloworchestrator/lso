@@ -40,7 +40,7 @@ class CallbackFailedError(Exception):
 def playbook_event_handler_factory(
     progress: str | None, *, progress_is_incremental: bool
 ) -> Callable[[dict], bool] | None:
-    """Create an event handler for Ansible playbook runs.
+    """Handle Ansible playbook run events.
 
     This is used to send incremental progress updates to the external system that called for this playbook to be run.
 
@@ -73,9 +73,7 @@ def playbook_event_handler_factory(
 
 
 def playbook_finished_handler_factory(callback: str | None, job_id: str) -> Callable[[Runner], None] | None:
-    """Create an event handler for finished Ansible playbook runs.
-
-    Once Ansible runner is finished, it will call the handler method created by this factory before teardown.
+    """Once Ansible runner is finished, it will call back to the specified URL in the original request.
 
     Args:
         callback (str, optional): The callback URL that the Ansible runner should report to.

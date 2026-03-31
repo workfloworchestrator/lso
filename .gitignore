@@ -10,6 +10,8 @@ dist/
 !.github/styles/config/
 venv/
 .venv/
+.env*
+!.env.example
 
 .DS_Store # macOS
 Thumbs.db # Windows
