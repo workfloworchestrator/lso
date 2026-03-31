@@ -44,7 +44,7 @@ def _inventory_validator(inventory: dict[str, Any] | str) -> dict[str, Any] | st
         The validated inventory, if no errors are found.
 
     Raises:
-        HTTPException: Raises HTTP error 422 (unprocessable content) if the inventory cannot be parsed or the inventory
+        HTTPException: Raises HTTP error 422 (unprocessable content) if the inventory can't be parsed or the inventory
         format is incorrect.
 
     """
@@ -76,7 +76,7 @@ def _playbook_path_validator(playbook_name: Path) -> Path:
         A `Path` object, if the path is valid.
 
     Raises:
-        HTTPException: Raises HTTP 404 not found if the file does not exist.
+        HTTPException: Raises HTTP 404 not found if the file doesn't exist.
 
     """
     playbook_path = get_playbook_path(playbook_name)
@@ -131,7 +131,7 @@ class PlaybookRunParams(BaseModel):
             "playbook_name": "hello_world.yaml",
             "callback": "https://wfo.company.cool:8080/api/resume-workflow/",
             "progress": "https://logging.awesome.yeah:8080/playbooks/",
-            "progress_is_incremental": False,
+            "progress_is_incremental": false,
             "inventory": {
                 "all": {
                     "hosts": {
@@ -141,7 +141,7 @@ class PlaybookRunParams(BaseModel):
                         "host2.local": {
                             "key": "value"
                         },
-                        "host3.local": None
+                        "host3.local": null
                     }
                 }
             },

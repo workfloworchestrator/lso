@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 
 
 class CallbackFailedError(Exception):
-    """Exception raised when a callback url can't be reached."""
+    """Exception raised when a callback URL can't be reached."""
 
 
 def playbook_event_handler_factory(
