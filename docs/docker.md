@@ -31,7 +31,7 @@ This will install:
 
 To build the image, run something along the lines of:
 
-```sh
+```
 docker build -t my-special-lso:dev .
 ```
 

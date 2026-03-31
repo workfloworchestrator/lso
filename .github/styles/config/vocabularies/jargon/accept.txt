@@ -5,6 +5,14 @@ against
 BASIS
 A(NY|ny)
 KIND
-Ansible
+[Aa]nsible
 [Uu]nprocessable
 [Hh]ostnames?
+FQDN
+UUID
+HTTPException
+REST
+AWX
+[Rr]edis
+rParameters
+extra_vars

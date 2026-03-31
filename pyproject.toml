@@ -67,6 +67,7 @@ dev = [
 
 docs = [
     "mkdocstrings-python>=2.0.3",
+    "vale>=3.13.0.0",
     "zensical>=0.0.28",
 ]
 
