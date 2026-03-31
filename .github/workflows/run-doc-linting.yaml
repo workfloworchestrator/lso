@@ -16,10 +16,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.3"
-      - uses: errata-ai/vale-action@v2.1.1
+      - uses: vale-cli/vale-action@v2.1.1
         with:
           files: "docs/,lso/"
           separator: ","
