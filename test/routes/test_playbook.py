@@ -217,6 +217,6 @@ def test_run_playbook_invalid_playbook_path(client: TestClient) -> None:
 
     with patch("lso.tasks.run_playbook_proc_task.delay"):
         rv = client.post("/api/playbook/", json=params)
-        assert rv.status_code == status.HTTP_404_NOT_FOUND
+        assert rv.status_code == status.HTTP_410_GONE
         response = rv.json()
         assert response["detail"] == f"Filename '{get_playbook_path(Path('invalid.yaml'))}' does not exist."

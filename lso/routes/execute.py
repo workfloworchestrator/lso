@@ -34,17 +34,18 @@ def _executable_path_validator(executable_name: Path) -> Path:
         A Path object that points to the executable.
 
     Raises:
-        HTTPException: Raises a 404 if the executable is not found, or not a valid file.
+        HTTPException: Raises a 410 if the requested executable does not exist.
+        HTTPException: Raises a 503 if the executable is not a valid file.
         HTTPException: Raises a 403 if the file is not marked as executable by the OS.
 
     """
     executable_path = get_executable_path(executable_name)
     if not executable_path.exists():
         msg = f"Executable '{executable_path}' does not exist."
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=msg)
+        raise HTTPException(status_code=status.HTTP_410_GONE, detail=msg)
     if not executable_path.is_file():
         msg = f"Executable '{executable_name}' is not a valid file."
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=msg)
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=msg)
     if not executable_path.stat().st_mode & 0o111:
         msg = f"Executable '{executable_name}' is not marked as executable."
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=msg)

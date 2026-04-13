@@ -72,14 +72,14 @@ def test_execute_endpoint_worker_success(client: TestClient, temp_executable: Pa
 
 @responses.activate
 def test_execute_endpoint_not_found(client: TestClient):
-    # Request with a non-existent executable should return 404.
+    # Request with a non-existent executable should return 410.
     params = {
         "executable_name": "nonexistent.sh",
         "args": [],
         "callback": TEST_CALLBACK_URL,
     }
     response = client.post("/api/execute/", json=params)
-    assert response.status_code == status.HTTP_404_NOT_FOUND
+    assert response.status_code == status.HTTP_410_GONE
 
 
 @responses.activate
@@ -106,7 +106,7 @@ def test_execute_endpoint_not_executable(client: TestClient, tmp_path: Path):
 def test_execute_endpoint_not_a_file(client: TestClient):
     """
     Test that if the provided executable path is a directory (exists but is not a file),
-    the endpoint returns a 404 with an appropriate error message.
+    the endpoint returns a 503 with an appropriate error message.
     """
     with temp_executable_env(ExecutorType.THREADPOOL) as exec_dir:
         # Create a directory within the temporary executables' environment.
@@ -120,7 +120,7 @@ def test_execute_endpoint_not_a_file(client: TestClient):
         }
 
         response = client.post("/api/execute/", json=params)
-        assert response.status_code == status.HTTP_404_NOT_FOUND
+        assert response.status_code == status.HTTP_503_SERVICE_UNAVAILABLE
         assert response.json() == {"detail": "Executable 'not_a_file' is not a valid file."}
 
 
