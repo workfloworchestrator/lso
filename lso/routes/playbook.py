@@ -76,13 +76,13 @@ def _playbook_path_validator(playbook_name: Path) -> Path:
         A `Path` object, if the path is valid.
 
     Raises:
-        HTTPException: Raises HTTP 404 not found if the file doesn't exist.
+        HTTPException: Raises HTTP 410 if the file doesn't exist.
 
     """
     playbook_path = get_playbook_path(playbook_name)
     if not Path.exists(playbook_path):
         msg = f"Filename '{playbook_path}' does not exist."
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=msg)
+        raise HTTPException(status_code=status.HTTP_410_GONE, detail=msg)
 
     return playbook_path
 

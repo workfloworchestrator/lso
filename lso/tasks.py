@@ -24,7 +24,8 @@ from uuid import UUID
 
 import requests
 from ansible_runner import Runner, run
-from starlette import status
+from fastapi import HTTPException
+from requests.exceptions import HTTPError
 
 from lso.config import settings
 from lso.schema import ExecutableRunResponse
@@ -33,7 +34,7 @@ from lso.worker import RUN_EXECUTABLE, RUN_PLAYBOOK, celery
 logger = logging.getLogger(__name__)
 
 
-class CallbackFailedError(Exception):
+class CallbackFailedError(HTTPException):
     """Exception raised when a callback URL can't be reached."""
 
 
@@ -99,9 +100,12 @@ def playbook_finished_handler_factory(callback: str | None, job_id: str) -> Call
         }
 
         response = requests.post(str(callback), json=payload, timeout=settings.REQUEST_TIMEOUT_SEC)
-        if not (status.HTTP_200_OK <= response.status_code < status.HTTP_300_MULTIPLE_CHOICES):
-            msg = f"Callback failed: {response.text}, url: {callback}"
-            raise CallbackFailedError(msg)
+        try:
+            response.raise_for_status()
+        except HTTPError as e:
+            raise CallbackFailedError(
+                status_code=e.response.status_code, detail=f"{e.response.reason} for url: {e.request.url}"
+            ) from e
 
     if callback:
         return _playbook_finished_handler
@@ -170,17 +174,10 @@ def run_executable_proc_task(job_id: str, executable_path: str, args: list[str],
             result=result,
         ).model_dump(mode="json")
 
-        def _raise_callback_error(message: str, error: Exception | None = None) -> None:
-            if error:
-                raise CallbackFailedError(message) from error
-            raise CallbackFailedError(message)
-
+        response = requests.post(str(callback), json=payload, timeout=settings.REQUEST_TIMEOUT_SEC)
         try:
-            response = requests.post(str(callback), json=payload, timeout=settings.REQUEST_TIMEOUT_SEC)
-            if not (status.HTTP_200_OK <= response.status_code < status.HTTP_300_MULTIPLE_CHOICES):
-                msg = f"Callback failed: {response.text}, url: {callback}"
-                _raise_callback_error(msg)
-        except Exception as e:
-            error_msg = f"Callback error: {e}"
-            logger.exception(error_msg)
-            _raise_callback_error(error_msg, e)
+            response.raise_for_status()
+        except HTTPError as e:
+            raise CallbackFailedError(
+                status_code=e.response.status_code, detail=f"{e.response.reason} for url: {e.request.url}"
+            ) from e

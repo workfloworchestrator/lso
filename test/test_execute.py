@@ -42,7 +42,7 @@ def test_run_executable_async_threadpool_callback_failure(temp_executable: Path)
         with pytest.raises(CallbackFailedError) as exc:
             run_executable_async(target_exe, [], TEST_CALLBACK_URL)
 
-        assert f"Callback failed: , url: {TEST_CALLBACK_URL}" in str(exc.value)
+        assert str(exc.value) == f"500: Internal Server Error for url: {TEST_CALLBACK_URL}"
 
 
 def test_run_executable_async_worker_delay(monkeypatch, temp_executable: Path):
