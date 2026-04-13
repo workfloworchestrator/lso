@@ -38,7 +38,7 @@ class ExecutionResult(BaseModel):
 
     output: str
     return_code: int
-    status: JobStatus
+    status: JobStatus | None = None
 
     @model_validator(mode="before")
     def populate_status(cls, values: dict) -> dict:

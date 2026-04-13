@@ -96,7 +96,7 @@ def playbook_finished_handler_factory(callback: str | None, job_id: str) -> Call
             "status": runner.status,
             "job_id": job_id,
             "output": playbook_output,
-            "return_code": int(runner.rc),
+            "return_code": int(str(runner.rc)),
         }
 
         response = requests.post(str(callback), json=payload, timeout=settings.REQUEST_TIMEOUT_SEC)

@@ -16,7 +16,7 @@ def temporary_executor(executor_type: ExecutorType):
 
 
 @contextmanager
-def temp_executable_env(executor_type: ExecutorType) -> Path:
+def temp_executable_env(executor_type: ExecutorType):
     """Sets up a temporary executables environment and adjusts the executor type."""
     original_executable_dir = settings.EXECUTABLES_ROOT_DIR
     try:

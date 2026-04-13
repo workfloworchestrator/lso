@@ -54,7 +54,6 @@ dev = [
     "pytest-cov",
     "Faker",
     "responses",
-    "mypy",
     "ruff",
     "jsonschema",
     "starlette",
@@ -62,8 +61,8 @@ dev = [
     "types-requests",
     "toml",
     "types-toml",
-    "mypy_extensions",
     "pre-commit>=4.3.0",
+    "ty>=0.0.29",
 ]
 
 docs = [
@@ -83,32 +82,12 @@ prerelease = "if-necessary"
 module-name = "lso"
 module-root = ""
 
-[tool.mypy]
-exclude = [
+[tool.ty]
+src.exclude = [
     "venv",
-    "test/*",
+    "**/test/**",
     "docs"
 ]
-ignore_missing_imports = true
-disallow_untyped_calls = true
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
-disallow_untyped_decorators = true
-no_implicit_optional = true
-strict_optional = true
-namespace_packages = true
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_no_return = true
-warn_unreachable = true
-implicit_reexport = false
-strict_equality = true
-show_error_codes = true
-show_column_numbers = true
-# Suppress "note: By default the bodies of untyped functions are not checked"
-disable_error_code = "annotation-unchecked"
-# Forbid the use of a generic "type: ignore" without specifying the exact error that's ignored
-enable_error_code = "ignore-without-code"
 
 [tool.ruff]
 extend-exclude = ["docs"]
