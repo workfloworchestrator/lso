@@ -66,7 +66,7 @@ def run_executable_sync(executable_path: str, args: list[str]) -> ExecutionResul
         output = str(e)
         return_code = -1
 
-    return ExecutionResult(  # type: ignore[call-arg]
+    return ExecutionResult(
         output=output,
         return_code=return_code,
     )

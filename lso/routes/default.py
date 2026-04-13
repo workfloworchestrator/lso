@@ -30,9 +30,9 @@ router = APIRouter()
 class Version(BaseModel):
     """Simple model for returning a version number of both the API and the `lso` module."""
 
-    api: VersionString  # type: ignore[valid-type]
+    api: VersionString  # ty: ignore[invalid-type-form]
     """The current version of the API."""
-    module: VersionString  # type: ignore[valid-type]
+    module: VersionString  # ty: ignore[invalid-type-form]
     """The current version of the LSO module."""
 
 

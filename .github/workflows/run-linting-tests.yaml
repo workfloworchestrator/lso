@@ -33,5 +33,5 @@ jobs:
         run: uv run ruff format --respect-gitignore --preview --check .
       - name: Lint with ruff
         run: uv run ruff check --respect-gitignore --preview .
-      - name: Check with mypy
-        run: uv run mypy .
+      - name: Check with ty
+        run: uv run ty check . --output-format github
