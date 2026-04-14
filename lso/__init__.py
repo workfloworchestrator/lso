@@ -14,34 +14,3 @@
 """LSO, an API for remotely running Ansible playbooks."""
 
 __version__ = "3.0.0"
-
-import logging
-
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-
-from lso import environment
-from lso.routes.default import router as default_router
-from lso.routes.execute import router as executable_router
-from lso.routes.playbook import router as playbook_router
-
-logger = logging.getLogger(__name__)
-
-
-def create_app() -> FastAPI:
-    """Initialise the LSO app."""
-    app = FastAPI(docs_url="/api/doc", redoc_url="/api/redoc", openapi_url="/api/openapi.json")
-
-    app.add_middleware(
-        CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"]
-    )
-
-    app.include_router(default_router, prefix="/api")
-    app.include_router(playbook_router, prefix="/api/playbook")
-    app.include_router(executable_router, prefix="/api/execute")
-
-    environment.setup_logging()
-
-    logger.info("FastAPI app initialized")
-
-    return app
