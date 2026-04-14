@@ -95,8 +95,10 @@ def test_playbook_endpoint_invalid_host_vars(client: TestClient, mocked_ansible_
 
     assert isinstance(response, dict)
     assert response["detail"] == [
-        '[WARNING]: Skipping unexpected key (host_vars) in group (_meta), only "vars", '
-        '"children" and "hosts" are valid\n',
+        (
+            '[WARNING]: Skipping unexpected key (host_vars) in group (_meta), only "vars", '
+            '"children" and "hosts" are valid\n'
+        ),
     ]
     responses.assert_call_count(TEST_CALLBACK_URL, 0)
 

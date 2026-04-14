@@ -59,7 +59,7 @@ def mocked_ansible_runner_run() -> Callable:
 @pytest.fixture(scope="session")
 def client() -> TestClient:
     """Return a client that can be used to test the server."""
-    from lso import create_app  # noqa: PLC0415
+    from lso.app import create_app  # noqa: PLC0415
 
     app = create_app()
     return TestClient(app)  # wait here until calling context ends
