@@ -1,7 +1,3 @@
----
-icon: lucide/package-open
----
-
 # Installation
 
 Installing LSO in a virtual environment is _highly_ recommended, and there are multiple options available for this.

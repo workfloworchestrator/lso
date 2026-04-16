@@ -1,7 +1,3 @@
----
-icon: lucide/handshake
----
-
 # Contributing
 
 We use [`uv`](https://docs.astral.sh/uv/getting-started/installation/) for managing dependencies.

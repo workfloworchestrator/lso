@@ -1,0 +1,45 @@
+# workfloworchestrator.github.io uses site_name in the URL, don't change it
+site_name: Lightweight Service Orchestrator
+site_description: A Lightweight Service Orchestrator for remotely executing Ansible playbooks and (Python) scripts.
+repo_url: "https://github.com/workfloworchestrator/lso"
+repo_name: "workfloworchestrator/lso"
+nav:
+  - index.md
+  - installation.md
+  - docker.md
+  - executors.md
+  - Playbooks:
+    - playbooks/index.md
+    - playbooks/parameters.md
+    - playbooks/callback.md
+    - playbooks/updates.md
+  - Executables:
+    - executables/index.md
+    - executables/callback.md
+    - executables/parameters.md
+  - contributing.md
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: cyan
+      accent: amber
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: cyan
+      accent: amber
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - search.suggest
+    - search.highlight
+    - navigation.sections
+plugins:
+  - termynal
+  - search
+  - awesome-pages
+copyright: "&copy; 2023 - 2026 GÉANT Vereniging"
