@@ -1,7 +1,3 @@
----
-icon: material/language-python
----
-
 # Running an Executable
 
 To run an executable with LSO, send an HTTP POST request to the API endpoint at `/api/execute`. Input and output

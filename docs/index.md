@@ -1,7 +1,3 @@
----
-icon: lucide/book
----
-
 # Introduction
 
 The Lightweight Service Orchestrator (LSO) is a simple tool designed to run tasks remotely. These can be Ansible

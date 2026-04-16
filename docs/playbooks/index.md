@@ -1,7 +1,3 @@
----
-icon: material/ansible
----
-
 # Running a Playbook
 
 To run an Ansible Playbook, send an HTTP POST request to the API endpoint at `/api/playbook`. Input and output options

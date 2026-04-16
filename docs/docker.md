@@ -1,7 +1,3 @@
----
-icon: lucide/container
----
-
 # Running in Docker
 
 It is recommended to run LSO inside a Docker container, as this helps separate installed dependencies for your Ansible

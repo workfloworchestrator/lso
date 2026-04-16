@@ -1,7 +1,3 @@
----
-icon: lucide/clipboard-clock
----
-
 # Task Executors
 
 Tasks that are sent to LSO are run by an executor. The executor is responsible for running the Ansible playbook or
