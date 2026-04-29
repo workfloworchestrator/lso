@@ -8,8 +8,8 @@ env:
   UV_LOCKED: true
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
     - name: Install uv and set Python version
@@ -18,8 +18,23 @@ jobs:
         python-version: '3.13'
     - name: Build package
       run: uv build
-    - name: Publish package
-      run: uv publish
-      env:
-        UV_PUBLISH_USERNAME: ${{ secrets.FLIT_USERNAME }}
-        UV_PUBLISH_PASSWORD: ${{ secrets.FLIT_PASSWORD }}
+    - name: Upload dist artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist
+        path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-24.04
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+    - name: Download dist artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: dist
+        path: dist/
+    - name: Publish package distributions to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
