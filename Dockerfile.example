@@ -8,7 +8,7 @@ COPY ./requirements.txt ./requirements.txt
 COPY ./ansible-galaxy-requirements.yaml ./ansible-galaxy-requirements.yaml
 
 # Install required system packages
-RUN apk add --update --no-cache gcc libc-dev libffi-dev openssh
+RUN apk add --update --no-cache gcc libc-dev libffi-dev openssh tini
 
 # Install the LSO python package, and additional requirements
 RUN pip install orchestrator-lso=="3.0.0"
@@ -23,5 +23,5 @@ RUN ansible-galaxy collection install \
                    -p /app/gap/ansible
 
 EXPOSE 8000
-ENTRYPOINT []
+ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["python", "-m",  "uvicorn", "lso.app:app", "--host", "0.0.0.0", "--port", "8000"]
