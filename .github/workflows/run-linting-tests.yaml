@@ -30,8 +30,8 @@ jobs:
       - name: Install the project
         run: uv sync --all-extras --dev
       - name: Check formatting with ruff
-        run: uv run ruff format --respect-gitignore --preview --check .
+        run: uv run ruff format --respect-gitignore --check .
       - name: Lint with ruff
-        run: uv run ruff check --respect-gitignore --preview .
+        run: uv run ruff check --respect-gitignore .
       - name: Check with ty
         run: uv run ty check . --output-format github
