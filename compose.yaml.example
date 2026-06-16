@@ -2,7 +2,7 @@
 services:
   lso:
     image: my-lso:latest
-    env_file: 
+    env_file:
       .env  # Load default environment variables from the .env file
     volumes:
       - "/home/user/ansible_inventory:/opt/ansible_inventory:ro"

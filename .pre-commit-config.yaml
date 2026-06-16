@@ -1,25 +1,46 @@
 default_language_version:
   python: python3
 repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        name: Fix trailing whitespace
+      - id: end-of-file-fixer
+        name: Fix end of file newlines
+      - id: mixed-line-ending
+        name: Fix mixed line endings
+      - id: check-ast
+        name: Check Python syntax
+      - id: check-merge-conflict
+        name: Check for merge conflicts
   - repo: https://github.com/astral-sh/uv-pre-commit
     # uv version.
-    rev: 0.11.2
+    rev: 0.11.17
     hooks:
       # Update the uv lockfile
       - id: uv-lock
+        name: Check uv lockfile is up-to-date
         files: ^uv\.lock$
         always_run: true
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: v0.14.7
+    rev: v0.15.14
     hooks:
       # Run the linter.
       - id: ruff-check
+        name: Check linting
         args:
-          - --preview
           - --respect-gitignore
       # Run the formatter.
       - id: ruff-format
+        name: Check formatting
         args:
-          - --preview
           - --respect-gitignore
+  - repo: local
+    hooks:
+      - id: ty-check
+        name: Check types
+        entry: uv run ty check .
+        language: system
+        pass_filenames: false
