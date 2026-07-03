@@ -23,5 +23,5 @@ In short, LSO will:
 - Runs the playbook on Ansible using this information.
 - Sends the results back, including the output and execution status.
 
-When running a Python scirpt, it follows the same pattern: take input in the API call, run the script in the executor,
+When running a Python script, it follows the same pattern: take input in the API call, run the script in the executor,
 and return the results of the script to the user at their specified endpoint.

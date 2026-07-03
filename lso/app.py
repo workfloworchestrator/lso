@@ -40,7 +40,7 @@ def create_app() -> FastAPI:
 
     environment.setup_logging()
 
-    logger.info("FastAPI app initialized")
+    logger.info("FastAPI app initialised")
 
     return app
 

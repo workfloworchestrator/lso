@@ -127,7 +127,7 @@ def run_playbook_proc_task(
 
     Args:
         job_id (str): Identifier of the job being executed.
-        playbook_path (str): Path to the playbook to be exectuted.
+        playbook_path (str): Path to the playbook to be executed.
         extra_vars (dict[str, Any]): Extra variables to pass to the playbook.
         inventory (dict[str, Any] | str): Inventory to run the playbook against.
         callback (str, optional): Callback URL for status update.

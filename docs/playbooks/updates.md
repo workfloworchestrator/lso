@@ -11,5 +11,5 @@ These updates take the following shape.
 }
 ```
 
-Updates are send whenever the Ansible runner has an update. In practice this will be when a step has completed while
+Updates are sent whenever the Ansible runner has an update. In practice this will be when a step has completed while
 running the playbook.

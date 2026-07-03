@@ -113,7 +113,7 @@ class PlaybookRunParams(BaseModel):
         progress_is_incremental (bool, optional): Whether progress updates should be incremental or not.
         inventory (PlaybookInventory): The inventory to run the playbook against. This inventory can also include any
             host vars, if needed. When including host vars, it should be a dictionary. Can be a simple string containing
-            hostnames when no host vars are needed. In the latter case, multiple hosts should be separated with a `\n`
+            host names when no host vars are needed. In the latter case, multiple hosts should be separated with a `\n`
             newline character only.
         extra_vars (dict[str, Any]): Extra variables that should get passed to the playbook.
             This includes any required configuration objects from the workflow orchestrator, commit comments, whether

@@ -3,7 +3,7 @@
 If in the request `is_async` is set to `False` the request will become a blocking operation. The client will not
 receive a response from LSO until the executable has completed. The response then contains the output from the
 executable. With `is_async` set to `True`, LSO will immediately give a response containing only the job ID. To get the
-output from the excutable once completed, a callback URL must be included in the request.
+output from the executable once completed, a callback URL must be included in the request.
 
 ## Request
 
