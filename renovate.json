@@ -24,5 +24,6 @@
     "* 1-5 * * *"
   ],
   "timezone": "Europe/Amsterdam",
-  "updateNotScheduled": false
+  "updateNotScheduled": false,
+  "dependencyDashboard": false
 }
