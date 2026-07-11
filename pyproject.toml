@@ -37,7 +37,7 @@ dependencies = [
     "fastapi==0.139.0",
     "httpx2==2.5.0",
     "pydantic-settings==2.14.2",
-    "redis==7.4.1",
+    "redis==8.0.1",
     "requests==2.34.2",
     "uvicorn[standard]==0.51.0",
 ]
