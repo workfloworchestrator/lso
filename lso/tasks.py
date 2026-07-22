@@ -112,6 +112,34 @@ def playbook_finished_handler_factory(callback: str | None, job_id: str) -> Call
     return None
 
 
+def _post_playbook_failure_callback(callback: str | None, job_id: str, exc: BaseException) -> None:
+    """Notify the orchestrator that a playbook run crashed before it could report its own result.
+
+    Mirrors the payload shape of `playbook_finished_handler_factory` with a failed status so the workflow
+    can transition out of `awaiting_callback` instead of hanging. Any error while delivering this callback is
+    logged and swallowed, so it never masks the original exception that is being re-raised by the caller.
+
+    Args:
+        callback (str, optional): The callback URL that the Ansible runner should report to. No-op if not set.
+        job_id (str): The job ID of this playbook run, used for reporting.
+        exc (BaseException): The exception that escaped the runner, included in the callback output for diagnostics.
+
+    """
+    if not callback:
+        return
+
+    payload = {
+        "status": "failed",
+        "job_id": job_id,
+        "output": [f"Ansible playbook run failed: {exc}"],
+        "return_code": -1,
+    }
+    try:
+        requests.post(str(callback), json=payload, timeout=settings.REQUEST_TIMEOUT_SEC)
+    except requests.RequestException:
+        logger.exception("Failed to POST failure callback to %s for job_id=%s", callback, job_id)
+
+
 @celery.task(name=RUN_PLAYBOOK)  # type: ignore[untyped-decorator]
 def run_playbook_proc_task(
     job_id: str,
@@ -137,13 +165,35 @@ def run_playbook_proc_task(
     """
     msg = f"playbook_path: {playbook_path}, callback: {callback}"
     logger.info(msg)
-    run(
-        playbook=playbook_path,
-        inventory=inventory,
-        extravars=extra_vars,
-        event_handler=playbook_event_handler_factory(progress, progress_is_incremental=progress_is_incremental),
-        finished_callback=playbook_finished_handler_factory(callback, job_id),
-    )
+
+    finished_handler = playbook_finished_handler_factory(callback, job_id)
+    result_reported = False
+
+    def _finished_callback(runner: Runner) -> None:
+        # Mark that the run reached completion and its result callback was attempted, so the crash safety net
+        # below does not fire a second, conflicting callback if delivering that result then fails.
+        nonlocal result_reported
+        result_reported = True
+        if finished_handler is not None:
+            finished_handler(runner)
+
+    try:
+        run(
+            playbook=playbook_path,
+            inventory=inventory,
+            extravars=extra_vars,
+            event_handler=playbook_event_handler_factory(progress, progress_is_incremental=progress_is_incremental),
+            finished_callback=_finished_callback if finished_handler else None,
+            settings={"pexpect_timeout": settings.ANSIBLE_PLAYBOOK_TIMEOUT_SEC},
+        )
+    except Exception as exc:
+        # Safety net: if the runner crashes before its finished_callback fires (e.g. a pexpect read timeout),
+        # no result is ever POSTed and the orchestrator's workflow orphans in `awaiting_callback`. Notify the
+        # orchestrator of the failure before re-raising so the workflow can never hang indefinitely.
+        logger.exception("Ansible playbook run for job_id=%s crashed", job_id)
+        if not result_reported:
+            _post_playbook_failure_callback(callback, job_id, exc)
+        raise
 
 
 @celery.task(name=RUN_EXECUTABLE)  # type: ignore[untyped-decorator]
