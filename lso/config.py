@@ -44,8 +44,8 @@ class Config(BaseSettings):
         CELERY_RESULT_EXPIRES (int, optional): Celery result expiration timeout, in seconds.
         WORKER_QUEUE_NAME (str, optional): Celery worker queue name.
         EXECUTABLE_TIMEOUT_SEC (int, optional): Timeout period for an executable, in seconds.
-        ANSIBLE_PLAYBOOK_TIMEOUT_SEC (int, optional): Idle/read timeout, in seconds, for the ansible-runner output
-            pipe. This is passed to ansible-runner as its ``pexpect_timeout`` so that a transient gap in playbook
+        ANSIBLE_PLAYBOOK_TIMEOUT_SEC (int, optional): Idle/read timeout, in seconds, for the `ansible-runner` output
+            pipe. This is passed to `ansible-runner` as its `pexpect_timeout` so that a transient gap in playbook
             output (e.g. a slow-but-healthy device operation) does not abort an otherwise-successful run. Defaults to
             a large value to tolerate such gaps; the underlying job is still bounded by the run itself.
 

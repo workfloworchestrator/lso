@@ -5,4 +5,4 @@ to this URL.
 
 ## Code Documentation
 
-::: lso.tasks.playbook_finished_handler_factory
+::: lso.tasks.PlaybookFinishedHandler
