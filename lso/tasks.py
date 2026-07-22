@@ -73,33 +73,50 @@ def playbook_event_handler_factory(
     return None
 
 
-def playbook_finished_handler_factory(callback: str | None, job_id: str) -> Callable[[Runner], None] | None:
-    """Once Ansible runner is finished, it will call back to the specified URL in the original request.
+class PlaybookFinishedHandler:
+    """Report a finished Ansible playbook run to the callback URL from the original request.
+
+    An instance is passed to `ansible-runner` as its `finished_callback` and invoked once when the run shuts down.
+    It records in `reported` whether that report was made, so the caller can tell the run reached completion and
+    avoid sending a second, conflicting callback if the run instead crashed before finishing.
 
     Args:
-        callback (str, optional): The callback URL that the Ansible runner should report to.
+        callback (str, optional): The callback URL that the Ansible runner should report to. When not set, the
+            handler is a no-op (nothing is POSTed).
         job_id (str): The job ID of this playbook run, used for reporting.
 
-    Returns:
-        A handler method that sends one request to the callback URL.
+    Attributes:
+        reported (bool): `True` once the handler has run, i.e. the playbook finished and its result callback was
+            attempted (regardless of whether delivering it then succeeded).
 
     Raises:
         CallbackFailedError: If the callback to the external system has failed.
 
     """
 
-    def _playbook_finished_handler(runner: Runner) -> None:
-        playbook_output = runner.stdout.read().split("\n")
-        playbook_output = [line for line in playbook_output if line.strip()]
+    def __init__(self, callback: str | None, job_id: str) -> None:
+        """Store the callback URL and job ID to report on when the playbook run finishes."""
+        self._callback = callback
+        self._job_id = job_id
+        self.reported = False
 
+    def __call__(self, runner: Runner) -> None:
+        """Send one request with the playbook result to the callback URL."""
+        # Record completion before attempting delivery, so a failure while POSTing does not let the caller's
+        # crash safety net fire a second callback for the same job.
+        self.reported = True
+        if not self._callback:
+            return
+
+        playbook_output = [line for line in runner.stdout.read().split("\n") if line.strip()]
         payload = {
             "status": runner.status,
-            "job_id": job_id,
+            "job_id": self._job_id,
             "output": playbook_output,
             "return_code": int(str(runner.rc)),
         }
 
-        response = requests.post(str(callback), json=payload, timeout=settings.REQUEST_TIMEOUT_SEC)
+        response = requests.post(str(self._callback), json=payload, timeout=settings.REQUEST_TIMEOUT_SEC)
         try:
             response.raise_for_status()
         except HTTPError as e:
@@ -107,15 +124,11 @@ def playbook_finished_handler_factory(callback: str | None, job_id: str) -> Call
                 status_code=e.response.status_code, detail=f"{e.response.reason} for url: {e.request.url}"
             ) from e
 
-    if callback:
-        return _playbook_finished_handler
-    return None
-
 
 def _post_playbook_failure_callback(callback: str | None, job_id: str, exc: BaseException) -> None:
     """Notify the orchestrator that a playbook run crashed before it could report its own result.
 
-    Mirrors the payload shape of `playbook_finished_handler_factory` with a failed status so the workflow
+    Mirrors the payload shape of `PlaybookFinishedHandler` with a failed status so the workflow
     can transition out of `awaiting_callback` instead of hanging. Any error while delivering this callback is
     logged and swallowed, so it never masks the original exception that is being re-raised by the caller.
 
@@ -166,32 +179,23 @@ def run_playbook_proc_task(
     msg = f"playbook_path: {playbook_path}, callback: {callback}"
     logger.info(msg)
 
-    finished_handler = playbook_finished_handler_factory(callback, job_id)
-    result_reported = False
-
-    def _finished_callback(runner: Runner) -> None:
-        # Mark that the run reached completion and its result callback was attempted, so the crash safety net
-        # below does not fire a second, conflicting callback if delivering that result then fails.
-        nonlocal result_reported
-        result_reported = True
-        if finished_handler is not None:
-            finished_handler(runner)
-
+    finished_handler = PlaybookFinishedHandler(callback, job_id)
     try:
         run(
             playbook=playbook_path,
             inventory=inventory,
             extravars=extra_vars,
             event_handler=playbook_event_handler_factory(progress, progress_is_incremental=progress_is_incremental),
-            finished_callback=_finished_callback if finished_handler else None,
+            finished_callback=finished_handler,
             settings={"pexpect_timeout": settings.ANSIBLE_PLAYBOOK_TIMEOUT_SEC},
         )
     except Exception as exc:
-        # Safety net: if the runner crashes before its finished_callback fires (e.g. a pexpect read timeout),
-        # no result is ever POSTed and the orchestrator's workflow orphans in `awaiting_callback`. Notify the
-        # orchestrator of the failure before re-raising so the workflow can never hang indefinitely.
+        # Safety net: if the runner crashes before finished_handler runs (e.g. a pexpect read timeout), no result
+        # is ever POSTed and the orchestrator's workflow orphans in `awaiting_callback`. Notify the orchestrator
+        # of the failure before re-raising so the workflow can never hang indefinitely. `finished_handler.reported`
+        # guards against a second, conflicting callback when the run completed but delivering its result failed.
         logger.exception("Ansible playbook run for job_id=%s crashed", job_id)
-        if not result_reported:
+        if not finished_handler.reported:
             _post_playbook_failure_callback(callback, job_id, exc)
         raise
 
