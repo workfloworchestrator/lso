@@ -137,13 +137,35 @@ def run_playbook_proc_task(
     """
     msg = f"playbook_path: {playbook_path}, callback: {callback}"
     logger.info(msg)
-    run(
-        playbook=playbook_path,
-        inventory=inventory,
-        extravars=extra_vars,
-        event_handler=playbook_event_handler_factory(progress, progress_is_incremental=progress_is_incremental),
-        finished_callback=playbook_finished_handler_factory(callback, job_id),
-    )
+    try:
+        run(
+            playbook=playbook_path,
+            inventory=inventory,
+            extravars=extra_vars,
+            event_handler=playbook_event_handler_factory(progress, progress_is_incremental=progress_is_incremental),
+            finished_callback=playbook_finished_handler_factory(callback, job_id),
+            settings={"pexpect_timeout": settings.ANSIBLE_PEXPECT_TIMEOUT_SEC, "idle_timeout": None},
+        )
+    except Exception as e:
+        # Ansible runner may raise (e.g. a pexpect ``TIMEOUT``) before ``finished_callback`` fires. Without an
+        # explicit failure callback, the calling system would wait indefinitely for a result that never arrives.
+        logger.exception("Playbook run crashed before the finished callback could fire")
+        if callback:
+            failure_payload = {
+                "status": "failed",
+                "job_id": job_id,
+                "output": [f"LSO worker error: {e!r}"],
+                "return_code": 1,
+            }
+            try:
+                response = requests.post(str(callback), json=failure_payload, timeout=settings.REQUEST_TIMEOUT_SEC)
+                response.raise_for_status()
+            except HTTPError as callback_error:
+                raise CallbackFailedError(
+                    status_code=callback_error.response.status_code,
+                    detail=f"{callback_error.response.reason} for url: {callback_error.request.url}",
+                ) from callback_error
+        raise
 
 
 @celery.task(name=RUN_EXECUTABLE)  # type: ignore[untyped-decorator]
