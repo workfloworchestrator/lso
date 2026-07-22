@@ -20,5 +20,5 @@ To install LSO in your `uv` virtual environment, use:
 
 ```sh
 uv init
-uv add orchestrator-lso==4.1.0
+uv add orchestrator-lso==4.1.1
 ```
