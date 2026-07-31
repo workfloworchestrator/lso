@@ -39,7 +39,7 @@ dependencies = [
     "pydantic-settings==2.14.2",
     "redis==8.0.1",
     "requests==2.34.2",
-    "uvicorn[standard]==0.51.0",
+    "uvicorn[standard]==0.52.0",
 ]
 
 [project.urls]
