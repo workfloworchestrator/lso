@@ -16,7 +16,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v7
-      - uses: vale-cli/vale-action@2.1.2
+      - uses: vale-cli/vale-action@v3.0.0
         with:
           files: "docs/,lso/"
           separator: ","
