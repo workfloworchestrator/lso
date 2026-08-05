@@ -42,6 +42,17 @@ class Config(BaseSettings):
         CELERY_BROKER_URL (str, optional): Celery broker URL, required when using the Celery executor.
         CELERY_RESULT_BACKEND (str, optional): Celery result backend URL, required when using the Celery executor.
         CELERY_RESULT_EXPIRES (int, optional): Celery result expiration timeout, in seconds.
+        CELERY_BROKER_CONNECTION_RETRY (bool, optional): Retry re-establishing the broker connection at runtime.
+        CELERY_BROKER_CONNECTION_MAX_RETRIES (int | None, optional): Max broker reconnection attempts; ``None`` retries
+            indefinitely (the Celery broker transport treats ``0`` as "fail on the first error").
+        CELERY_BROKER_CHANNEL_ERROR_RETRY (bool, optional): Treat broker channel errors (such as Redis
+            ``ReadOnlyError`` from a node demoted to read-only replica) as recoverable and reconnect.
+        CELERY_REDIS_SOCKET_KEEPALIVE (bool, optional): Enable TCP keep-alive on the Redis broker connection.
+        CELERY_REDIS_HEALTH_CHECK_INTERVAL (int, optional): Seconds between Redis broker connection health checks.
+        CELERY_REDIS_RETRY_ON_TIMEOUT (bool, optional): Retry a Redis command that timed out instead of dropping it.
+        CELERY_REDIS_SOCKET_TIMEOUT (float, optional): Timeout, in seconds, for Redis result-store socket operations.
+        CELERY_REDIS_SOCKET_CONNECT_TIMEOUT (float, optional): Timeout, in seconds, for establishing a Redis
+            result-store socket connection.
         WORKER_QUEUE_NAME (str, optional): Celery worker queue name.
         EXECUTABLE_TIMEOUT_SEC (int, optional): Timeout period for an executable, in seconds.
         ANSIBLE_PLAYBOOK_TIMEOUT_SEC (int, optional): Idle/read timeout, in seconds, for the `ansible-runner` output
@@ -60,6 +71,14 @@ class Config(BaseSettings):
     CELERY_BROKER_URL: str = "redis://localhost:6379/0"
     CELERY_RESULT_BACKEND: str = "redis://localhost:6379/0"
     CELERY_RESULT_EXPIRES: int = 3600
+    CELERY_BROKER_CONNECTION_RETRY: bool = True
+    CELERY_BROKER_CONNECTION_MAX_RETRIES: int | None = None
+    CELERY_BROKER_CHANNEL_ERROR_RETRY: bool = True
+    CELERY_REDIS_SOCKET_KEEPALIVE: bool = True
+    CELERY_REDIS_HEALTH_CHECK_INTERVAL: int = 10
+    CELERY_REDIS_RETRY_ON_TIMEOUT: bool = True
+    CELERY_REDIS_SOCKET_TIMEOUT: float = 30.0
+    CELERY_REDIS_SOCKET_CONNECT_TIMEOUT: float = 10.0
     WORKER_QUEUE_NAME: str | None = None
     EXECUTABLE_TIMEOUT_SEC: int = 300
     ANSIBLE_PLAYBOOK_TIMEOUT_SEC: int = 300

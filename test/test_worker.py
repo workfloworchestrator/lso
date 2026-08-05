@@ -23,3 +23,30 @@ def test_worker_registers_tasks() -> None:
     """
     assert RUN_PLAYBOOK in celery.tasks
     assert RUN_EXECUTABLE in celery.tasks
+
+
+def test_celery_broker_is_configured_to_self_heal_after_switch_over() -> None:
+    """The Celery broker must retry and use keep-alive so a Redis broker switch-over self-heals.
+
+    These assert the broker-resilience contract that lets the worker recover after a Redis broker switch-over (for
+    example a virtual IP moving between Redis nodes) instead of getting stuck until a manual restart.
+    """
+    assert celery.conf.broker_connection_retry is True
+    assert celery.conf.broker_connection_retry_on_startup is True
+    # Kombu treats 0 as "fail on the first error"; only None retries indefinitely.
+    assert celery.conf.broker_connection_max_retries is None
+    # ReadOnlyError from a demoted replica is a channel error; the worker must redial on it.
+    assert celery.conf.broker_channel_error_retry is True
+
+    transport_options = celery.conf.broker_transport_options
+    assert transport_options["socket_keepalive"] is True
+    assert transport_options["retry_on_timeout"] is True
+    assert transport_options["health_check_interval"] > 0
+
+    # The Redis result store ignores transport options for connection parameters; it only honors
+    # these top-level redis_* settings.
+    assert celery.conf.redis_socket_keepalive is True
+    assert celery.conf.redis_retry_on_timeout is True
+    assert celery.conf.redis_socket_timeout > 0
+    assert celery.conf.redis_socket_connect_timeout > 0
+    assert celery.conf.redis_backend_health_check_interval > 0
