@@ -27,13 +27,37 @@ celery = Celery(
     backend=settings.CELERY_RESULT_BACKEND,
 )
 
+# Transport options that let the Redis broker connection survive a broker switch-over (for
+# example a virtual IP moving between Redis nodes) and reconnect automatically instead of getting
+# stuck on a dead connection. ``broker_channel_error_retry`` additionally makes the worker treat
+# channel errors (such as Redis ``ReadOnlyError`` from a node demoted to read-only replica) as
+# recoverable, so it redials instead of failing permanently. The Redis result store does not
+# read these from transport options and only honors the top-level ``redis_*`` settings passed
+# below. None of this ties LSO to Redis: with another broker or result store (for example
+# RabbitMQ or ``rpc://``) these options are simply ignored by the transport that does not know
+# them.
+redis_transport_options = {
+    "socket_keepalive": settings.CELERY_REDIS_SOCKET_KEEPALIVE,
+    "health_check_interval": settings.CELERY_REDIS_HEALTH_CHECK_INTERVAL,
+    "retry_on_timeout": settings.CELERY_REDIS_RETRY_ON_TIMEOUT,
+}
+
 celery.conf.update(
     result_expires=settings.CELERY_RESULT_EXPIRES,
     worker_prefetch_multiplier=1,
     worker_send_task_event=True,
     task_send_sent_event=True,
     redbeat_redis_url=settings.CELERY_BROKER_URL,
+    broker_connection_retry=settings.CELERY_BROKER_CONNECTION_RETRY,
     broker_connection_retry_on_startup=True,
+    broker_connection_max_retries=settings.CELERY_BROKER_CONNECTION_MAX_RETRIES,
+    broker_channel_error_retry=settings.CELERY_BROKER_CHANNEL_ERROR_RETRY,
+    broker_transport_options=redis_transport_options,
+    redis_socket_keepalive=settings.CELERY_REDIS_SOCKET_KEEPALIVE,
+    redis_retry_on_timeout=settings.CELERY_REDIS_RETRY_ON_TIMEOUT,
+    redis_socket_timeout=settings.CELERY_REDIS_SOCKET_TIMEOUT,
+    redis_socket_connect_timeout=settings.CELERY_REDIS_SOCKET_CONNECT_TIMEOUT,
+    redis_backend_health_check_interval=settings.CELERY_REDIS_HEALTH_CHECK_INTERVAL,
     task_ignore_result=not settings.TESTING,
 )
 
