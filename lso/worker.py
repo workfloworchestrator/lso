@@ -13,6 +13,8 @@
 
 """Module that sets up LSO as a Celery worker."""
 
+import socket
+
 from celery import Celery
 from celery.signals import worker_shutting_down
 
@@ -36,10 +38,32 @@ celery = Celery(
 # below. None of this ties LSO to Redis: with another broker or result store (for example
 # RabbitMQ or ``rpc://``) these options are simply ignored by the transport that does not know
 # them.
+#
+# ``socket_timeout`` and the TCP keep-alive timing overrides are essential: a switch-over kills
+# established connections without a TCP reset packet reaching the client, so an unbounded
+# ``recv()`` on such a half-open socket blocks the consumer's restart sequence forever (kernel
+# keep-alive only fires after 2 hours by default) and none of the retry settings ever get a
+# chance to run.
+#
+# ``TCP_KEEPIDLE`` is Linux-specific; macOS (local development) exposes ``TCP_KEEPALIVE`` with the
+# same semantics, so the mapping is built from whichever constants the platform provides.
+_socket_keepalive_options: dict[int, int] = {}
+if hasattr(socket, "TCP_KEEPIDLE"):
+    _socket_keepalive_options[socket.TCP_KEEPIDLE] = settings.CELERY_REDIS_SOCKET_KEEPALIVE_IDLE
+elif hasattr(socket, "TCP_KEEPALIVE"):
+    _socket_keepalive_options[socket.TCP_KEEPALIVE] = settings.CELERY_REDIS_SOCKET_KEEPALIVE_IDLE
+if hasattr(socket, "TCP_KEEPINTVL"):
+    _socket_keepalive_options[socket.TCP_KEEPINTVL] = settings.CELERY_REDIS_SOCKET_KEEPALIVE_INTERVAL
+if hasattr(socket, "TCP_KEEPCNT"):
+    _socket_keepalive_options[socket.TCP_KEEPCNT] = settings.CELERY_REDIS_SOCKET_KEEPALIVE_COUNT
+
 redis_transport_options = {
     "socket_keepalive": settings.CELERY_REDIS_SOCKET_KEEPALIVE,
     "health_check_interval": settings.CELERY_REDIS_HEALTH_CHECK_INTERVAL,
     "retry_on_timeout": settings.CELERY_REDIS_RETRY_ON_TIMEOUT,
+    "socket_timeout": settings.CELERY_REDIS_SOCKET_TIMEOUT,
+    "socket_connect_timeout": settings.CELERY_REDIS_SOCKET_CONNECT_TIMEOUT,
+    "socket_keepalive_options": _socket_keepalive_options,
 }
 
 celery.conf.update(

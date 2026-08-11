@@ -11,6 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from lso.config import settings
 from lso.worker import RUN_EXECUTABLE, RUN_PLAYBOOK, celery
 
 
@@ -42,6 +43,21 @@ def test_celery_broker_is_configured_to_self_heal_after_switch_over() -> None:
     assert transport_options["socket_keepalive"] is True
     assert transport_options["retry_on_timeout"] is True
     assert transport_options["health_check_interval"] > 0
+
+    # A switch-over kills connections without an RST reaching the client; without a socket
+    # timeout, an unbounded recv() on such a half-open socket blocks the consumer restart
+    # forever, before any of the retry settings above can engage.
+    assert transport_options["socket_timeout"] > 0
+    assert transport_options["socket_connect_timeout"] > 0
+    # TCP keep-alive timing must be overridden: the kernel default (7200s idle) means a broker
+    # connection that died silently would go unnoticed for up to 2 hours. Constant names differ
+    # per platform (TCP_KEEPIDLE on Linux, TCP_KEEPALIVE on macOS), so assert on the values.
+    keepalive_options = transport_options["socket_keepalive_options"]
+    assert sorted(keepalive_options.values()) == [
+        settings.CELERY_REDIS_SOCKET_KEEPALIVE_COUNT,
+        settings.CELERY_REDIS_SOCKET_KEEPALIVE_INTERVAL,
+        settings.CELERY_REDIS_SOCKET_KEEPALIVE_IDLE,
+    ]
 
     # The Redis result store ignores transport options for connection parameters; it only honors
     # these top-level redis_* settings.
