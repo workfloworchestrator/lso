@@ -67,7 +67,7 @@ if settings.WORKER_QUEUE_NAME:
         RUN_EXECUTABLE: {"queue": settings.WORKER_QUEUE_NAME},
     }
 
-# Ensure the task modules are imported so their ``@celery.task`` decorators register the tasks. The worker is started
+# Import the task modules so their ``@celery.task`` decorators register the tasks. The worker is started
 # with ``-A lso.worker``, which does not otherwise import ``lso.tasks``; without this, the worker boots with an empty
 # task registry and rejects every incoming task with "Received unregistered task". ``autodiscover_tasks`` is used
 # instead of a top-level import to avoid the circular import between ``lso.worker`` and ``lso.tasks``.
