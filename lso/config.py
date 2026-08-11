@@ -51,8 +51,8 @@ class Config(BaseSettings):
         CELERY_REDIS_HEALTH_CHECK_INTERVAL (int, optional): Seconds between Redis broker connection health checks.
         CELERY_REDIS_RETRY_ON_TIMEOUT (bool, optional): Retry a Redis command that timed out instead of dropping it.
         CELERY_REDIS_SOCKET_TIMEOUT (float, optional): Timeout, in seconds, for Redis socket operations on the
-            broker and result-store connections, so a socket that died without an RST fails instead of blocking
-            the worker forever.
+            broker and result-store connections, so a socket that died without a TCP reset packet reaching
+            the client fails instead of blocking the worker forever.
         CELERY_REDIS_SOCKET_CONNECT_TIMEOUT (float, optional): Timeout, in seconds, for establishing a Redis
             broker or result-store socket connection.
         CELERY_REDIS_SOCKET_KEEPALIVE_IDLE (int, optional): Seconds a Redis connection is idle before TCP

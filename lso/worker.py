@@ -40,9 +40,10 @@ celery = Celery(
 # them.
 #
 # ``socket_timeout`` and the TCP keep-alive timing overrides are essential: a switch-over kills
-# established connections without an RST reaching the client, so an unbounded ``recv()`` on such
-# a half-open socket blocks the consumer's restart sequence forever (kernel keep-alive only fires
-# after 2 hours by default) and none of the retry settings ever get a chance to run.
+# established connections without a TCP reset packet reaching the client, so an unbounded
+# ``recv()`` on such a half-open socket blocks the consumer's restart sequence forever (kernel
+# keep-alive only fires after 2 hours by default) and none of the retry settings ever get a
+# chance to run.
 #
 # ``TCP_KEEPIDLE`` is Linux-specific; macOS (local development) exposes ``TCP_KEEPALIVE`` with the
 # same semantics, so the mapping is built from whichever constants the platform provides.
