@@ -1,6 +1,6 @@
 [project]
 name = "orchestrator-lso"
-version = "4.2.2"
+version = "5.0.0"
 description = "LSO, an API for remotely running Ansible playbooks."
 readme = "README.md"
 license = "Apache-2.0"
@@ -31,11 +31,12 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "ansible==14.2.0",
     "ansible-runner==2.4.3",
     "celery==5.6.3",
     "fastapi==0.141.1",
     "httpx2==2.10.0",
+    # Imported directly throughout `lso`, so it is declared here rather than relied on via FastAPI.
+    "pydantic==2.13.4",
     "pydantic-settings==2.15.0",
     # redis-py must stay within kombu's supported range (<6.5). redis-py >=8 silently
     # reconnects broker sockets without kombu noticing, leaving workers permanently
@@ -52,6 +53,9 @@ Source = "https://github.com/workfloworchestrator/lso"
 
 [dependency-groups]
 dev = [
+    # Test-time only, and intentionally unpinned: the suite must pass against whatever Ansible is present. CI
+    # additionally runs it against a range of ansible-core versions.
+    "ansible-core",
     "bumpversion",
     "pytest",
     "pytest-cov",

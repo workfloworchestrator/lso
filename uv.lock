@@ -36,18 +36,6 @@ wheels = [
 ]
 
 [[package]]
-name = "ansible"
-version = "14.2.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "ansible-core" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/0d/8a/2800da95cacaabeda411db5bf54b97d1d953a03b5befc03a8a9486659ccb/ansible-14.2.0.tar.gz", hash = "sha256:1c8f18399027d26b0175270cb63bad99f9be16efe79600242c914eaa49941025", size = 50053376, upload-time = "2026-07-14T15:47:34.19Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b4/22/8847073941d543de5131f2130a68e4b6a437e613d5a23c257a7b01b93339/ansible-14.2.0-py3-none-any.whl", hash = "sha256:67f4c5c38f570ca9d87360964aaaea62f1a5eb2501e886b3dec1d67c9290618e", size = 49795074, upload-time = "2026-07-14T15:47:28.003Z" },
-]
-
-[[package]]
 name = "ansible-core"
 version = "2.21.2"
 source = { registry = "https://pypi.org/simple" }
@@ -883,14 +871,14 @@ wheels = [
 
 [[package]]
 name = "orchestrator-lso"
-version = "4.2.2"
+version = "5.0.0"
 source = { editable = "." }
 dependencies = [
-    { name = "ansible" },
     { name = "ansible-runner" },
     { name = "celery" },
     { name = "fastapi" },
     { name = "httpx2" },
+    { name = "pydantic" },
     { name = "pydantic-settings" },
     { name = "redis" },
     { name = "requests" },
@@ -899,6 +887,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "ansible-core" },
     { name = "bumpversion" },
     { name = "faker" },
     { name = "jsonschema" },
@@ -922,11 +911,11 @@ docs = [
 
 [package.metadata]
 requires-dist = [
-    { name = "ansible", specifier = "==14.2.0" },
     { name = "ansible-runner", specifier = "==2.4.3" },
     { name = "celery", specifier = "==5.6.3" },
     { name = "fastapi", specifier = "==0.141.1" },
     { name = "httpx2", specifier = "==2.10.0" },
+    { name = "pydantic", specifier = "==2.13.4" },
     { name = "pydantic-settings", specifier = "==2.15.0" },
     { name = "redis", specifier = "==5.3.1" },
     { name = "requests", specifier = "==2.34.2" },
@@ -935,6 +924,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "ansible-core" },
     { name = "bumpversion" },
     { name = "faker" },
     { name = "jsonschema" },

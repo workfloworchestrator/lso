@@ -20,5 +20,40 @@ To install LSO in your `uv` virtual environment, use:
 
 ```sh
 uv init
-uv add orchestrator-lso==4.1.1
+uv add orchestrator-lso==5.0.0
+```
+
+## Installing Ansible
+
+LSO does not install Ansible, and does not require a particular version of it. Ansible is central to what LSO does,
+so it has to be present, but which version to run is your decision: your playbooks and collections dictate that, not
+LSO.
+
+LSO calls Ansible through the `ansible-playbook` and `ansible-inventory` commands and imports no Ansible code, so any
+reasonably recent release works. The test suite is run against ansible-core 2.16 through to the latest release.
+
+Install it whichever way suits your deployment, as long as the commands end up on the same `PATH` as LSO:
+
+```sh
+uv add ansible==14.2.0          # alongside LSO in the same virtual environment
+pip install ansible==14.2.0     # or with pip
+apt-get install ansible         # or from your distribution's packages
+```
+
+!!! warning "Ansible has to be on the `PATH` of the LSO process"
+
+    LSO looks the commands up on the `PATH` of the process it runs in, so Ansible does not have to live in the
+    same virtual environment as LSO. Installing it system-wide works, because the commands run under their own
+    interpreter.
+
+    What does break is a process whose `PATH` is narrower than your shell's. A `systemd` unit is the usual
+    culprit: unless `PATH` is set in the unit file, it defaults to a minimal one that omits `/usr/local/bin` and
+    any virtual environment. LSO then answers `validator_unavailable` when an inventory is submitted, even though
+    Ansible runs perfectly from your shell.
+
+Check that the LSO process, not just your shell, can find it:
+
+```sh
+ansible-playbook --version
+ansible-inventory --version
 ```

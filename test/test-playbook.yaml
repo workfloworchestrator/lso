@@ -1,9 +1,12 @@
 ---
 - name: Test Ansible functionality
-  hosts: localhost
+  # `all`, not a hardcoded host: the play must target whatever the submitted inventory provides, so that a test
+  # run proves the inventory sent through the API is the one Ansible executed against.
+  hosts: all
+  connection: local
   gather_facts: false
 
   tasks:
-    - name: Print the Ansible host
+    - name: Print the inventory hostname
       ansible.builtin.debug:
-        msg: "{{ ansible_host }}"
+        msg: "ran against {{ inventory_hostname }}"
