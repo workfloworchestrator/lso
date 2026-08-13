@@ -42,7 +42,7 @@ dependencies = [
     # deaf (no BRPOP/PSUBSCRIBE re-issued) after a Redis connection loss.
     "redis==5.3.1",
     "requests==2.34.2",
-    "uvicorn[standard]==0.52.1",
+    "uvicorn[standard]==0.52.3",
 ]
 
 [project.urls]
