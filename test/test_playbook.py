@@ -27,12 +27,27 @@ TEST_PROGRESS_URL = "http://localhost/progress"
 
 
 @responses.activate
-def test_playbook_execution() -> None:
+@pytest.mark.parametrize(
+    "inventory",
+    [
+        pytest.param({"all": {"hosts": {"test-host-from-inventory.local": None}}}, id="dict-inventory"),
+        pytest.param("test-host-from-inventory.local", id="string-inventory"),
+    ],
+)
+def test_playbook_execution(inventory: dict[str, Any] | str) -> None:
+    """A real, unmocked playbook run must succeed and must target the submitted inventory.
+
+    The result callback is always sent, even for a failed run, so counting callbacks proves nothing about the
+    run itself. Assert the Ansible verdict (`status`/`return_code`) and that the play ran against the host from
+    the submitted inventory rather than some ambient default. Under the CI Ansible compatibility matrix this is
+    what demonstrates that playbook execution — not just inventory validation — works on each Ansible version.
+    """
     callback = responses.post(TEST_CALLBACK_URL)
+    responses.post(TEST_PROGRESS_URL)
     run_playbook(
         playbook_path=Path(__file__).parent / "test-playbook.yaml",
         extra_vars={},
-        inventory="127.0.0.1",
+        inventory=inventory,
         callback=TEST_CALLBACK_URL,
         progress=TEST_PROGRESS_URL,
         progress_is_incremental=True,
@@ -40,6 +55,11 @@ def test_playbook_execution() -> None:
 
     responses.assert_call_count(TEST_CALLBACK_URL, 1)
     assert callback.status == status.HTTP_200_OK
+
+    body = json.loads(callback.calls[0].request.body)
+    assert body["status"] == "successful", body
+    assert body["return_code"] == 0, body
+    assert any("ran against test-host-from-inventory.local" in line for line in body["output"]), body["output"]
 
 
 def test_run_playbook_passes_configured_timeout_to_runner(monkeypatch: pytest.MonkeyPatch) -> None:

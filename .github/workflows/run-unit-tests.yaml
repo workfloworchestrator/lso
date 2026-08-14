@@ -26,3 +26,39 @@ jobs:
         run: uv sync --all-extras --dev
       - name: Run Unit tests
         run: uv run pytest --cov-branch --cov=lso --cov-report=xml
+
+  ansible_compatibility:
+    name: Ansible ${{ matrix.ansible-label }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Each leg runs on a Python that its ansible-core supports as a control node, so that a failure means
+        # LSO is broken rather than that the pairing was never supported in the first place.
+        include:
+          - ansible-label: 'oldest (2.16)'
+            ansible-spec: 'ansible-core~=2.16.0'
+            python-version: '3.12'
+          - ansible-label: 'middle (2.19)'
+            ansible-spec: 'ansible-core~=2.19.0'
+            python-version: '3.13'
+          - ansible-label: 'latest'
+            ansible-spec: 'ansible-core'
+            python-version: '3.13'
+      fail-fast: false
+    container: ubuntu:latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v7
+      - name: Install uv and set Python version
+        uses: astral-sh/setup-uv@v9.0.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install the project
+        run: uv sync --all-extras --dev
+      - name: Install ${{ matrix.ansible-spec }}
+        run: uv pip install --upgrade '${{ matrix.ansible-spec }}'
+      - name: Report the Ansible version under test
+        run: uv run --no-sync ansible-inventory --version
+      # --no-sync, so that running the tests does not restore the locked ansible-core and undo the line above.
+      - name: Run Unit tests
+        run: uv run --no-sync pytest

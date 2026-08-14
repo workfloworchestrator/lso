@@ -44,9 +44,15 @@ def pytest_configure() -> None:
 
 @pytest.fixture
 def mocked_ansible_runner_run() -> Callable:
+    """Stand-in for `lso.tasks.run`, so route tests exercise the endpoint without a real Ansible run.
+
+    Patch it as `patch("lso.tasks.run", ...)`: execution binds `run` at import inside `lso.tasks`, so patching
+    the `ansible_runner` module attribute elsewhere would leave the real runner in place.
+    """
+
     class Runner:
         def __init__(self) -> None:
-            self.status = "success"
+            self.status = "successful"
             self.rc = 0
             self.stdout = StringIO("[{'step one': 'results'}, {'step two': 2}]")
 

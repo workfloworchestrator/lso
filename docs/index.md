@@ -17,6 +17,10 @@ We wanted a lightweight, easy-to-use solution that works without extra layers. T
 LSO is a small FastAPI server that receives requests from remote services and uses `ansible-runner` to execute
 playbooks. It can also execute Python scripts directly, without Ansible.
 
+Ansible has to be installed on the machine running LSO, but LSO does not install it and does not pin it. LSO drives
+Ansible through its commands rather than importing it, so you choose the version that suits your playbooks. See
+[Installation](installation.md) for details.
+
 In short, LSO will:
 
 - Accept playbook name, inventory details, and extra variables as input.

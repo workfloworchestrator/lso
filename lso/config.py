@@ -64,6 +64,9 @@ class Config(BaseSettings):
             declares a Redis connection dead (``TCP_KEEPCNT``).
         WORKER_QUEUE_NAME (str, optional): Celery worker queue name.
         EXECUTABLE_TIMEOUT_SEC (int, optional): Timeout period for an executable, in seconds.
+        INVENTORY_VALIDATION_TIMEOUT_SEC (int, optional): Timeout, in seconds, for the `ansible-inventory` subprocess
+            that validates a submitted inventory. Validation runs inside the request, so this bounds how long a
+            malformed inventory can occupy a worker.
         ANSIBLE_PLAYBOOK_TIMEOUT_SEC (int, optional): Idle/read timeout, in seconds, for the `ansible-runner` output
             pipe. This is passed to `ansible-runner` as its `pexpect_timeout` so that a transient gap in playbook
             output (e.g. a slow-but-healthy device operation) does not abort an otherwise-successful run. Defaults to
@@ -94,6 +97,7 @@ class Config(BaseSettings):
     WORKER_QUEUE_NAME: str | None = None
     EXECUTABLE_TIMEOUT_SEC: int = 300
     ANSIBLE_PLAYBOOK_TIMEOUT_SEC: int = 300
+    INVENTORY_VALIDATION_TIMEOUT_SEC: int = 30
 
 
 settings = Config()

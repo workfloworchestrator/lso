@@ -1,6 +1,6 @@
 [project]
 name = "orchestrator-lso"
-version = "4.2.2"
+version = "5.0.0"
 description = "LSO, an API for remotely running Ansible playbooks."
 readme = "README.md"
 license = "Apache-2.0"
@@ -31,7 +31,6 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "ansible==14.2.0",
     "ansible-runner==2.4.3",
     "celery==5.6.3",
     "fastapi==0.141.1",
@@ -52,6 +51,9 @@ Source = "https://github.com/workfloworchestrator/lso"
 
 [dependency-groups]
 dev = [
+    # Test-time only, and intentionally unpinned: the suite must pass against whatever Ansible is present. CI
+    # additionally runs it against a range of ansible-core versions.
+    "ansible-core",
     "bumpversion",
     "pytest",
     "pytest-cov",
