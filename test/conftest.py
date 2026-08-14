@@ -52,7 +52,6 @@ def mocked_ansible_runner_run() -> Callable:
 
     class Runner:
         def __init__(self) -> None:
-            # Mirror ansible-runner's own vocabulary for a passed run.
             self.status = "successful"
             self.rc = 0
             self.stdout = StringIO("[{'step one': 'results'}, {'step two': 2}]")
