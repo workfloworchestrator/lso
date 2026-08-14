@@ -160,8 +160,7 @@ def _inventory_validator(inventory: dict[str, Any] | str) -> dict[str, Any] | st
         # validation result. Pointing `HOME` at the same throwaway directory does the same for ~/.ansible.cfg.
         config_file = Path(workdir) / "ansible.cfg"
         config_file.touch()
-        environment = {
-            **ANSIBLE_ENV,
+        environment = ANSIBLE_ENV | {
             "ANSIBLE_CONFIG": str(config_file),
             "HOME": workdir,
             "PATH": os.environ.get("PATH", ""),
