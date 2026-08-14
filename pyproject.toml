@@ -40,7 +40,7 @@ dependencies = [
     # redis-py must stay within kombu's supported range (<6.5). redis-py >=8 silently
     # reconnects broker sockets without kombu noticing, leaving workers permanently
     # deaf (no BRPOP/PSUBSCRIBE re-issued) after a Redis connection loss.
-    "redis==5.3.1",
+    "redis>=6.0,<6.5",
     "requests==2.34.2",
     "uvicorn[standard]==0.52.1",
 ]
