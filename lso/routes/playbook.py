@@ -109,7 +109,7 @@ def _parsed_inventory(stdout: str) -> tuple[list[str], list[str]]:
         return [], []
 
     # `_meta` holds the per-host variables rather than a group, so its hosts are listed under `hostvars`.
-    meta_hosts = (listing.get("_meta") or {}).get("hostvars") or {}
+    meta_hosts = listing.get("_meta", {}).get("hostvars", {})
     groups = {name: body or {} for name, body in listing.items() if name != "_meta"}
     hosts = set(meta_hosts) | set(chain.from_iterable(body.get("hosts") or [] for body in groups.values()))
 
