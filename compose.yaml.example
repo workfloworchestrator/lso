@@ -2,6 +2,9 @@
 services:
   lso:
     image: my-lso:latest
+    ports:
+      # Exposing LSO to an untrusted network introduces security problems that should be avoided.
+      - "127.0.0.1:8000:8000"
     env_file:
       .env  # Load default environment variables from the .env file
     volumes:
