@@ -32,7 +32,7 @@ def _reject_unsafe_name(value: str) -> str:
     """Reject a name holding characters outside `SAFE_NAME_PATTERN`.
 
     Raises:
-        ValueError: If the name holds any other character. Pydantic turns this into the usual 422, rather
+        ValueError: If the name holds any other character. This surfaces as the usual 422, rather
             than the 400 that the containment check raises, because this is a constraint on the shape of the
             request and not a judgement that needs the filesystem.
 
