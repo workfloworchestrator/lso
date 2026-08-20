@@ -65,6 +65,61 @@ def test_name_resolving_outside_root_is_rejected(
 
 
 @pytest.mark.parametrize(("resolver", "root_setting"), RESOLVERS)
+@pytest.mark.parametrize(
+    "name",
+    [
+        pytest.param("innocent;id", id="semicolon"),
+        pytest.param("innocent id", id="space"),
+        pytest.param("innocent|id", id="pipe"),
+        pytest.param("$(id)", id="command-substitution"),
+        pytest.param("`id`", id="backticks"),
+        pytest.param("innocent\nid", id="newline"),
+        pytest.param("innocent&id", id="ampersand"),
+    ],
+)
+def test_name_with_disallowed_characters_is_rejected(
+    resolver: Callable[[Path], Path],
+    root_setting: str,
+    name: str,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Names are held to an allowlist of characters.
+
+    Nothing reachable today turns a shell metacharacter in a name into behaviour: an executable becomes
+    `argv[0]` of a subprocess started without a shell. This keeps that true if a call site ever gains one.
+    """
+    monkeypatch.setattr(settings, root_setting, str(tmp_path))
+
+    with pytest.raises(HTTPException) as exc:
+        resolver(Path(name))
+
+    assert exc.value.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.parametrize(("resolver", "root_setting"), RESOLVERS)
+@pytest.mark.parametrize(
+    "name",
+    [
+        pytest.param("deploy.yaml", id="plain"),
+        pytest.param("deploy_node-v2.yaml", id="underscore-and-hyphen"),
+        pytest.param("nested/deploy.yaml", id="subdirectory"),
+    ],
+)
+def test_ordinary_names_are_accepted(
+    resolver: Callable[[Path], Path],
+    root_setting: str,
+    name: str,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The allowlist must not reject the names deployments actually use."""
+    monkeypatch.setattr(settings, root_setting, str(tmp_path))
+
+    assert resolver(Path(name)) == tmp_path.resolve() / name
+
+
+@pytest.mark.parametrize(("resolver", "root_setting"), RESOLVERS)
 def test_symlink_pointing_out_of_root_is_rejected(
     resolver: Callable[[Path], Path],
     root_setting: str,

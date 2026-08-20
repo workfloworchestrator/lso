@@ -13,6 +13,7 @@
 
 """Utility functions for the LSO package."""
 
+import re
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -21,6 +22,12 @@ from fastapi import HTTPException, status
 from lso.config import settings
 
 _executor = None
+
+#: Characters a caller-supplied executable or playbook name may consist of. Such a name is only ever used as a
+#: filesystem path, and for an executable as `argv[0]` of a subprocess started without a shell, so a shell
+#: metacharacter in it cannot currently do anything. This allowlist keeps that true should a call site ever
+#: gain a shell, and costs nothing today: ordinary names are already within it.
+SAFE_NAME_PATTERN = re.compile(r"^[A-Za-z0-9._/-]+$")
 
 
 def get_thread_pool() -> ThreadPoolExecutor:
@@ -42,6 +49,9 @@ def resolve_within_root(root_dir: str, name: Path) -> Path:
 
     Resolving follows symlinks, so a symlink inside `root_dir` pointing outside of it is rejected as well.
 
+    `name` is additionally held to `SAFE_NAME_PATTERN`, which is defence in depth rather than a fix for
+    anything reachable today.
+
     Args:
         root_dir (str): The configured directory that `name` has to stay inside of.
         name (Path): The caller-supplied name to resolve against `root_dir`.
@@ -50,9 +60,14 @@ def resolve_within_root(root_dir: str, name: Path) -> Path:
         The resolved path, guaranteed to lie inside `root_dir`.
 
     Raises:
-        HTTPException: Raises a 400 if the resolved path lies outside `root_dir`.
+        HTTPException: Raises a 400 if `name` holds characters outside `SAFE_NAME_PATTERN`, or if the resolved
+            path lies outside `root_dir`.
 
     """
+    if not SAFE_NAME_PATTERN.match(str(name)):
+        msg = f"Path '{name}' contains characters that are not allowed."
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=msg)
+
     root = Path(root_dir).resolve()
     path = (root / name).resolve()
     if not path.is_relative_to(root):
