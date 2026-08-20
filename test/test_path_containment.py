@@ -44,6 +44,9 @@ RESOLVERS = [
         pytest.param("/etc/passwd", id="absolute-path-to-unrelated-file"),
         pytest.param("../../../../bin/sh", id="parent-traversal"),
         pytest.param("nested/../../../bin/sh", id="traversal-through-subdirectory"),
+        # Rejecting this with a 400 rather than a 404/410 is what keeps the endpoints from reporting whether an
+        # arbitrary path exists: containment has to be decided before the path is ever inspected.
+        pytest.param("/nonexistent-a1b2c3/nope", id="absolute-path-that-does-not-exist"),
     ],
 )
 def test_name_resolving_outside_root_is_rejected(
