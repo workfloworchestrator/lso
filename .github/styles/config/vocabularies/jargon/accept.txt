@@ -16,3 +16,4 @@ AWX
 [Rr]edis
 rParameters
 extra_vars
+Pydantic
