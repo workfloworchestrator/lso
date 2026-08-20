@@ -17,6 +17,7 @@ import subprocess
 from pathlib import Path
 from uuid import UUID, uuid4
 
+from fastapi import HTTPException, status
 from pydantic import HttpUrl
 
 from lso.config import ExecutorType, settings
@@ -26,8 +27,23 @@ from lso.utils import get_thread_pool
 
 
 def get_executable_path(executable_name: Path) -> Path:
-    """Return the full path of an executable, based on the configured `EXECUTABLES_ROOT_DIR`."""
-    return Path(settings.EXECUTABLES_ROOT_DIR) / executable_name
+    """Return the full path of an executable, based on the configured `EXECUTABLES_ROOT_DIR`.
+
+    Returns:
+        A Path object that points to the executable.
+
+    Raises:
+        HTTPException: Raises a 400 if the path is absolute or tries to traverse outside of the executables root
+                       directory.
+
+    """
+    root_path = Path(settings.EXECUTABLES_ROOT_DIR)
+    executable_path = (root_path / executable_name).resolve()
+    if not executable_path.is_relative_to(root_path):
+        msg = f"Path {executable_name} is not relative to the configured executables root path."
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=msg)
+
+    return executable_path
 
 
 def run_executable_async(executable_path: Path, args: list[str], callback: HttpUrl | None) -> UUID:

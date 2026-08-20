@@ -21,7 +21,7 @@ def temp_executable_env(executor_type: ExecutorType):
     original_executable_dir = settings.EXECUTABLES_ROOT_DIR
     try:
         with temporary_executor(executor_type), tempfile.TemporaryDirectory() as exec_dir:
-            settings.EXECUTABLES_ROOT_DIR = exec_dir
-            yield Path(exec_dir)
+            settings.EXECUTABLES_ROOT_DIR = str(Path(exec_dir).resolve())
+            yield Path(exec_dir).resolve()
     finally:
         settings.EXECUTABLES_ROOT_DIR = original_executable_dir
