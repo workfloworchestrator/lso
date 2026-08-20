@@ -24,10 +24,12 @@ from pathlib import Path
 
 import pytest
 from fastapi import HTTPException, status
+from fastapi.testclient import TestClient
 
 from lso.config import settings
 from lso.execute import get_executable_path
 from lso.playbook import get_playbook_path
+from lso.schema import SAFE_NAME_PATTERN
 
 #: Both entry points share one containment helper, so every case below is checked against both of them.
 RESOLVERS = [
@@ -64,7 +66,13 @@ def test_name_resolving_outside_root_is_rejected(
     assert exc.value.status_code == status.HTTP_400_BAD_REQUEST
 
 
-@pytest.mark.parametrize(("resolver", "root_setting"), RESOLVERS)
+@pytest.mark.parametrize(
+    ("endpoint", "field"),
+    [
+        pytest.param("/api/execute/", "executable_name", id="execute"),
+        pytest.param("/api/playbook/", "playbook_name", id="playbook"),
+    ],
+)
 @pytest.mark.parametrize(
     "name",
     [
@@ -77,24 +85,26 @@ def test_name_resolving_outside_root_is_rejected(
         pytest.param("innocent&id", id="ampersand"),
     ],
 )
-def test_name_with_disallowed_characters_is_rejected(
-    resolver: Callable[[Path], Path],
-    root_setting: str,
-    name: str,
-    tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    """Names are held to an allowlist of characters.
+def test_name_with_disallowed_characters_is_rejected(client: TestClient, endpoint: str, field: str, name: str) -> None:
+    """Names are held to an allowlist of characters, declared on the field rather than checked by hand.
 
     Nothing reachable today turns a shell metacharacter in a name into behaviour: an executable becomes
-    `argv[0]` of a subprocess started without a shell. This keeps that true if a call site ever gains one.
+    `argv[0]` of a subprocess started without a shell. This keeps that true should a call site ever gain one.
+    Being a constraint on the shape of the request, it is a 422 like any other validation failure, not the
+    400 that failing containment returns.
     """
-    monkeypatch.setattr(settings, root_setting, str(tmp_path))
+    response = client.post(endpoint, json={field: name, "inventory": "localhost"})
 
-    with pytest.raises(HTTPException) as exc:
-        resolver(Path(name))
+    assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+    assert "not allowed" in response.text
 
-    assert exc.value.status_code == status.HTTP_400_BAD_REQUEST
+
+def test_allowlist_is_published_in_the_openapi_schema(client: TestClient) -> None:
+    """The constraint is declarative, so a caller can see it without reading the source."""
+    schema = client.app.openapi()["components"]["schemas"]  # ty: ignore[unresolved-attribute]
+
+    for model, field in (("ExecutableRunParams", "executable_name"), ("PlaybookRunParams", "playbook_name")):
+        assert schema[model]["properties"][field]["pattern"] == SAFE_NAME_PATTERN.pattern
 
 
 @pytest.mark.parametrize(("resolver", "root_setting"), RESOLVERS)

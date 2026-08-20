@@ -18,6 +18,7 @@ import os
 import shutil
 import subprocess
 import tempfile
+from itertools import chain
 from pathlib import Path
 from typing import Annotated, Any, NoReturn
 from uuid import UUID
@@ -28,7 +29,7 @@ from pydantic import AfterValidator, BaseModel, HttpUrl
 
 from lso.config import settings
 from lso.playbook import get_playbook_path, run_playbook
-from lso.schema import InventoryProblem, InventoryValidationReason
+from lso.schema import InventoryProblem, InventoryValidationReason, SafeName
 
 router = APIRouter()
 
@@ -107,16 +108,10 @@ def _parsed_inventory(stdout: str) -> tuple[list[str], list[str]]:
     except json.JSONDecodeError:
         return [], []
 
-    groups: list[str] = []
-    hosts: set[str] = set()
-    for name, body in listing.items():
-        content = body or {}
-        if name == "_meta":
-            hosts.update((content.get("hostvars") or {}).keys())
-            continue
-
-        groups.append(name)
-        hosts.update(content.get("hosts") or [])
+    # `_meta` holds the per-host variables rather than a group, so its hosts are listed under `hostvars`.
+    meta_hosts = (listing.get("_meta") or {}).get("hostvars") or {}
+    groups = {name: body or {} for name, body in listing.items() if name != "_meta"}
+    hosts = set(meta_hosts) | set(chain.from_iterable(body.get("hosts") or [] for body in groups.values()))
 
     return sorted(groups), sorted(hosts)
 
@@ -209,7 +204,7 @@ def _playbook_path_validator(playbook_name: Path) -> Path:
 
 
 PlaybookInventory = Annotated[dict[str, Any] | str, AfterValidator(_inventory_validator)]
-PlaybookName = Annotated[Path, AfterValidator(_playbook_path_validator)]
+PlaybookName = Annotated[SafeName, AfterValidator(_playbook_path_validator)]
 
 
 class PlaybookRunResponse(BaseModel):
