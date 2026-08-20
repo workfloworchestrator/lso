@@ -14,6 +14,9 @@
 """Utility functions for the LSO package."""
 
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+
+from fastapi import HTTPException, status
 
 from lso.config import settings
 
@@ -27,3 +30,37 @@ def get_thread_pool() -> ThreadPoolExecutor:
         _executor = ThreadPoolExecutor(max_workers=settings.MAX_THREAD_POOL_WORKERS)
 
     return _executor
+
+
+def resolve_within_root(root_dir: str, name: Path) -> Path:
+    """Resolve a caller-supplied `name` inside `root_dir`, rejecting anything that escapes it.
+
+    `Path(root_dir) / name` offers no containment on its own: `pathlib` discards `root_dir` entirely when `name`
+    is absolute, and `..` segments walk out of it. Both sides are resolved before being compared, so that a
+    symlinked root directory (a symlinked `/opt` or data mount is common in a container) does not reject
+    names that are in fact contained.
+
+    Resolving follows symlinks, so a symlink inside `root_dir` pointing outside of it is rejected as well.
+
+    Which characters a name may consist of is a separate, declarative constraint; see `lso.schema.SafeName`.
+
+    Args:
+        root_dir (str): The configured directory that `name` has to stay inside of.
+        name (Path): The caller-supplied name to resolve against `root_dir`.
+
+    Returns:
+        The resolved path, guaranteed to lie inside `root_dir`.
+
+    Raises:
+        HTTPException: Raises a 400 if the resolved path lies outside `root_dir`.
+
+    """
+    root = Path(root_dir).resolve()
+    path = (root / name).resolve()
+    if not path.is_relative_to(root):
+        # Deliberately echoes only what the caller sent: naming the resolved path here would disclose the
+        # server's filesystem layout to whoever probes the endpoint.
+        msg = f"Path '{name}' is outside the configured root directory."
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=msg)
+
+    return path
