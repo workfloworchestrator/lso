@@ -153,7 +153,7 @@ def _inventory_validator(inventory: dict[str, Any] | str) -> dict[str, Any] | st
         _reject(InventoryValidationReason.VALIDATOR_UNAVAILABLE)
 
     with tempfile.TemporaryDirectory() as workdir:
-        inventory_file = Path(workdir).resolve() / "inventory"
+        inventory_file = Path(workdir) / "inventory"
         inventory_file.write_text(json.dumps(_as_group_dict(inventory), ensure_ascii=False))
 
         # An empty config file, named so Ansible accepts it, keeps the deployer's own ansible.cfg out of the
