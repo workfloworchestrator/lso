@@ -6,7 +6,5 @@ services:
       .env  # Load default environment variables from the .env file
     volumes:
       - "/home/user/ansible_inventory:/opt/ansible_inventory:ro"
-      # The image runs as the unprivileged `lso` user, so the key goes in that user's home, not /root.
-      # The key has to be readable by that user: mount it from a file owned by the matching host UID.
       - "~/.ssh/id_ed25519.pub:/home/lso/.ssh/id_ed25519.pub:ro"
       - "~/.ssh/id_ed25519:/home/lso/.ssh/id_ed25519:ro"
