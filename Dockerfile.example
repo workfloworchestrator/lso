@@ -36,5 +36,5 @@ RUN addgroup -S lso \
 USER lso
 
 EXPOSE 8000
-ENTRYPOINT ["/usr/bin/tini", "--"]
+ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["python", "-m",  "uvicorn", "lso.app:app", "--host", "0.0.0.0", "--port", "8000"]
