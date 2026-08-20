@@ -22,6 +22,15 @@ RUN ansible-galaxy collection install \
                    -r ansible-galaxy-requirements.yaml \
                    -p /app/gap/ansible
 
+# Run as an unprivileged user rather than root. LSO runs playbooks and executables on request, so whatever
+# its process can reach is what a request can reach: keep that as small as your deployment allows. Anything
+# the service has to read at runtime, an SSH key in particular, belongs in this user's home rather than in
+# /root. See compose.yaml.example.
+RUN addgroup -S lso \
+    && adduser -S -G lso -h /home/lso lso \
+    && chown -R lso:lso /app /home/lso
+USER lso
+
 EXPOSE 8000
 ENTRYPOINT []
 CMD ["python", "-m",  "uvicorn", "lso.app:app", "--host", "0.0.0.0", "--port", "8000"]

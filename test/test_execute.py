@@ -1,4 +1,4 @@
-import subprocess  # noqa: S404
+import subprocess
 from pathlib import Path
 from uuid import UUID
 

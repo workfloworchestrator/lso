@@ -2,6 +2,7 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 from uuid import UUID
 
+import pytest
 import responses
 from fastapi import status
 from fastapi.testclient import TestClient
@@ -185,3 +186,23 @@ def test_execute_endpoint_sync_ignores_callback(client: TestClient, temp_executa
         assert data["result"] is not None
         # and no callback should have been invoked:
         responses.assert_call_count(TEST_CALLBACK_URL, 0)
+
+
+@pytest.mark.parametrize(
+    "executable_name",
+    [
+        pytest.param("/bin/sh", id="absolute-path"),
+        pytest.param("../../../../bin/sh", id="parent-traversal"),
+    ],
+)
+def test_execute_endpoint_rejects_path_outside_root(client: TestClient, executable_name: str):
+    """GHSA-q989-pw6r-9r58: the reported proof of concept has to be rejected rather than executed."""
+    with temp_executable_env(ExecutorType.THREADPOOL):
+        response = client.post(
+            "/api/execute/",
+            json={"executable_name": executable_name, "args": ["-c", "id"], "is_async": False},
+        )
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    # The proof of concept recognised a successful exploit by the output of `id`; nothing ran, so it is absent.
+    assert "uid=" not in response.text

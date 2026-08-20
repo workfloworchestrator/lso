@@ -13,10 +13,43 @@
 
 """Module for defining the schema for running arbitrary executables."""
 
+import re
 from enum import StrEnum
+from pathlib import Path
+from typing import Annotated
 from uuid import UUID
 
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, BeforeValidator, Field, model_validator
+
+#: Characters a caller-supplied executable or playbook name may consist of. Such a name is only ever used as a
+#: filesystem path, and for an executable as `argv[0]` of a subprocess started without a shell, so a shell
+#: metacharacter in one cannot currently do anything. This allowlist keeps that true should a call site ever
+#: gain a shell, and costs nothing today: ordinary names are already within it.
+SAFE_NAME_PATTERN = re.compile(r"^[A-Za-z0-9._/-]+$")
+
+
+def _reject_unsafe_name(value: str) -> str:
+    """Reject a name holding characters outside `SAFE_NAME_PATTERN`.
+
+    Raises:
+        ValueError: If the name holds any other character. Pydantic turns this into the usual 422, rather
+            than the 400 that the containment check raises, because this is a constraint on the shape of the
+            request and not a judgement that needs the filesystem.
+
+    """
+    if not SAFE_NAME_PATTERN.match(str(value)):
+        msg = f"Name '{value}' contains characters that are not allowed."
+        raise ValueError(msg)
+
+    return value
+
+
+#: A file name supplied by the caller, constrained to `SAFE_NAME_PATTERN`. The constraint is declared on the
+#: field so that it lands in the OpenAPI schema, while the annotated type stays `Path`. Containment within
+#: the configured root directory is a separate check: it needs the filesystem, so it cannot be a pattern.
+SafeName = Annotated[
+    Path, BeforeValidator(_reject_unsafe_name), Field(json_schema_extra={"pattern": SAFE_NAME_PATTERN.pattern})
+]
 
 
 class JobStatus(StrEnum):

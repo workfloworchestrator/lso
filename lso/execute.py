@@ -13,7 +13,7 @@
 
 """Module for handling the execution of arbitrary executables."""
 
-import subprocess  # noqa: S404
+import subprocess
 from pathlib import Path
 from uuid import UUID, uuid4
 
@@ -22,12 +22,17 @@ from pydantic import HttpUrl
 from lso.config import ExecutorType, settings
 from lso.schema import ExecutionResult
 from lso.tasks import run_executable_proc_task
-from lso.utils import get_thread_pool
+from lso.utils import get_thread_pool, resolve_within_root
 
 
 def get_executable_path(executable_name: Path) -> Path:
-    """Return the full path of an executable, based on the configured EXECUTABLES_ROOT_DIR."""
-    return Path(settings.EXECUTABLES_ROOT_DIR) / executable_name
+    """Return the full path of an executable, confined to the configured EXECUTABLES_ROOT_DIR.
+
+    Raises:
+        HTTPException: Raises a 400 if the requested path resolves outside of EXECUTABLES_ROOT_DIR.
+
+    """
+    return resolve_within_root(settings.EXECUTABLES_ROOT_DIR, executable_name)
 
 
 def run_executable_async(executable_path: Path, args: list[str], callback: HttpUrl | None) -> UUID:
