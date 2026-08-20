@@ -13,4 +13,4 @@
 
 """LSO, an API for remotely running Ansible playbooks."""
 
-__version__ = "5.0.0"
+__version__ = "5.0.1"
