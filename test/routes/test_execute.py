@@ -2,6 +2,7 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 from uuid import UUID
 
+import pytest
 import responses
 from fastapi import status
 from fastapi.testclient import TestClient
@@ -68,6 +69,26 @@ def test_execute_endpoint_worker_success(client: TestClient, temp_executable: Pa
         assert isinstance(response, dict)
         UUID(response["job_id"])  # Validate job_id format.
         mock_celery_delay.assert_called_once()
+
+
+@pytest.mark.parametrize(
+    "executable_name",
+    [
+        pytest.param("/bin/sh", id="absolute-path"),
+        pytest.param("../../../../bin/sh", id="parent-traversal"),
+    ],
+)
+def test_execute_endpoint_rejects_path_outside_root(client: TestClient, executable_name: str):
+    """GHSA-q989-pw6r-9r58: the reported proof of concept has to be rejected rather than executed."""
+    with temp_executable_env(ExecutorType.THREADPOOL):
+        response = client.post(
+            "/api/execute/",
+            json={"executable_name": executable_name, "args": ["-c", "id"], "is_async": False},
+        )
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    # The proof of concept recognised a successful exploit by the output of `id`; nothing ran, so it is absent.
+    assert "uid=" not in response.text
 
 
 @responses.activate

@@ -22,7 +22,7 @@ from fastapi import APIRouter, HTTPException, status
 from pydantic import AfterValidator, BaseModel, HttpUrl
 
 from lso.execute import get_executable_path, run_executable_async, run_executable_sync
-from lso.schema import ExecutableRunResponse
+from lso.schema import ExecutableRunResponse, SafeName
 
 router = APIRouter()
 
@@ -52,7 +52,7 @@ def _executable_path_validator(executable_name: Path) -> Path:
     return executable_path
 
 
-ExecutableName = Annotated[Path, AfterValidator(_executable_path_validator)]
+ExecutableName = Annotated[SafeName, AfterValidator(_executable_path_validator)]
 
 
 class ExecutableRunParams(BaseModel):

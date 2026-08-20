@@ -28,6 +28,7 @@ from fastapi import APIRouter, HTTPException, status
 from pydantic import AfterValidator, BaseModel, HttpUrl
 
 from lso.playbook import get_playbook_path, run_playbook
+from lso.schema import SafeName
 
 router = APIRouter()
 
@@ -88,7 +89,7 @@ def _playbook_path_validator(playbook_name: Path) -> Path:
 
 
 PlaybookInventory = Annotated[dict[str, Any] | str, AfterValidator(_inventory_validator)]
-PlaybookName = Annotated[Path, AfterValidator(_playbook_path_validator)]
+PlaybookName = Annotated[SafeName, AfterValidator(_playbook_path_validator)]
 
 
 class PlaybookRunResponse(BaseModel):

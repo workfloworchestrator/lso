@@ -21,12 +21,20 @@ from pydantic import HttpUrl
 
 from lso.config import ExecutorType, settings
 from lso.tasks import run_playbook_proc_task
-from lso.utils import get_thread_pool
+from lso.utils import get_thread_pool, resolve_within_root
 
 
 def get_playbook_path(playbook_name: Path) -> Path:
-    """Get the path of a playbook on the local filesystem."""
-    return Path(settings.ANSIBLE_PLAYBOOKS_ROOT_DIR) / playbook_name
+    """Get the path of a playbook on the local filesystem, confined to `ANSIBLE_PLAYBOOKS_ROOT_DIR`.
+
+    Returns:
+        A `Path` pointing at the playbook, guaranteed to be inside `ANSIBLE_PLAYBOOKS_ROOT_DIR`.
+
+    Raises:
+        HTTPException: Raises a 400 if the requested path resolves outside of `ANSIBLE_PLAYBOOKS_ROOT_DIR`.
+
+    """
+    return resolve_within_root(settings.ANSIBLE_PLAYBOOKS_ROOT_DIR, playbook_name)
 
 
 def run_playbook(
