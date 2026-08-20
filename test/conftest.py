@@ -27,10 +27,10 @@ def pytest_configure() -> None:
     tempdir = tempfile.TemporaryDirectory()
 
     # Create required YAML files for the unit tests
-    (Path(tempdir.name).resolve() / "placeholder.yaml").touch()
+    (Path(tempdir.name) / "placeholder.yaml").touch()
 
     # Set environment variables for the test session
-    os.environ["ANSIBLE_PLAYBOOKS_ROOT_DIR"] = str(Path(tempdir.name).resolve())
+    os.environ["ANSIBLE_PLAYBOOKS_ROOT_DIR"] = tempdir.name
     os.environ["TESTING"] = "true"
 
     # Register finalizers to clean up after tests are done
