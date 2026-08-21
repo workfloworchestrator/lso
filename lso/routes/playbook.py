@@ -236,7 +236,7 @@ class PlaybookRunParams(BaseModel):
             this execution should be a dry run, a trouble ticket number, etc. Which extra vars are required solely
             depends on what inputs the playbook requires.
 
-    !!! danger "Inventory format"
+    !!! warning "Inventory format"
         Note the fact if the collection of all hosts is a dictionary, and not a list of strings, Ansible expects each
         host to be a key-value pair. The key is the FQDN of a host, and the value always `null`. This is not the case
         when providing the inventory as a list of strings.

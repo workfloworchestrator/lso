@@ -11,13 +11,13 @@ However, we recommend you prepare the following files:
 - `compose.yaml` - For deploying your Docker image, explained below
 
 !!! danger "Running LSO securely"
-    Be aware that LSO is a tool that allows users to run lots of things, including potentially destructive actions.
-    It is important to be aware of your environment where LSO is planned to be running.
+Be aware that LSO is a tool that allows users to run lots of things, including potentially destructive actions.
+It is important to be aware of your environment where LSO is planned to be running.
 
     **Ensure that there is no public access to this container that runs LSO outside of known-safe users.**
 
-    To add to this, it is important to be aware of the fact that LSO does not support AAA out of the box. This is
-    a planned feature that is not implemented yet.
+    To add to this, it is important to be aware of the fact that LSO does not support Authentication, Authorization,
+    and Accounting (AAA) out of the box. This is a planned feature that is not implemented yet.
 
 ## Building an image
 
