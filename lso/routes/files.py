@@ -53,11 +53,11 @@ def list_files(job_id: UUID) -> JobFilesResponse:
     if not job_dir.is_dir():
         return JobFilesResponse(job_id=job_id, files=[])
 
-    files = sorted(entry.name for entry in job_dir.iterdir() if entry.is_file())
+    files = [entry.relative_to(job_dir).as_posix() for entry in job_dir.rglob("*") if entry.is_file()]
     return JobFilesResponse(job_id=job_id, files=files)
 
 
-@router.get("/{job_id}/{filename}")
+@router.get("/{job_id}/{filename:path}")
 def download_file(job_id: UUID, filename: SafeName) -> FileResponse:
     """Download a single file produced by a job.
 
@@ -65,7 +65,8 @@ def download_file(job_id: UUID, filename: SafeName) -> FileResponse:
         HTTPException: Raises a 404 if the file does not exist.
 
     """
-    file_path = resolve_within_root(settings.JOB_FILES_ROOT_DIR, Path(str(job_id)) / filename)
+    job_dir = _job_dir(job_id)
+    file_path = resolve_within_root(str(job_dir), filename)
     if not file_path.is_file():
         msg = f"File '{filename}' does not exist for job '{job_id}'"
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=msg)
