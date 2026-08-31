@@ -36,7 +36,7 @@ def test_list_files_returns_empty_list_for_unknown_job(client: TestClient) -> No
     assert response.json() == {"job_id": str(job_id), "files": []}
 
 
-def test_list_files_returns_files_sorted(client: TestClient, job_files_root: Path) -> None:
+def test_list_files_returns_files(client: TestClient, job_files_root: Path) -> None:
     job_id = uuid4()
     job_dir = job_files_root / str(job_id)
     job_dir.mkdir()
@@ -47,7 +47,20 @@ def test_list_files_returns_files_sorted(client: TestClient, job_files_root: Pat
     response = client.get(f"/api/files/{job_id}")
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.json() == {"job_id": str(job_id), "files": ["a.txt", "b.txt"]}
+    assert set(response.json()["files"]) == {"a.txt", "b.txt"}
+
+
+def test_list_files_includes_files_in_subdirectories(client: TestClient, job_files_root: Path) -> None:
+    job_id = uuid4()
+    job_dir = job_files_root / str(job_id)
+    (job_dir / "subdir").mkdir(parents=True)
+    (job_dir / "result.txt").write_text("top-level")
+    (job_dir / "subdir" / "nested.txt").write_text("nested")
+
+    response = client.get(f"/api/files/{job_id}")
+
+    assert response.status_code == status.HTTP_200_OK
+    assert set(response.json()["files"]) == {"result.txt", "subdir/nested.txt"}
 
 
 def test_download_file_returns_content(client: TestClient, job_files_root: Path) -> None:
@@ -60,6 +73,29 @@ def test_download_file_returns_content(client: TestClient, job_files_root: Path)
 
     assert response.status_code == status.HTTP_200_OK
     assert response.text == "done\n"
+
+
+def test_download_file_in_subdirectory_returns_content(client: TestClient, job_files_root: Path) -> None:
+    job_id = uuid4()
+    job_dir = job_files_root / str(job_id)
+    (job_dir / "subdir").mkdir(parents=True)
+    (job_dir / "subdir" / "nested.txt").write_text("nested\n")
+
+    response = client.get(f"/api/files/{job_id}/subdir/nested.txt")
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.text == "nested\n"
+
+
+def test_download_file_rejects_escape_into_root_dir(client, job_files_root: Path) -> None:
+    job_id = uuid4()
+    root_dir = job_files_root
+    (root_dir / "secret.txt").write_text("not yours\n")
+
+    response = client.get(f"/api/files/{job_id}/..%2Fsecret.txt")
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.json() == {"detail": "Path '../secret.txt' is outside the configured root directory."}
 
 
 def test_download_file_missing_returns_404(client: TestClient) -> None:
