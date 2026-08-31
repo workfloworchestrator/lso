@@ -61,6 +61,8 @@ def run_playbook(
 
     """
     job_id = uuid4()
+    job_files_dir = resolve_within_root(settings.JOB_FILES_ROOT_DIR, Path(str(job_id)))
+    extra_vars = extra_vars | {"job_id": str(job_id), "job_files_dir": str(job_files_dir)}
     callback_str = None
     progress_str = None
     if callback:

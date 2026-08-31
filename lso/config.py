@@ -36,6 +36,7 @@ class Config(BaseSettings):
         TESTING (bool, optional): `True` if running in a testing environment, `False` otherwise.
         ANSIBLE_PLAYBOOKS_ROOT_DIR (str): Absolute path to the location where Ansible playbooks are stored.
         EXECUTABLES_ROOT_DIR (str): Absolute path to the location where executables are stored.
+        JOB_FILES_ROOT_DIR (str): Absolute path to the location where per-job output files are stored.
         EXECUTOR (ExecutorType, optional): The executor type that LSO uses.
         MAX_THREAD_POOL_WORKERS (int, optional): The amount of threads in the pool, if using the thread pool executor.
         REQUEST_TIMEOUT_SEC (int, optional): HTTP Timeout, in seconds.
@@ -77,6 +78,7 @@ class Config(BaseSettings):
     TESTING: bool = True
     ANSIBLE_PLAYBOOKS_ROOT_DIR: str = "/path/to/ansible/playbooks"
     EXECUTABLES_ROOT_DIR: str = "/path/to/executables"
+    JOB_FILES_ROOT_DIR: str = "/path/to/lso_job_files"
     EXECUTOR: ExecutorType = ExecutorType.THREADPOOL
     MAX_THREAD_POOL_WORKERS: int = min(32, (os.cpu_count() or 1) + 4)
     REQUEST_TIMEOUT_SEC: int = 10
