@@ -20,7 +20,7 @@ To install LSO in your `uv` virtual environment, use:
 
 ```sh
 uv init
-uv add orchestrator-lso==5.0.1
+uv add orchestrator-lso==5.1.0
 ```
 
 ## Installing Ansible
