@@ -13,6 +13,7 @@
       "enabled": false
     }
   ],
+  "minimumReleaseAge": "3 days",
   "lockFileMaintenance": {
     "enabled": true,
     "schedule": ["before 3am on Wednesday"]
