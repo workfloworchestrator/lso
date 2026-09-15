@@ -13,6 +13,8 @@
       "enabled": false
     }
   ],
+  "minimumReleaseAge": "3 days",
+  "internalChecksFilter": "strict",
   "lockFileMaintenance": {
     "enabled": true,
     "schedule": ["before 3am on Wednesday"]
