@@ -7,6 +7,7 @@ nav:
   - index.md
   - installation.md
   - docker.md
+  - security.md
   - executors.md
   - Playbooks:
     - playbooks/index.md

@@ -3,7 +3,7 @@
 [![Downloads](https://static.pepy.tech/badge/orchestrator-lso/month)](https://pepy.tech/project/orchestrator-lso)
 [![codecov](https://codecov.io/github/workfloworchestrator/lso/graph/badge.svg?token=NVFHBBU3AR)](https://codecov.io/github/workfloworchestrator/lso)
 
-LSO: an API that allows for remotely executing Ansible playbooks.
+LSO: an API for remotely running Ansible playbooks and scripts, and fetching the files they produce.
 
 ## Documentation
 

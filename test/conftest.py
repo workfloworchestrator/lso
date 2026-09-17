@@ -64,7 +64,15 @@ def mocked_ansible_runner_run() -> Callable:
 
 @pytest.fixture(scope="session")
 def client() -> TestClient:
-    """Return a client that can be used to test the server."""
+    """Return a client that can be used to test the server.
+
+    Shared by the whole session, so never register an authentication or authorization implementation on this
+    app: it would still be in force for every test that runs afterwards. A test needing its own security
+    configuration builds its own app with `create_app()`.
+
+    Note also that this does not enter the client as a context manager, so the application lifespan never
+    runs. A test covering startup behaviour has to use `with TestClient(app):` itself.
+    """
     from lso.app import create_app  # noqa: PLC0415
 
     app = create_app()

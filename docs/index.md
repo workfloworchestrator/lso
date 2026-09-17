@@ -10,7 +10,7 @@ LSO was built to solve a common problem: running Ansible playbooks from a remote
 up a complicated system. Many tools, like AWX, are powerful but require complex setups, like Kubernetes,
 and are tied to specific ecosystems.
 
-We wanted a lightweight, easy-to-use solution that works without extra layers. That’s why we created LSO.
+LSO was created to be a lightweight, easy-to-use solution that works without extra layers.
 
 ## What LSO Does
 
