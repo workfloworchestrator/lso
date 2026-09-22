@@ -88,7 +88,7 @@ def test_run_playbook_passes_configured_timeout_to_runner(monkeypatch: pytest.Mo
 
 @responses.activate
 def test_run_playbook_crash_posts_failure_callback(monkeypatch: pytest.MonkeyPatch) -> None:
-    """If ansible_runner.run raises, a failed-status callback is POSTed before the exception is re-raised.
+    """If ansible_runner.run raises, a failed-status callback is posted before the exception is re-raised.
 
     This is the safety net that prevents a crashed run from orphaning a workflow in ``awaiting_callback``.
     """

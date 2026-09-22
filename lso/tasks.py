@@ -82,7 +82,7 @@ class PlaybookFinishedHandler:
 
     Args:
         callback (str, optional): The callback URL that the Ansible runner should report to. When not set, the
-            handler is a no-op (nothing is POSTed).
+            handler is a no-op (no `POST` is performed).
         job_id (str): The job ID of this playbook run, used for reporting.
 
     Attributes:
@@ -102,7 +102,7 @@ class PlaybookFinishedHandler:
 
     def __call__(self, runner: Runner) -> None:
         """Send one request with the playbook result to the callback URL."""
-        # Record completion before attempting delivery, so a failure while POSTing does not let the caller's
+        # Record completion before attempting delivery, so a failure while posting does not let the caller's
         # crash safety net fire a second callback for the same job.
         self.reported = True
         if not self._callback:
@@ -190,8 +190,8 @@ def run_playbook_proc_task(
             settings={"pexpect_timeout": settings.ANSIBLE_PLAYBOOK_TIMEOUT_SEC},
         )
     except Exception as exc:
-        # Safety net: if the runner crashes before finished_handler runs (e.g. a pexpect read timeout), no result
-        # is ever POSTed and the orchestrator's workflow orphans in `awaiting_callback`. Notify the orchestrator
+        # Safety net: if the runner crashes before finished_handler runs (e.g. a `pexpect` read timeout), no result
+        # is ever posted and the Orchestrator's workflow orphans in `awaiting_callback`. Notify the orchestrator
         # of the failure before re-raising so the workflow can never hang indefinitely. `finished_handler.reported`
         # guards against a second, conflicting callback when the run completed but delivering its result failed.
         logger.exception("Ansible playbook run for job_id=%s crashed", job_id)
