@@ -50,12 +50,6 @@ Documentation = "https://workfloworchestrator.org/lso"
 Source = "https://github.com/workfloworchestrator/lso"
 
 [project.optional-dependencies]
-# Only for `lso.oidc`, which nothing else in `lso` imports. The extra keeps a plain LSO install small:
-# oauth2-lib also brings authlib, structlog, asyncstdlib and strawberry-graphql, and LSO has no GraphQL.
-#
-# Version 2 would not work here. It uses `httpx`, while version 3 and LSO both use `httpx2`. They are
-# different packages with identically named classes, such as `AsyncClient`, that cannot be mixed. Every OIDC
-# deployer writes `OIDCAuth.userinfo`, which receives that client, so they would hit the mismatch directly.
 oidc = ["oauth2-lib==3.0.1"]
 
 [dependency-groups]
