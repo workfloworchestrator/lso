@@ -19,6 +19,7 @@ Uses `pydantic`'s `BaseSettings` to load settings from environment variables.
 import os
 from enum import Enum
 
+from pydantic import SecretStr
 from pydantic_settings import BaseSettings
 
 
@@ -72,6 +73,16 @@ class Config(BaseSettings):
             pipe. This is passed to `ansible-runner` as its `pexpect_timeout` so that a transient gap in playbook
             output (e.g. a slow-but-healthy device operation) does not abort an otherwise-successful run. Defaults to
             a large value to tolerate such gaps; the underlying job is still bounded by the run itself.
+        LSO_OAUTH2_ACTIVE (bool, optional): Whether LSO authenticates callers itself. Off by default, so an
+            existing deployment that relies on network placement keeps working untouched. The name carries the
+            `LSO_` prefix on purpose: an `OAUTH2_ACTIVE` set for another application must not switch LSO on
+            through a shared `.env` file.
+        LSO_OAUTH2_AUTHORIZATION_ACTIVE (bool, optional): Whether LSO applies an authorization policy to each
+            request. Requires `LSO_OAUTH2_ACTIVE`, because a policy with no authenticated caller to judge is
+            meaningless.
+        LSO_API_KEY (SecretStr | None, optional): A shared secret that callers present as a bearer token. Setting
+            it, together with `LSO_OAUTH2_ACTIVE`, is enough to protect a deployment without writing any code.
+            Held as a `SecretStr` so it cannot reach a log line or a traceback.
 
     """
 
@@ -100,6 +111,9 @@ class Config(BaseSettings):
     EXECUTABLE_TIMEOUT_SEC: int = 300
     ANSIBLE_PLAYBOOK_TIMEOUT_SEC: int = 300
     INVENTORY_VALIDATION_TIMEOUT_SEC: int = 30
+    LSO_OAUTH2_ACTIVE: bool = False
+    LSO_OAUTH2_AUTHORIZATION_ACTIVE: bool = False
+    LSO_API_KEY: SecretStr | None = None
 
 
 settings = Config()

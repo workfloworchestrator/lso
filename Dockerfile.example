@@ -15,7 +15,7 @@ RUN apk add --update --no-cache gcc libc-dev libffi-dev openssh tini
 RUN pip install ansible=="14.2.0"
 
 # Install the LSO python package, and additional requirements
-RUN pip install orchestrator-lso=="5.1.0"
+RUN pip install orchestrator-lso=="5.2.0"
 RUN pip install -r requirements.txt
 
 # Install required Ansible Galaxy roles and collections
@@ -38,3 +38,13 @@ USER lso
 EXPOSE 8000
 ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["python", "-m",  "uvicorn", "lso.app:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# Using your own authentication or authorization code?
+# `lso.app:app` above is already built when uvicorn imports it, so you cannot register anything on it.
+# Build the app in your own module instead, and run that:
+#
+# COPY ./my_lso.py ./my_lso.py
+# CMD ["python", "-m", "uvicorn", "my_lso:app", "--host", "0.0.0.0", "--port", "8000"]
+#
+# Using only the shared secret (LSO_OAUTH2_ACTIVE=true and LSO_API_KEY)? Then you need none of this.
+# Keep the CMD above. See docs/security.md.

@@ -29,7 +29,11 @@ CI runs lint/type/tests on Python 3.12–3.14, plus a separate matrix against an
 ## Architecture
 
 Request flow: `lso/routes/*` (validation + HTTP contract) → `lso/playbook.py` / `lso/execute.py` (dispatch) →
-`lso/tasks.py` (the actual run + callback POST). `lso/app.py` mounts the three routers under `/api`.
+`lso/tasks.py` (the actual run + callback POST). `lso/app.py` mounts the four routers under `/api`.
+
+**Authentication and authorization are pluggable and off by default.** The contracts are in `lso/auth.py`, the
+FastAPI dependencies in `lso/security.py`, and the optional OIDC/OPA adapters in `lso/oidc.py`. See
+`docs/security.md`.
 
 **The executor is a runtime switch, not two code paths.** `settings.EXECUTOR` picks `threadpool` (default, in-process,
 `lso/utils.py`) or `celery` (`lso/worker.py`). Both run the *same* functions in `lso/tasks.py` — the `@celery.task`

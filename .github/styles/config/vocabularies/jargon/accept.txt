@@ -17,3 +17,5 @@ AWX
 rParameters
 extra_vars
 Pydantic
+(OIDC|oidc)
+Open Policy Agent

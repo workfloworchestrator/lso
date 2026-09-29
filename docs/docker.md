@@ -17,8 +17,9 @@ However, we recommend you prepare the following files:
 
     **Ensure that there is no public access to this container that runs LSO outside of known-safe users.**
 
-    To add to this, it is important to be aware of the fact that LSO does not support Authentication, Authorization,
-    and Accounting (AAA) out of the box. This is a planned feature that is not implemented yet.
+    LSO can authenticate and authorize callers itself, but it does not do so unless you configure it: out of
+    the box it identifies nobody and allows everything. Switching it on does not change what the process can
+    reach on the host, so network placement still matters either way. See [Security](security.md).
 
 ## Building an image
 

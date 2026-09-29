@@ -27,6 +27,27 @@ jobs:
       - name: Run Unit tests
         run: uv run pytest --cov-branch --cov=lso --cov-report=xml
 
+  without_extras:
+    name: Without optional extras
+    runs-on: ubuntu-latest
+    container: ubuntu:latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v7
+      - name: Install uv and set Python version
+        uses: astral-sh/setup-uv@v10.2.0
+        with:
+          python-version: '3.13'
+      # No --all-extras here, so oauth2-lib is not installed.
+      # The job above always has it, so it would not notice if core LSO started to import it.
+      # This job fails if that happens.
+      - name: Install the project without its extras
+        run: uv sync --dev
+      - name: Confirm oauth2-lib is absent
+        run: uv run --no-sync python -c "import importlib.util, sys; sys.exit(importlib.util.find_spec('oauth2_lib') is not None)"
+      - name: Run Unit tests
+        run: uv run --no-sync pytest
+
   ansible_compatibility:
     name: Ansible ${{ matrix.ansible-label }}
     runs-on: ubuntu-latest

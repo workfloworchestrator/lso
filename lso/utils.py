@@ -58,8 +58,8 @@ def resolve_within_root(root_dir: str, name: Path) -> Path:
     root = Path(root_dir).resolve()
     path = (root / name).resolve()
     if not path.is_relative_to(root):
-        # Deliberately echoes only what the caller sent: naming the resolved path here would disclose the
-        # server's filesystem layout to whoever probes the endpoint.
+        # Echo only what the caller sent. Naming the resolved path here would disclose the server's
+        # filesystem layout to whoever probes the endpoint.
         msg = f"Path '{name}' is outside the configured root directory."
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=msg)
 

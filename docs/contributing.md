@@ -1,6 +1,6 @@
 # Contributing
 
-We use [`uv`](https://docs.astral.sh/uv/getting-started/installation/) for managing dependencies.
+This project uses [`uv`](https://docs.astral.sh/uv/getting-started/installation/) to manage dependencies.
 
 To get started with a development environment, clone this repository and run:
 

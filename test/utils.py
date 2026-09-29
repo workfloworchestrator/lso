@@ -1,6 +1,9 @@
 import tempfile
 from contextlib import contextmanager
 from pathlib import Path
+from unittest import mock
+
+from pydantic import SecretStr
 
 from lso.config import ExecutorType, settings
 
@@ -13,6 +16,17 @@ def temporary_executor(executor_type: ExecutorType):
         yield
     finally:
         settings.EXECUTOR = original_executor
+
+
+@contextmanager
+def auth_settings(*, active: bool = False, authorization_active: bool = False, api_key: str | None = None):
+    """Apply security settings for the duration of a test, then put the originals back."""
+    with (
+        mock.patch.object(settings, "LSO_OAUTH2_ACTIVE", active),
+        mock.patch.object(settings, "LSO_OAUTH2_AUTHORIZATION_ACTIVE", authorization_active),
+        mock.patch.object(settings, "LSO_API_KEY", SecretStr(api_key) if api_key is not None else None),
+    ):
+        yield
 
 
 @contextmanager
