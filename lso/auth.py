@@ -38,11 +38,10 @@ from starlette.requests import HTTPConnection
 
 
 class Authentication(ABC):
-    """Abstract base for authentication mechanisms.
+    """Turns a request and its token into a user.
 
-    An implementation turns a request, and the bearer token taken from it, into a user. Returning `None`
-    means no user was identified and the request carries on unauthenticated. Rejecting a caller outright is
-    done by raising `fastapi.HTTPException` with a 401, which LSO lets through untouched.
+    Return `None` when no user was identified: the request carries on unauthenticated. Raise
+    `fastapi.HTTPException` with a 401 to reject the caller outright.
     """
 
     @abstractmethod
@@ -50,11 +49,11 @@ class Authentication(ABC):
         """Identify the caller behind this request.
 
         Args:
-            request: The incoming request. An implementation may read any part of it.
-            token: The token the registered `IdTokenExtractor` found, or `None` if it found none.
+            request: The incoming request.
+            token: What the registered `IdTokenExtractor` found, or `None`.
 
         Returns:
-            A dictionary describing the caller, or `None` when no user was identified.
+            A dictionary describing the caller, or `None`.
 
         """
 
@@ -62,12 +61,11 @@ class Authentication(ABC):
 class IdTokenExtractor(ABC):
     """Tells LSO where to find the token in a request.
 
-    The default, `HttpBearerExtractor`, reads `Authorization: Bearer <token>`. Register a different one with
-    `lso.app.LSO.register_extractor` when callers send the token somewhere else, such as an `X-API-Key`
-    header or a cookie.
+    The default, `HttpBearerExtractor`, reads `Authorization: Bearer <token>`. Register another with
+    `lso.app.LSO.register_extractor` when callers send the token elsewhere.
 
-    An extractor only finds the token. It must not reject a request: when there is no token it returns
-    `None`, and the `Authentication` decides what that means.
+    An extractor only finds the token. It must not reject a request: return `None` and let the
+    `Authentication` decide what that means.
     """
 
     @abstractmethod
@@ -96,19 +94,15 @@ class HttpBearerExtractor(HTTPBearer, IdTokenExtractor):
 
 
 class Authorization(ABC):
-    """Defines the authorization logic interface.
+    """Decides whether an authenticated caller may make this request.
 
-    An implementation decides whether an authenticated caller may make this request. It receives the whole
-    request, so a policy can treat `/api/execute/` differently from `/api/version`: those endpoints do not
-    carry equal risk.
-
-    The return value means:
+    It receives the whole request, so a policy can treat `/api/execute/` differently from `/api/version`.
 
     * `True`: allowed.
     * `False`: denied. LSO turns this into a 403.
-    * `None`: no opinion, the request proceeds. This is a bypass, not a denial.
+    * `None`: no opinion, the request proceeds. A bypass, not a denial.
 
-    Raising `fastapi.HTTPException` directly works too, and is the way to return a custom `detail`.
+    Raising `fastapi.HTTPException` works too, and is how to return a custom `detail`.
     """
 
     @abstractmethod
@@ -119,8 +113,8 @@ class Authorization(ABC):
 class NoAuth(Authentication, Authorization):
     """The default: identify nobody, allow everything.
 
-    This is what an unconfigured LSO runs, and why upgrading changes nothing for a deployment that relies on
-    network placement for its access control.
+    This is what an unconfigured LSO runs, so upgrading changes nothing for a deployment that relies on
+    network placement.
     """
 
     async def authenticate(self, request: Request, token: str | None = None) -> dict | None:  # noqa: ARG002
@@ -145,30 +139,24 @@ class NoAuth(Authentication, Authorization):
 class SharedSecretAuth(Authentication):
     """Authenticate a caller by a shared secret sent as a bearer token.
 
-    Most LSO deployments have a single client calling LSO, where a full OIDC provider is too much. This
-    covers that case with no extra dependency: the caller sends
-    `Authorization: Bearer <secret>` and LSO compares it against the secrets it was configured with.
-
-    Set `LSO_API_KEY` and LSO registers this by itself at startup, so the stock container image needs no
-    code. Constructing it directly accepts several secrets at once, which is how a secret is rotated without
-    downtime: run with the old and the new one, move the callers over, then drop the old one.
+    Set `LSO_API_KEY` and LSO registers this at startup, so the stock container image needs no code.
+    Constructing it directly accepts several secrets at once, which is how a secret is rotated without
+    downtime.
 
     The comparison is constant-time, and a missing token is rejected exactly as a wrong one is, so neither
     the secret nor the fact that one is configured can be read off the responses.
-
-    The secret is whatever token the registered extractor finds, so it can also be sent in another header.
     """
 
     def __init__(self, secret_values: Sequence[str]) -> None:
         """Configure the secrets a caller may present.
 
         Args:
-            secret_values: The accepted secrets. Empty strings are ignored, because an unset environment
-                variable arriving here as `""` must never become a secret that anything matches.
+            secret_values: The accepted secrets. Empty strings are ignored, so an unset environment variable
+                arriving as `""` never becomes a secret that anything matches.
 
         Raises:
-            ValueError: If no usable secret is left, which would otherwise authenticate nobody while
-                looking configured.
+            ValueError: If no usable secret is left, which would authenticate nobody while looking
+                configured.
 
         """
         usable = [value for value in secret_values if value]
@@ -182,13 +170,12 @@ class SharedSecretAuth(Authentication):
         """Accept the caller when the token matches a configured secret.
 
         Returns:
-            A dictionary identifying the caller. It is deliberately non-empty, so an `Authorization`
-            implementation can tell a caller authenticated by shared secret from the `None` that means
+            A non-empty dictionary, so a policy can tell this caller from the `None` that means
             authentication is switched off.
 
         Raises:
-            HTTPException: 401 if the token is missing or does not match. Both cases return the same status
-                and message, so a caller cannot learn whether a secret is configured.
+            HTTPException: 401 if the token is missing or does not match. Both give the same answer, so a
+                caller cannot learn whether a secret is configured.
 
         """
         if token is None or not self._matches(token):
@@ -200,8 +187,7 @@ class SharedSecretAuth(Authentication):
         """Report whether the token equals one of the configured secrets.
 
         Every secret is compared, rather than stopping at the first match, so the time taken does not reveal
-        which one matched. `compare_digest` keeps each individual comparison constant-time, so a caller
-        cannot recover a secret one character at a time from how long the answer took.
+        which one matched.
 
         Returns:
             `True` if the token matches a configured secret.
@@ -219,12 +205,11 @@ class SharedSecretAuth(Authentication):
 class AuthManager:
     """Holds the token extractor, authentication and authorization in force for one application.
 
-    Each `lso.app.LSO` instance owns one of these, and the request dependencies read it off `request.app`.
-    Nothing here is global: two applications in one process keep their own, which is what stops one test
-    leaking a registered implementation into the next.
+    Each `lso.app.LSO` instance owns one, and the request dependencies read it off `request.app`. Nothing is
+    global, so two applications in one process keep their own.
 
-    The extractor starts as `HttpBearerExtractor`, and the other two slots as `NoAuth`. The `register_*`
-    methods on `lso.app.LSO` replace them.
+    The extractor starts as `HttpBearerExtractor`, the other two slots as `NoAuth`. The `register_*` methods
+    on `lso.app.LSO` replace them.
     """
 
     def __init__(self) -> None:

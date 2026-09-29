@@ -39,12 +39,11 @@ Two settings control it, and both are off by default.
 
 !!! note "Why these names carry an `LSO_` prefix"
 
-    Other applications may read `OAUTH2_ACTIVE` too, and services in one deployment often share a single
-    `.env` file. Were LSO to read the unprefixed name, a value set for another application would switch LSO's
-    authentication on or off, although nobody changed LSO's configuration.
+    Services in one deployment often share a single `.env`. The prefix keeps LSO's switches separate from an
+    `OAUTH2_ACTIVE` that belongs to another application.
 
-    The OIDC and OPA connection details are a different matter. Those describe a provider, not LSO's own
-    behaviour, so they keep the names `oauth2-lib` gives them: `OIDC_CONF_URL`, `OPA_URL` and the rest.
+    OIDC and OPA connection details describe a provider, not LSO, so they keep the names `oauth2-lib` gives
+    them: `OIDC_CONF_URL`, `OPA_URL` and the rest.
 
 ### The quickest way: a shared secret
 
@@ -153,7 +152,6 @@ EXPECTED_TOKEN = os.environ["MY_CLIENT_TOKEN"]
 
 class HeaderAuthentication(Authentication):
     async def authenticate(self, request, token=None):
-        # `token` is what the extractor found. The whole request is available too.
         if token != EXPECTED_TOKEN:
             return None
         return {"groups": ["operators"], "sub": "my-client"}
@@ -191,10 +189,11 @@ class PerPlaybook(Authorization):
 
 Two things to watch:
 
-- The policy sees the name as it was sent. Match it exactly: `ok/../danger.yaml` runs `danger.yaml`, so a
-  prefix or wildcard match can be fooled.
-- `extra_vars` can change which hosts a playbook targets. A rule about hosts must check them too, not only
-  `inventory`.
+- **Match the playbook name exactly, not by prefix.** `..` goes back one folder. So `ok/../danger.yaml`
+  starts with `ok/`, but LSO resolves it and runs `danger.yaml`. A rule like `name.startswith("ok/")` would
+  allow it. Compare the whole name against a list instead.
+- **`extra_vars` can change which hosts a playbook targets**, for example `hosts: "{{ target }}"`. A rule
+  about hosts must check `extra_vars` too, not only `inventory`.
 
 ### Taking the token from another header
 
@@ -218,8 +217,7 @@ The extractor works with any authentication, including the shared secret. With t
 
 ## Registering your own implementation
 
-`lso.app:app`, which the example `Dockerfile` serves, is already built by the time your code could reach it.
-To register something, serve your own module instead:
+Build the application yourself and register on it, then serve that module:
 
 ```python title="my_lso.py"
 from lso.app import create_app
@@ -231,13 +229,19 @@ app.register_authentication(HeaderAuthentication())
 app.register_authorization(ReadOnlyForMostCallers())
 ```
 
-`register_extractor` is optional. Leave it out to keep the bearer header.
-
 ```sh
 uvicorn my_lso:app --host 0.0.0.0 --port 8000
 ```
 
-A shared secret needs none of this. `LSO_API_KEY` works with the stock image.
+`register_extractor` is optional. Leave it out to keep the bearer header.
+
+### Why your own module
+
+`lso.app:app` is already built when uvicorn imports it, so there is no point at which your code could
+register on it. That is why you build the application yourself.
+
+The example `Dockerfile` serves `lso.app:app`, so copy your module in and change the command to serve it
+instead. A shared secret needs none of this: `LSO_API_KEY` works with the stock image.
 
 ## OpenID Connect and Open Policy Agent
 

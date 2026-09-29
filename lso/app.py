@@ -22,84 +22,20 @@ from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from lso import environment
-from lso.auth import Authentication, AuthManager, Authorization, IdTokenExtractor, NoAuth, SharedSecretAuth
-from lso.config import settings
+from lso.auth import Authentication, AuthManager, Authorization, IdTokenExtractor
 from lso.routes.default import router as default_router
 from lso.routes.execute import router as executable_router
 from lso.routes.files import router as files_router
 from lso.routes.playbook import router as playbook_router
-from lso.security import authorize
+from lso.security import authorize, configure_auth
 
 logger = logging.getLogger(__name__)
-
-
-def _configure_auth(app: "LSO") -> None:
-    """Settle which authentication and authorization this application runs with, and refuse a broken one.
-
-    This runs at startup rather than in `create_app`, because a deployer registers their implementation on
-    the object `create_app` returns. Checking any earlier would fire before they had the chance.
-
-    Raises:
-        RuntimeError: When a security feature is switched on but nothing can enforce it. Refusing to start
-            is deliberate: booting into a silent bypass would leave a deployment that asked for
-            authentication running with none.
-
-    """
-    authentication_missing = isinstance(app.auth_manager.authentication, NoAuth)
-
-    # Registering the shared secret here, rather than in `create_app`, keeps an explicitly registered
-    # implementation in charge: by now the deployer has had their turn.
-    if settings.LSO_OAUTH2_ACTIVE and authentication_missing and settings.LSO_API_KEY:
-        app.register_authentication(SharedSecretAuth([settings.LSO_API_KEY.get_secret_value()]))
-        authentication_missing = False
-        logger.info("Registered shared-secret authentication from LSO_API_KEY")
-
-    if settings.LSO_OAUTH2_AUTHORIZATION_ACTIVE and not settings.LSO_OAUTH2_ACTIVE:
-        msg = (
-            "LSO_OAUTH2_AUTHORIZATION_ACTIVE is true but LSO_OAUTH2_ACTIVE is false. An authorization "
-            "policy has no authenticated caller to judge. Set LSO_OAUTH2_ACTIVE=true, or switch "
-            "authorization off."
-        )
-        raise RuntimeError(msg)
-
-    if settings.LSO_OAUTH2_ACTIVE and authentication_missing:
-        msg = (
-            "LSO_OAUTH2_ACTIVE is true but no authentication is registered. Set LSO_API_KEY to use a shared "
-            "secret, or call app.register_authentication(...) on the app returned by create_app(), or set "
-            "LSO_OAUTH2_ACTIVE=false."
-        )
-        raise RuntimeError(msg)
-
-    if settings.LSO_OAUTH2_AUTHORIZATION_ACTIVE and isinstance(app.auth_manager.authorization, NoAuth):
-        msg = (
-            "LSO_OAUTH2_AUTHORIZATION_ACTIVE is true but no authorization is registered. Call "
-            "app.register_authorization(...) on the app returned by create_app(), or set "
-            "LSO_OAUTH2_AUTHORIZATION_ACTIVE=false."
-        )
-        raise RuntimeError(msg)
-
-    # Registering something and leaving the switch off is a plausible mistake, and a quiet one: LSO would
-    # allow every request while the deployer had written code specifically to stop that. It is not an error,
-    # because running one image across environments and switching by variable is a fair way to work, so say
-    # so loudly and carry on.
-    if not settings.LSO_OAUTH2_ACTIVE and not isinstance(app.auth_manager.authentication, NoAuth):
-        logger.warning(
-            "An authentication implementation is registered but LSO_OAUTH2_ACTIVE is false, so it will not "
-            "be used and every request is allowed. Set LSO_OAUTH2_ACTIVE=true to enforce it."
-        )
-
-    if not settings.LSO_OAUTH2_AUTHORIZATION_ACTIVE and not isinstance(app.auth_manager.authorization, NoAuth):
-        logger.warning(
-            "An authorization implementation is registered but LSO_OAUTH2_AUTHORIZATION_ACTIVE is false, so "
-            "it will not be used and every request is allowed. Set LSO_OAUTH2_AUTHORIZATION_ACTIVE=true to "
-            "enforce it."
-        )
 
 
 @asynccontextmanager
 async def _lifespan(app: "LSO") -> AsyncIterator[None]:
     """Validate the security configuration before the application serves anything."""
-    _configure_auth(app)
+    configure_auth(app)
     yield
 
 

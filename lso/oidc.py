@@ -13,36 +13,11 @@
 
 """OpenID Connect and Open Policy Agent, through `oauth2-lib`.
 
-This module needs an extra that plain LSO does not install:
+Needs an extra that plain LSO does not install: `pip install 'orchestrator-lso[oidc]'`. Nothing else in
+`lso` imports this module.
 
-```sh
-pip install 'orchestrator-lso[oidc]'
-```
-
-`oauth2-lib` brings `authlib`, `structlog`, `asyncstdlib` and `strawberry-graphql` with it. LSO has no
-GraphQL and being small is the point of it, so that is a poor trade to force on every deployment. Nothing
-else in `lso` imports this module, so a deployment that does not want OIDC never pays for it.
-
-Use it by registering the adapters on the application:
-
-```python
-from lso.app import create_app
-from lso.oidc import oidc_authentication, opa_authorization
-
-app = create_app()
-app.register_authentication(oidc_authentication())
-app.register_authorization(opa_authorization())
-```
-
-Then run that module instead of `lso.app`, for example `uvicorn my_lso:app`.
-
-The OIDC and OPA connection details come from `oauth2-lib`'s own settings, unprefixed, so `OIDC_CONF_URL`,
-`OPA_URL` and the rest keep the names `oauth2-lib` gives them. Only LSO's own switches carry the `LSO_`
-prefix, because those decide whether *LSO* enforces anything.
-
-`LSO_OAUTH2_ACTIVE` stays the single switch even here. oauth2-lib keeps switches of its own, and consults
-them inside `OIDCAuth.authenticate` and `OPAAuthorization.authorize`, so LSO copies its own settings across
-rather than making a deployer keep two in step.
+Register the adapters on the application, then serve your own module. Connection settings are
+`oauth2-lib`'s own, unprefixed. See `docs/security.md`.
 """
 
 import logging
