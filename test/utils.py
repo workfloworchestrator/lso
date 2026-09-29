@@ -1,6 +1,7 @@
 import tempfile
 from contextlib import contextmanager
 from pathlib import Path
+from unittest import mock
 
 from pydantic import SecretStr
 
@@ -19,19 +20,13 @@ def temporary_executor(executor_type: ExecutorType):
 
 @contextmanager
 def auth_settings(*, active: bool = False, authorization_active: bool = False, api_key: str | None = None):
-    """Apply security settings for the duration of a test, then put the originals back.
-
-    The settings are one process-wide singleton, so a test that changed them and did not restore them would
-    decide the outcome of every test that ran afterwards.
-    """
-    original = (settings.LSO_OAUTH2_ACTIVE, settings.LSO_OAUTH2_AUTHORIZATION_ACTIVE, settings.LSO_API_KEY)
-    settings.LSO_OAUTH2_ACTIVE = active
-    settings.LSO_OAUTH2_AUTHORIZATION_ACTIVE = authorization_active
-    settings.LSO_API_KEY = SecretStr(api_key) if api_key is not None else None
-    try:
+    """Apply security settings for the duration of a test, then put the originals back."""
+    with (
+        mock.patch.object(settings, "LSO_OAUTH2_ACTIVE", active),
+        mock.patch.object(settings, "LSO_OAUTH2_AUTHORIZATION_ACTIVE", authorization_active),
+        mock.patch.object(settings, "LSO_API_KEY", SecretStr(api_key) if api_key is not None else None),
+    ):
         yield
-    finally:
-        settings.LSO_OAUTH2_ACTIVE, settings.LSO_OAUTH2_AUTHORIZATION_ACTIVE, settings.LSO_API_KEY = original
 
 
 @contextmanager

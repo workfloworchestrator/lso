@@ -10,12 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""An LSO that was never configured for this must behave exactly as it did before.
-
-This is a new capability, not a new requirement. A deployment that relies on network placement for its
-access control has to survive the upgrade untouched, and the rest of the suite, which configures nothing,
-is the broader evidence for that.
-"""
+"""An LSO that was never configured for this must behave exactly as it did before."""
 
 import os
 from uuid import uuid4

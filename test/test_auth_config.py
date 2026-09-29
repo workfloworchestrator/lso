@@ -12,12 +12,8 @@
 # limitations under the License.
 """What happens at startup for each combination of switches and registered implementations.
 
-A deployment that asks for authentication and gets none would be worse than one that never asked, because
-it believes it is protected. So LSO refuses to start instead of booting into a silent bypass.
-
-The check runs in the application lifespan, which `TestClient` only executes when it is entered as a context
-manager. Every test here therefore uses `with TestClient(app):`; without it these assertions would pass
-while proving nothing.
+Every test uses `with TestClient(app):`. The check runs in the lifespan, which `TestClient` only executes
+when entered as a context manager, so without it these assertions would pass while proving nothing.
 """
 
 import logging
@@ -138,11 +134,7 @@ def test_a_configured_key_satisfies_the_check():
 
 
 def test_registering_without_switching_on_is_called_out(caplog: pytest.LogCaptureFixture):
-    """The quiet mistake: code written to enforce authentication, and a switch left at its default.
-
-    LSO allows everything in that state, which is correct, because the switch is the authority. But somebody
-    who registered an implementation plainly meant to enforce it, so leaving no trace would be unkind.
-    """
+    """An implementation registered while the switch is off: allowed, but LSO warns."""
     app = create_app()
     app.register_authentication(AnyCaller())
     recapture(caplog)

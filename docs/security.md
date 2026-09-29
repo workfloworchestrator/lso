@@ -212,8 +212,8 @@ class ApiKeyHeaderExtractor(IdTokenExtractor):
 Return `None` when there is no token. Do not reject the request in the extractor: that is the job of your
 `Authentication`.
 
-The extractor works with any authentication, including the shared secret. With the extractor above and
-`LSO_API_KEY` set, callers send `X-API-Key: <secret>`.
+This also moves the shared secret. By default `LSO_API_KEY` is sent as `Authorization: Bearer <secret>`.
+With the extractor above, the same secret is sent as `X-API-Key: <secret>` instead.
 
 ## Registering your own implementation
 
