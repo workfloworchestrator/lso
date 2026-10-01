@@ -25,11 +25,12 @@ from uuid import UUID
 
 import ansible_runner
 from fastapi import APIRouter, HTTPException, status
+from nwastdlib.file_utils import SafeName
 from pydantic import AfterValidator, BaseModel, HttpUrl
 
 from lso.config import settings
 from lso.playbook import get_playbook_path, run_playbook
-from lso.schema import InventoryProblem, InventoryValidationReason, SafeName
+from lso.schema import InventoryProblem, InventoryValidationReason
 
 router = APIRouter()
 

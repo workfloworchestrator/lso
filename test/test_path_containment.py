@@ -25,11 +25,11 @@ from pathlib import Path
 import pytest
 from fastapi import HTTPException, status
 from fastapi.testclient import TestClient
+from nwastdlib.file_utils import SAFE_NAME_PATTERN
 
 from lso.config import settings
 from lso.execute import get_executable_path
 from lso.playbook import get_playbook_path
-from lso.schema import SAFE_NAME_PATTERN
 
 #: Both entry points share one containment helper, so every case below is checked against both of them.
 RESOLVERS = [

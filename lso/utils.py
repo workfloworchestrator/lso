@@ -1,4 +1,4 @@
-# Copyright 2024-2025 GÉANT Vereniging.
+# Copyright 2024-2026 GÉANT Vereniging.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -17,6 +17,8 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from fastapi import HTTPException, status
+from nwastdlib import file_utils
+from nwastdlib.file_utils import PathOutsideRootError
 
 from lso.config import settings
 
@@ -35,14 +37,7 @@ def get_thread_pool() -> ThreadPoolExecutor:
 def resolve_within_root(root_dir: str, name: Path) -> Path:
     """Resolve a caller-supplied `name` inside `root_dir`, rejecting anything that escapes it.
 
-    `Path(root_dir) / name` offers no containment on its own: `pathlib` discards `root_dir` entirely when `name`
-    is absolute, and `..` segments walk out of it. Both sides are resolved before being compared, so that a
-    symlinked root directory (a symlinked `/opt` or data mount is common in a container) does not reject
-    names that are in fact contained.
-
-    Resolving follows symlinks, so a symlink inside `root_dir` pointing outside of it is rejected as well.
-
-    Which characters a name may consist of is a separate, declarative constraint; see `lso.schema.SafeName`.
+    Wraps `nwastdlib.file_utils.resolve_within_root`, translating its error into the 400 that LSO's API returns.
 
     Args:
         root_dir (str): The configured directory that `name` has to stay inside of.
@@ -55,12 +50,7 @@ def resolve_within_root(root_dir: str, name: Path) -> Path:
         HTTPException: Raises a 400 if the resolved path lies outside `root_dir`.
 
     """
-    root = Path(root_dir).resolve()
-    path = (root / name).resolve()
-    if not path.is_relative_to(root):
-        # Echo only what the caller sent. Naming the resolved path here would disclose the server's
-        # filesystem layout to whoever probes the endpoint.
-        msg = f"Path '{name}' is outside the configured root directory."
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=msg)
-
-    return path
+    try:
+        return file_utils.resolve_within_root(root_dir, name)
+    except PathOutsideRootError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
