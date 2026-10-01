@@ -251,9 +251,10 @@ These come through `oauth2-lib`, as an optional extra:
 pip install 'orchestrator-lso[oidc]'
 ```
 
-It is not a core dependency. `oauth2-lib` brings `authlib`, `structlog`, `asyncstdlib` and
-`strawberry-graphql` with it; LSO has no GraphQL and being small is the point of it, so that is not a price
-to put on every deployment. Nothing in LSO imports it unless you do.
+`oauth2-lib` is not a core dependency. Installing the extra adds it and dependencies such as `authlib`
+and `asyncstdlib`. The default LSO installation already includes `structlog` and `strawberry-graphql`
+through the required `nwa-stdlib` package. Their presence does not enable GraphQL or authentication.
+Nothing in LSO imports `oauth2-lib` unless you import the OIDC adapters.
 
 ```python title="my_lso.py"
 from lso.app import create_app
