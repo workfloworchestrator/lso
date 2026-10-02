@@ -19,10 +19,11 @@ from typing import Annotated
 from uuid import uuid4
 
 from fastapi import APIRouter, HTTPException, status
+from nwastdlib.file_utils import SafeName
 from pydantic import AfterValidator, BaseModel, HttpUrl
 
 from lso.execute import get_executable_path, run_executable_async, run_executable_sync
-from lso.schema import ExecutableRunResponse, SafeName
+from lso.schema import ExecutableRunResponse
 
 router = APIRouter()
 

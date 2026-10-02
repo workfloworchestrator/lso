@@ -19,10 +19,10 @@ from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import FileResponse
+from nwastdlib.file_utils import SafeName
 from pydantic import BaseModel
 
 from lso.config import settings
-from lso.schema import SafeName
 from lso.utils import resolve_within_root
 
 router = APIRouter()

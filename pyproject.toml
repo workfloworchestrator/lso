@@ -35,6 +35,7 @@ dependencies = [
     "celery==5.6.3",
     "fastapi==0.141.1",
     "httpx2==2.13.1",
+    "nwa-stdlib==1.13.0",
     "pydantic-settings==2.15.0",
     # redis-py must stay within kombu's supported range (<6.5). redis-py >=8 silently
     # reconnects broker sockets without kombu noticing, leaving workers permanently
@@ -88,6 +89,8 @@ prerelease = "if-necessary"
 # Cooldown: don't resolve versions published in the last 3 days (supply-chain protection).
 # Keep in sync with minimumReleaseAge in renovate.json.
 exclude-newer = "3 days"
+# nwa-stdlib is our own first-party package, so it is exempt from the cooldown.
+exclude-newer-package = { nwa-stdlib = false }
 
 [tool.uv.build-backend]
 module-name = "lso"
