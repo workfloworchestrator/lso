@@ -36,7 +36,7 @@ dependencies = [
     "fastapi==0.143.0",
     "httpx2==2.13.1",
     "nwa-stdlib==1.13.0",
-    "pydantic-settings==2.15.0",
+    "pydantic-settings==2.16.0",
     # redis-py must stay within kombu's supported range (<6.5). redis-py >=8 silently
     # reconnects broker sockets without kombu noticing, leaving workers permanently
     # deaf (no BRPOP/PSUBSCRIBE re-issued) after a Redis connection loss.
