@@ -90,7 +90,8 @@ prerelease = "if-necessary"
 # Keep in sync with minimumReleaseAge in renovate.json.
 exclude-newer = "3 days"
 # nwa-stdlib is our own first-party package, so it is exempt from the cooldown.
-exclude-newer-package = { nwa-stdlib = false }
+# certifi is exempt so the emSign CA distrust (GHSA-6q48-6c7w-9gw2) is picked up immediately.
+exclude-newer-package = { certifi = false, nwa-stdlib = false }
 
 [tool.uv.build-backend]
 module-name = "lso"
