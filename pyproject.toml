@@ -51,7 +51,7 @@ Documentation = "https://workfloworchestrator.org/lso"
 Source = "https://github.com/workfloworchestrator/lso"
 
 [project.optional-dependencies]
-oidc = ["oauth2-lib==3.0.1"]
+oidc = ["oauth2-lib==3.1.0"]
 
 [dependency-groups]
 dev = [
