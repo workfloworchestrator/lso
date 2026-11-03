@@ -1014,7 +1014,7 @@ wheels = [
 
 [[package]]
 name = "oauth2-lib"
-version = "3.1.0"
+version = "3.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asyncstdlib" },
@@ -1027,9 +1027,9 @@ dependencies = [
     { name = "strawberry-graphql" },
     { name = "structlog" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/06/91/7e9ae6ed94e82326ac6b786f787f5dc29a5a78f6b7461d21248eeaef2675/oauth2_lib-3.1.0.tar.gz", hash = "sha256:b5b8dc6aeb082e79eed9ed30370aa14006cef15fec4f68ca285b0d793fbfc5a8", size = 27579, upload-time = "2026-10-16T15:41:29.671Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a2/90/91f2cd7f04b18749e1b93a4b0456331d3d8c727e64b18f94e4a6454a160b/oauth2_lib-3.2.0.tar.gz", hash = "sha256:c32ad1b5b41f17d89d684c75e24f61edfbb506f1761d21b1fcfd1e6676dcb57e", size = 30148, upload-time = "2026-10-30T13:01:04.377Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a1/52/ba9cd637d60aff318e3ddc23ee5140161b262c763da5d2699e86b940a2b3/oauth2_lib-3.1.0-py3-none-any.whl", hash = "sha256:f32623f5b65d6799ccc7780b42c15718cfb87b9e88c8925490bd05b631cec70b", size = 19170, upload-time = "2026-10-16T15:41:28.341Z" },
+    { url = "https://files.pythonhosted.org/packages/dd/88/45f87b7cc1e19288d83935e92ad8a895766b3a1d5ef55ea40c1d9114f89a/oauth2_lib-3.2.0-py3-none-any.whl", hash = "sha256:dc5b0cf6343ca867c5ee6355c528b92179e97dab004a4fa03cc840b8096ebb99", size = 19157, upload-time = "2026-10-30T13:01:02.773Z" },
 ]
 
 [[package]]
@@ -1096,7 +1096,7 @@ requires-dist = [
     { name = "fastapi", specifier = "==0.153.0" },
     { name = "httpx2", specifier = "==2.15.1" },
     { name = "nwa-stdlib", specifier = "==1.13.0" },
-    { name = "oauth2-lib", marker = "extra == 'oidc'", specifier = "==3.1.0" },
+    { name = "oauth2-lib", marker = "extra == 'oidc'", specifier = "==3.2.0" },
     { name = "pydantic-settings", specifier = "==2.16.0" },
     { name = "redis", specifier = ">=6.0,<6.5" },
     { name = "requests", specifier = "==2.34.2" },
