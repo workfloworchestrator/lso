@@ -1,31 +1,45 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "local>workfloworchestrator/renovate-config",
+    "local>workfloworchestrator/renovate-config//languages/python",
+    "local>workfloworchestrator/renovate-config//projects/library",
+    "local>workfloworchestrator/renovate-config//extras/security-alerts"
   ],
   "packageRules": [
     {
-      "matchManagers": ["uv"]
+      "description": "[automerge] Starlette is imported by runtime code (lso/auth.py, lso/oidc.py) although it is declared only in the dev group, so a dev-group bump must be reviewed",
+      "matchManagers": ["pep621"],
+      "matchDepTypes": ["dependency-groups"],
+      "matchPackageNames": ["starlette"],
+      "automerge": false
     },
     {
+      "description": "[disable] redis-py must stay below 6.5: kombu does not notice redis-py >= 8 dropping the broker socket, so workers stay deaf after a reconnect. See the pin and its comment in pyproject.toml",
+      "matchPackageNames": ["redis"],
+      "allowedVersions": "<6.5"
+    },
+    {
+      "description": "[cooldown] nwa-stdlib is our own package and exempt from the uv cooldown, so it is exempt from Renovate's release age too. Keep in sync with exclude-newer-package in pyproject.toml",
+      "matchPackageNames": ["nwa-stdlib"],
+      "minimumReleaseAge": "0 days"
+    },
+    {
+      "description": "[cooldown] certifi is exempt from the uv cooldown so CA-distrust advisories land immediately, so it is exempt from Renovate's release age too. Keep in sync with exclude-newer-package in pyproject.toml",
+      "matchPackageNames": ["certifi"],
+      "minimumReleaseAge": "0 days"
+    },
+    {
+      "description": "[disable] The example image must stay on a Python that requires-python supports (>=3.12,<3.15). Only python:3.13-alpine is extracted from Dockerfile.example; it is disabled instead of constrained so Renovate never edits major/minor/patch of the image tag",
+      "matchManagers": ["dockerfile"],
       "matchPackageNames": ["python"],
-      "rangeStrategy": "widen",
       "enabled": false
     }
   ],
-  "minimumReleaseAge": "3 days",
-  "internalChecksFilter": "strict",
-  "lockFileMaintenance": {
-    "enabled": true,
-    "schedule": ["before 3am on Wednesday"]
-  },
   "ignorePaths": [
     "Dockerfile"
   ],
-  "schedule": [
-    "* 1-5 * * *"
-  ],
-  "timezone": "Europe/Amsterdam",
-  "updateNotScheduled": false,
-  "dependencyDashboard": false
+  "dependencyDashboard": {
+    "enabled": false
+  }
 }

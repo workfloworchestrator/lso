@@ -13,7 +13,9 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      # Read-only: the workflow only reads the checkout. A write permission here
+      # cannot be granted by a caller that holds less, which would fail the run.
+      contents: read
     steps:
       - uses: actions/checkout@v7
       - uses: vale-cli/vale-action@v3.0.0
