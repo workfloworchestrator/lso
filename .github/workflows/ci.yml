@@ -1,6 +1,6 @@
-# Single PR/push entry point for CI. The required check is "CI result", which waits for
-# every lint, unit-test and doc-lint job. The called workflows keep their own triggers, so
-# their results are attached to the pull request too; only "CI result" is required.
+# Sole push/PR entry point for CI. The called workflows are workflow_call-only, so this is
+# where every lint, unit-test and doc-lint job starts. The required check is "CI result",
+# which waits for all of them.
 
 name: CI
 
