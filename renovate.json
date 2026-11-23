@@ -8,14 +8,19 @@
   ],
   "packageRules": [
     {
-      "description": "[automerge] Starlette is imported by runtime code (lso/auth.py, lso/oidc.py) although it is declared only in the dev group, so a dev-group bump must be reviewed",
+      "description": "[automerge] Lock file maintenance stays manual here, overriding the library preset. FastAPI declares only starlette>=0.46.0, so a maintenance refresh can move the runtime-imported starlette (lso/auth.py, lso/oidc.py) without touching pyproject.toml. A package rule cannot prevent that: lock file maintenance carries no depName, so matchPackageNames never applies to it",
+      "matchUpdateTypes": ["lockFileMaintenance"],
+      "automerge": false
+    },
+    {
+      "description": "[automerge] Starlette is imported by runtime code (lso/auth.py, lso/oidc.py) although it is declared only in the dev group, so a dev-group bump must be reviewed. This covers the direct dev-group entry, not lock file maintenance; the rule above covers that",
       "matchManagers": ["pep621"],
       "matchDepTypes": ["dependency-groups"],
       "matchPackageNames": ["starlette"],
       "automerge": false
     },
     {
-      "description": "[disable] redis-py must stay below 6.5: kombu does not notice redis-py >= 8 dropping the broker socket, so workers stay deaf after a reconnect. See the pin and its comment in pyproject.toml",
+      "description": "[pin] redis-py must stay below 6.5: kombu does not notice redis-py 8+ dropping the broker socket, so workers stay deaf after a reconnect. 6.5 and above are excluded too, because that is where the incompatibility was seen; see the pin and its comment in pyproject.toml",
       "matchPackageNames": ["redis"],
       "allowedVersions": "<6.5"
     },
@@ -30,7 +35,7 @@
       "minimumReleaseAge": "0 days"
     },
     {
-      "description": "[disable] The example image must stay on a Python that requires-python supports (>=3.12,<3.15). Only python:3.13-alpine is extracted from Dockerfile.example; it is disabled instead of constrained so Renovate never edits major/minor/patch of the image tag",
+      "description": "[disable] Dockerfile.example is not managed by Renovate: ignorePaths \"Dockerfile\" is a substring match, so it also hides Dockerfile.example. If that is narrowed to \"^Dockerfile$\", this keeps the example image off python majors the requires-python range (>=3.12,<3.15) does not support. It is disabled rather than constrained because an allowedVersions regex tight enough to exclude the next major also blocks patch updates",
       "matchManagers": ["dockerfile"],
       "matchPackageNames": ["python"],
       "enabled": false
