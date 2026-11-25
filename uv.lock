@@ -995,20 +995,21 @@ wheels = [
 
 [[package]]
 name = "nwa-stdlib"
-version = "1.13.0"
+version = "1.15.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
     { name = "colorama" },
+    { name = "graphql-core" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
     { name = "redis" },
     { name = "strawberry-graphql" },
     { name = "structlog" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6f/57/236c2c59a0364fa3185ce380bb48a9ba0b7be666f7a47f34feb92221afa4/nwa_stdlib-1.13.0.tar.gz", hash = "sha256:94d76ec312bb57ccdd1c25be14069e11a2a6950b9cae2f001f9a07dfcf1feaaa", size = 30781, upload-time = "2026-10-01T07:13:54.802Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/06/6e/763af15eb477cc7402c6d3d83e774ac49107211f2d2e2b8fb202e5a201d8/nwa_stdlib-1.15.0.tar.gz", hash = "sha256:df26a368f3de246c112bb8beb5d243df6ecd42b913c53c6bfd407f055192e1f9", size = 33189, upload-time = "2026-11-11T12:59:26.042Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/cc/40/69e50718fb1d2507b78e5367e32e32bd6512478581670355066e1731a17e/nwa_stdlib-1.13.0-py3-none-any.whl", hash = "sha256:f75bea3172342e0eb861b0cb3e1b652f1a588a781ea8119c5a9e3bdc37a23c35", size = 31696, upload-time = "2026-10-01T07:13:53.608Z" },
+    { url = "https://files.pythonhosted.org/packages/fc/18/1850e9c96b5883064f28b04f6459d6b0337957ccb9d73f04beab1667f1f0/nwa_stdlib-1.15.0-py3-none-any.whl", hash = "sha256:3937e6434e1c4ee8b70732d0c78234bcccc8d10c66317da01471145f802414c6", size = 31702, upload-time = "2026-11-11T12:59:24.701Z" },
 ]
 
 [[package]]
@@ -1094,7 +1095,7 @@ requires-dist = [
     { name = "celery", specifier = "==5.7.0" },
     { name = "fastapi", specifier = "==0.153.0" },
     { name = "httpx2", specifier = "==2.16.2" },
-    { name = "nwa-stdlib", specifier = "==1.13.0" },
+    { name = "nwa-stdlib", specifier = "==1.15.0" },
     { name = "oauth2-lib", marker = "extra == 'oidc'", specifier = "==3.2.0" },
     { name = "pydantic-settings", specifier = "==2.16.3" },
     { name = "redis", specifier = ">=6.0,<6.5" },
