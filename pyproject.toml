@@ -33,7 +33,7 @@ classifiers = [
 dependencies = [
     "ansible-runner==2.4.3",
     "celery==5.7.0",
-    "fastapi==0.153.0",
+    "fastapi==0.165.0",
     "httpx2==2.16.2",
     "nwa-stdlib==1.13.0",
     "pydantic-settings==2.16.3",
