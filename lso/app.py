@@ -14,7 +14,7 @@
 """Default app creation."""
 
 import logging
-from collections.abc import AsyncIterator
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from typing import Any
 
@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
-async def _lifespan(app: "LSO") -> AsyncIterator[None]:
+async def _lifespan(app: "LSO") -> AsyncGenerator[None]:
     """Validate the security configuration before the application serves anything."""
     configure_auth(app)
     yield
