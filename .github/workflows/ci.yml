@@ -1,0 +1,43 @@
+# Sole push/PR entry point for CI. The called workflows are workflow_call-only, so this is
+# where every lint, unit-test and doc-lint job starts. The required check is "CI result",
+# which waits for all of them.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  linting-tests:
+    name: Linting tests
+    uses: ./.github/workflows/run-linting-tests.yaml
+
+  unit-tests:
+    name: Unit tests
+    uses: ./.github/workflows/run-unit-tests.yaml
+
+  doc-linting:
+    name: Lint documentation
+    uses: ./.github/workflows/run-doc-linting.yaml
+
+  ci-result:
+    name: CI result
+    # Every job above must pass. `always()` makes the gate report a failure instead of
+    # being skipped when one of them fails or is cancelled.
+    needs:
+      - linting-tests
+      - unit-tests
+      - doc-linting
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check that every needed job succeeded
+        uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # v1.3.0
+        with:
+          jobs: ${{ toJSON(needs) }}

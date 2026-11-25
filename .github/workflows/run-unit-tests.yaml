@@ -1,6 +1,8 @@
 name: Unit tests
+# Reusable only: ci.yml is the single PR/push entry point and it runs on pull
+# requests, so unit tests still run on every PR. Keeping push/pull_request here
+# as well would run every check twice.
 on:
-  push:
   workflow_call:
 
 env:

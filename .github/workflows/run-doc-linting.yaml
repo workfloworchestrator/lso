@@ -1,9 +1,8 @@
 name: "Lint documentation"
 
+# Reusable only: ci.yml is the single PR/push entry point, so keeping the
+# push/pull_request triggers here would run every check twice.
 on:
-  push:
-  pull_request:
-    branches: [main]
   workflow_call:
 
 env:
@@ -13,7 +12,9 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      # Read-only: the workflow only reads the checkout. A write permission here
+      # cannot be granted by a caller that holds less, which would fail the run.
+      contents: read
     steps:
       - uses: actions/checkout@v7
       - uses: vale-cli/vale-action@v3.0.0
