@@ -1,14 +1,15 @@
 version = 1
-revision = 5
+revision = 3
 requires-python = ">=3.12, <3.15"
 
 [options]
+prerelease-mode = "if-necessary"
 exclude-newer = "0001-01-01T00:00:00Z" # This has no effect and is included for backwards compatibility when using relative exclude-newer values.
 exclude-newer-span = "P3D"
 
 [options.exclude-newer-package]
-certifi = false
 nwa-stdlib = false
+certifi = false
 
 [[package]]
 name = "amqp"
@@ -1124,7 +1125,7 @@ dev = [
 docs = [
     { name = "mkdocs", specifier = ">=1.6.1" },
     { name = "mkdocstrings-python", specifier = ">=2.0.3" },
-    { name = "vale", specifier = ">=3.13.0.0" },
+    { name = "vale", specifier = ">=3.20.0.0" },
 ]
 
 [[package]]
