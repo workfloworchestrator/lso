@@ -1186,7 +1186,7 @@ dev = [
 docs = [
     { name = "mkdocs", specifier = ">=1.6.1" },
     { name = "mkdocstrings-python", specifier = ">=2.0.3" },
-    { name = "vale", specifier = ">=3.13.0.0" },
+    { name = "vale", specifier = ">=3.20.0.0" },
 ]
 
 [[package]]
